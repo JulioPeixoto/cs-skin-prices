@@ -2,6 +2,8 @@
 
 Coleta preços e histórico de skins de CS2 (AK-47, M4A1-S, facas e luvas) e gera uma página com a variação de cada uma.
 
+**Página:** https://juliopeixoto.github.io/cs-skin-prices/ (republicada pelo GitHub Pages depois de cada coleta).
+
 ## Fontes
 
 | Fonte | O que dá | Limite | Quando roda |
