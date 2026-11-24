@@ -4,6 +4,7 @@ The data is packed small enough for one self-contained page:
   gzip( uint32 header length | header JSON | varint series per item )
   header: asof, fx, weapons [[name, cat]], paints [name],
           items [[weapon, paint, wear (5 = none), ref cents, ref volume, skinport|null]]
+          skins {"weapon|paint": [image file|null, rarity, rarity colour]}
           skinport = [med7d, med30d, med90d, vol7d, vol30d, vol90d,
                       min listing, listings, med24h, vol24h] in USD cents
   series: n, then per point day, log-price code (ln(cents) * 200) and sales,
@@ -85,6 +86,7 @@ def main() -> int:
         return 1
     sp, sp_updated = skinport_by_name()
     fx = (read_json(DATA / "skinport" / "fx.json") or {}).get("usd_brl")
+    meta = read_json(DATA / "meta.json", {})
     daily_days = CONFIG["history"]["daily_days"]
 
     weapons, widx, paints, pidx = [], {}, [], {}
@@ -121,7 +123,9 @@ def main() -> int:
             last_day = max(last_day, d)
 
     asof = max(filter(None, [sp_updated, catalog.get("updated")]), default="")
-    header = json.dumps({"asof": asof, "fx": fx, "weapons": weapons, "paints": paints, "items": items},
+    skins = {k: [m.get("img"), m.get("rarity"), m.get("color")] for k, m in meta.items()}
+    header = json.dumps({"asof": asof, "fx": fx, "weapons": weapons, "paints": paints, "items": items,
+                         "skins": skins},
                         ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     packed = gzip.compress(struct.pack("<I", len(header)) + header + bytes(blob), 9, mtime=0)
     page = TEMPLATE.read_text(encoding="utf-8").replace("__B64__", base64.b64encode(packed).decode())
