@@ -256,11 +256,11 @@ const detail=()=>{
   $("dsub").textContent=it.wr<5?WEAR[it.wr]:"Sem desgaste";
   $("now").textContent=it.now==null?"—":money(it.now*kx());
   const sibs=IT.filter(x=>x.key===it.key).sort((x,y)=>x.wr-y.wr);
-  $("ow").innerHTML=sibs.map(x=>`<button data-i="${x.i}" aria-current="${x===it}"><b>${esc(x.wr<5?WEAR[x.wr]:"Vanilla")}</b><small>${x.now==null?"—":esc(short(x.now*kx()))}${x.h?` · <span style="color:${col(x.c365)}">${pct(x.c365)}</span> 1a`:""}</small></button>`).join("");
+  $("ow").innerHTML=sibs.map(x=>`<button data-i="${x.i}" aria-current="${x===it}"><b>${esc(x.wr<5?WEAR[x.wr]:"Vanilla")}</b><small>${x.now==null?"—":esc(short(x.now*kx()))}${x.c30!=null?` · <span style="color:${col(x.c30)}">${pct(x.c30)}</span> 30d`:""}</small></button>`).join("");
   for(const id of["dctr","kpis","read","f1","f2","f2l"])$(id).hidden=!it.h;$("nohist").hidden=it.h;
   const sp=it.sp;$("spb").hidden=!sp;
   if(sp){const W=[["24 horas",sp.m24,sp.v24],["7 dias",sp.m7,sp.v7],["30 dias",sp.m30,sp.v30],["90 dias",sp.m90,sp.v90]];
-    $("spk").innerHTML=W.map(([l,m,v])=>{const x=m&&sp.m7&&l!=="7 dias"?sp.m7/m-1:null;return `<div class="kv"><span>Mediana ${l}</span><b>${m?esc(short(m*kx())):"—"}</b><small>${v} vendas${x!=null?` · <span style="color:${col(x)}">7d vs ${l==="24 horas"?"24h":l.replace(" dias","d")}: ${pct(x)}</span>`:""}</small></div>`}).join("")+`<div class="kv"><span>Menor anúncio agora</span><b>${sp.min?esc(short(sp.min*kx())):"—"}</b><small>${sp.qty} à venda</small></div>`}
+    $("spk").innerHTML=W.map(([l,m,v])=>{const h24=l==="24 horas",x=m&&sp.m7&&l!=="7 dias"?(h24?m/sp.m7:sp.m7/m)-1:null;return `<div class="kv"><span>Mediana ${l}</span><b>${m?esc(short(m*kx())):"—"}</b><small>${v} vendas${x!=null?` · <span style="color:${col(x)}">${h24?"24h vs 7d":"7d vs "+l.replace(" dias","d")}: ${pct(x)}</span>`:""}</small></div>`}).join("")+`<div class="kv"><span>Menor anúncio agora</span><b>${sp.min?esc(short(sp.min*kx())):"—"}</b><small>${sp.qty} à venda</small></div>`}
   if(!it.h){$("nowSub").textContent=it.src==="sp"?"mediana das vendas na Skinport nos últimos 7 dias":it.now==null?"poucas vendas para um preço confiável":"preço de referência do CSFloat";$("csl").href="https://csfloat.com/search?market_hash_name="+encodeURIComponent(it.full);view=[];return}
   $("nowSub").innerHTML=`mediana dos últimos 7 dias · ${it.v30} vendas em 30 dias${it.lastT<L-7*DAY?" · última venda "+esc(fd(it.lastT)):""}`;
   smooth(it);view=days?a.filter(d=>d.t>L-days*DAY):a.slice();if(view.length<2)view=a.slice(-2);
