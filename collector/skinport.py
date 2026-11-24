@@ -5,6 +5,7 @@ Writes:
   data/skinport/daily/DATE.json.gz one small snapshot per day, so a real daily
                                    series builds up over time
   data/skinport/fx.json           USD to BRL rate implied by Skinport's prices
+  data/skinport/links.json        Skinport item page of every tracked skin
 
 API: https://docs.skinport.com (no key; 8 requests per 5 minutes; responses
 are cached for 5 minutes; Accept-Encoding: br is required).
@@ -12,7 +13,7 @@ are cached for 5 minutes; Accept-Encoding: br is required).
 import statistics
 import sys
 
-from .common import DATA, now_utc, session, write_json
+from .common import DATA, now_utc, read_json, session, write_json
 
 BASE = "https://api.skinport.com/v1"
 WINDOWS = ["last_24_hours", "last_7_days", "last_30_days", "last_90_days"]
@@ -69,6 +70,10 @@ def main() -> int:
                {"date": stamp.date().isoformat(), "currency": "USD cents",
                 "fields": ["name", "version", "med24h", "vol24h", "min_listing"],
                 "rows": [[r[0], r[1], r[2], r[10], r[14]] for r in rows if r[10] or r[14]]})
+    tracked = {i["name"] for i in (read_json(DATA / "catalog.json") or {"items": []})["items"]}
+    links = {k[0]: v["item_page"] for k, v in listings.items()
+             if k[0] in tracked and v.get("item_page") and k[1] is None}
+    write_json(DATA / "skinport" / "links.json", dict(sorted(links.items())), pretty=True)
     if fx:
         write_json(DATA / "skinport" / "fx.json",
                    {"updated": stamp.isoformat(timespec="seconds"), "usd_brl": fx,
