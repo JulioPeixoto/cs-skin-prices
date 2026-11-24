@@ -145,8 +145,8 @@ tbody tr:hover{background:var(--card2)}
   <section class="sec" id="msec"><div class="sh"><h2 id="mtitle">Modelos</h2><p class="sub" id="msub"></p></div><div class="mtiles" id="models"></div></section>
   <section class="sec ov2" id="overview">
     <div class="panel"><div class="sh" style="margin-bottom:0"><div><h3 id="ixt">Índice de preço</h3><p class="sub" id="ixs"></p></div><div class="seg" id="ixp" role="group" aria-label="Período do índice"><button data-v="13">3M</button><button data-v="26">6M</button><button data-v="52">1A</button></div></div><div class="fig" id="fi"><svg id="si" aria-label="Índice de preço da seleção"></svg></div></div>
-    <div class="panel"><h3>Maiores altas em 30 dias</h3><p class="sub">com pelo menos 10 vendas no mês</p><div id="up"></div></div>
-    <div class="panel"><h3>Maiores quedas em 30 dias</h3><p class="sub">com pelo menos 10 vendas no mês</p><div id="dn"></div></div>
+    <div class="panel"><h3>Maiores altas em 30 dias</h3><p class="sub">itens com 20+ vendas no mês e acima de US$ 2</p><div id="up"></div></div>
+    <div class="panel"><h3>Maiores quedas em 30 dias</h3><p class="sub">itens com 20+ vendas no mês e acima de US$ 2</p><div id="dn"></div></div>
   </section>
   <section class="sec">
     <div class="bar">
@@ -231,6 +231,7 @@ const stats=it=>{
     else it.now=it.rvol>=3?it.rp:null;return}
   it.now=win(a,L-7*DAY,L)??a[a.length-1].p;it.lastT=a[a.length-1].t;it.v30=a.filter(d=>d.t>L-30*DAY).reduce((s,d)=>s+d.c,0);
   for(const n of[7,30,90,365]){const r=ref(a,L-n*DAY);it["c"+n]=r?it.now/r-1:null}
+  it.r30n=a.filter(d=>d.t>L-34*DAY&&d.t<=L-27*DAY).length;it.n7=a.filter(d=>d.t>L-7*DAY).length;
   it.wk=new Map();const g=new Map();for(const d of a){const k=Math.floor(d.t/WEEK);if(!g.has(k))g.set(k,[]);g.get(k).push(d.p)}for(const[k,v]of g)it.wk.set(k,md(v));
 };
 const index=(items,weeks)=>{
@@ -264,7 +265,7 @@ const overview=()=>{
   for(const b of $("ixp").querySelectorAll("button"))b.setAttribute("aria-pressed",+b.dataset.v===S.ixw);
   const ix=index(xs,S.ixw);drawIx(ix);
   $("ixs").textContent=ix.pts.length?`Mediana do preço de ${ix.n} skins com histórico, base 100 ${S.ixw===13?"há 3 meses":S.ixw===26?"há 6 meses":"há 1 ano"}.`:"Ainda não há skins suficientes com histórico nesta seleção.";
-  const liq=xs.filter(i=>i.c30!=null&&(i.v30??0)>=10);
+  const liq=xs.filter(i=>i.c30!=null&&(i.v30??0)>=20&&i.now>=2&&(i.src!=="cf"||(i.r30n>=3&&i.n7>=3)));
   const row=i=>`<button class="mv" data-i="${i.i}"><i>${esc(i.model+" | "+i.name)}</i><b style="color:${col(i.c30)}">${pct(i.c30)}</b><span>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${i.src==="sp"?"Skinport":"CSFloat"}</span><b style="font-size:13px;color:var(--mut);font-weight:500">${esc(short(i.now*kx()))}</b></button>`;
   const up=liq.slice().sort((a,b)=>b.c30-a.c30).slice(0,5),dn=liq.slice().sort((a,b)=>a.c30-b.c30).slice(0,5);
   $("up").innerHTML=up.map(row).join("")||`<p class="sub">Sem dados suficientes.</p>`;$("dn").innerHTML=dn.map(row).join("")||`<p class="sub">Sem dados suficientes.</p>`;
