@@ -73,7 +73,8 @@ svg text{font:12.5px Inter,sans-serif;fill:var(--mut);paint-order:stroke;stroke:
 .card{position:relative;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px;color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:7px;overflow:hidden;transition:transform .15s,border-color .15s}
 .card:hover{border-color:var(--acc);transform:translateY(-2px)}
 .card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--rc,var(--q))}
-.rar{color:var(--rc,var(--mut));font-weight:600}
+.rar{color:var(--rc,var(--mut));font-weight:600;white-space:nowrap}
+.ct span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .im{aspect-ratio:4/3;margin:0 -4px;border-radius:10px;background:radial-gradient(60% 55% at 50% 58%,color-mix(in srgb,var(--rc,var(--q)) 30%,transparent),transparent 72%),var(--card2);display:grid;place-items:center;overflow:hidden}
 .im img{width:88%;height:88%;object-fit:contain;filter:drop-shadow(0 6px 10px rgb(0 0 0/.35));transition:transform .2s}
 .card:hover .im img{transform:scale(1.06) rotate(-2deg)}
@@ -252,7 +253,9 @@ const index=(items,weeks)=>{
 };
 const inCat=(i,c)=>c==="all"||i.cat===c;
 const rcs=x=>x.rc&&/^#[0-9a-f]{6}$/i.test(x.rc)?` style="--rc:${x.rc}"`:"";
-const pic=(x,cls)=>`<div class="${cls}"${rcs(x)}>${x.img&&/^[\w.-]+$/.test(x.img)?`<img src="img/${x.img}" alt="" loading="lazy">`:""}</div>`;
+let PACK=null,PACKED=false;
+const src=f=>f&&/^[\w.-]+$/.test(f)&&PACKED?(PACK&&PACK[f]&&PACK[f].startsWith("data:image/")?PACK[f]:"img/"+f):null;
+const pic=(x,cls)=>{const u=src(x.img);return `<div class="${cls}"${rcs(x)}>${u?`<img src="${u}" alt="" loading="lazy">`:""}</div>`};
 const mini=(ix,h)=>{const p=ix.pts;if(p.length<2)return `<svg viewBox="0 0 200 ${h}" aria-hidden="true"><text x="0" y="${h-6}" style="stroke:none">sem histórico suficiente ainda</text></svg>`;
   const vs=p.map(x=>x.v),lo=Math.min(...vs,100),hi=Math.max(...vs,100),X=k=>k/(p.length-1)*200,Y=v=>h-3-(v-lo)/((hi-lo)||1)*(h-6),last=vs[vs.length-1],c=last>=100?"var(--up)":"var(--dn)";
   const d=p.map((x,k)=>(k?"L":"M")+X(k).toFixed(1)+","+Y(x.v).toFixed(1)).join("");
@@ -335,7 +338,7 @@ const smooth=it=>{if(it.sm)return;const a=it.pts;let j=0;for(let i=0;i<a.length;
 const detail=()=>{
   const it=S.sel;if(!it)return;const a=it.pts,days=PERS.find(p=>p[0]===S.per)[1];
   $("per").innerHTML=PERS.map(([l])=>`<button data-v="${l}" aria-pressed="${l===S.per}">${l}</button>`).join("");
-  const di=$("dimg");di.style.setProperty("--rc",it.rc&&/^#[0-9a-f]{6}$/i.test(it.rc)?it.rc:"var(--q)");di.innerHTML=it.img&&/^[\w.-]+$/.test(it.img)?`<img src="img/${it.img}" alt="${esc(it.model+" | "+it.name)}">`:"";
+  const di=$("dimg");di.style.setProperty("--rc",it.rc&&/^#[0-9a-f]{6}$/i.test(it.rc)?it.rc:"var(--q)");const u=src(it.img);di.innerHTML=u?`<img src="${u}" alt="${esc(it.model+" | "+it.name)}">`:"";
   $("dmodel").textContent=it.model+(it.rar?" · "+it.rar:"");$("dname").textContent=it.name;$("dsub").textContent=it.wr<5?WEAR[it.wr]+" · float "+WR[it.wr]:"Sem desgaste";
   $("now").textContent=it.now==null?"—":money(it.now*kx());
   const sibs=IT.filter(x=>x.key===it.key).sort((x,y)=>x.wr-y.wr);
@@ -404,6 +407,7 @@ const hook=s=>{let dr=null;const px=e=>e.clientX-s.getBoundingClientRect().left;
 const open=it=>{lastFocus=document.activeElement;S.sel=it;S.rng=null;hov=-1;$("ov").hidden=false;document.body.style.overflow="hidden";detail();$("x").focus()};
 const close=()=>{$("ov").hidden=true;document.body.style.overflow="";S.sel=null;if(lastFocus)lastFocus.focus()};
 (async()=>{
+  const pk=fetch("img/pack.json").then(r=>r.ok?r.json():null).then(j=>{PACK=j}).catch(()=>{}).finally(()=>{PACKED=true});
   try{await decode()}catch(e){$("lede").textContent="Seu navegador não conseguiu abrir os dados desta página. Tente no Chrome, Edge, Firefox ou Safari atualizados.";return}
   const cs=[["facas","kn"],["luvas","gl"],["rifles","rf"]].map(([l,k])=>[l,m30(IT.filter(i=>i.cat===k))]).filter(x=>x[1]!=null);
   const hs=IT.filter(i=>i.h).length,ss=IT.filter(i=>i.sp).length;
@@ -411,6 +415,7 @@ const close=()=>{$("ov").hidden=true;document.body.style.overflow="";S.sel=null;
   $("lede").textContent=`Mediana da variação por categoria. ${SK.length.toLocaleString("pt-BR")} skins (${IT.length.toLocaleString("pt-BR")} itens contando desgastes) de AK-47, M4A1-S, facas e luvas: ${hs.toLocaleString("pt-BR")} itens com gráfico diário do CSFloat e ${ss.toLocaleString("pt-BR")} com estatísticas de venda da Skinport.`;
   $("foot").textContent=`Dados de ${fd(Date.parse(H.asof))}. Índice: mediana, entre as skins com histórico do CSFloat, do preço semanal dividido pelo da semana-base. Com gráfico (CSFloat): preço = mediana dos preços médios diários dos últimos 7 dias; cada variação compara com a mediana da semana em torno da data. Sem gráfico (Skinport): preço = mediana das vendas em 7 dias; "30d" e "90d" comparam com a mediana desses períodos, então são estimativas. Sem nenhum dos dois: preço de referência do CSFloat, omitido com menos de 3 vendas. Sem StatTrak e Souvenir. Câmbio padrão: ${H.fx?"implícito nos preços da Skinport":"fixo"}. Atualizado pelo repositório cs-skin-prices.`;
   all();hook($("s1"));hook($("s2"));
+  pk.then(()=>{all();if(S.sel)detail()});
   const ro=new ResizeObserver(()=>{if(S.sel){draw1();draw2()}});ro.observe($("f1"));ro.observe($("f2"));
   const rx=new ResizeObserver(()=>drawIx(index(scope(),S.ixw)));rx.observe($("fi"));
 })();
