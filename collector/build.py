@@ -79,6 +79,17 @@ def skinport_by_name():
     return out, sp["updated"]
 
 
+def write_image_pack() -> None:
+    """site/img/pack.json: every thumbnail as a data URL in one file, for hosts
+    where the page may load its own files but not images from other sites."""
+    img_dir = ROOT / "site" / "img"
+    files = sorted(img_dir.glob("*.webp"))
+    if not files:
+        return
+    pack = {f.name: "data:image/webp;base64," + base64.b64encode(f.read_bytes()).decode() for f in files}
+    (img_dir / "pack.json").write_text(json.dumps(pack, separators=(",", ":")), encoding="utf-8")
+
+
 def main() -> int:
     catalog = read_json(DATA / "catalog.json")
     if not catalog:
@@ -129,6 +140,7 @@ def main() -> int:
                         ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     packed = gzip.compress(struct.pack("<I", len(header)) + header + bytes(blob), 9, mtime=0)
     page = TEMPLATE.read_text(encoding="utf-8").replace("__B64__", base64.b64encode(packed).decode())
+    write_image_pack()
     OUT.write_text(page, encoding="utf-8")
     print(f"build: {len(items)} items, {with_hist} with CSFloat history, {with_sp} with Skinport stats, "
           f"{len(packed) // 1024} KB packed")
