@@ -29,6 +29,8 @@ jobs:
         run: python -m collector.skinport
       - name: Refresh skin images and rarity
         run: python -m collector.images
+      - name: Backtest buy rules on the history
+        run: python -m collector.backtest
       - name: Build page
         run: python -m collector.build
       - name: Commit data
