@@ -23,6 +23,7 @@ collector/skinport.py  data/skinport/latest.json    estatísticas de venda atuai
                        data/skinport/fx.json        câmbio USD→BRL implícito
 collector/csfloat.py   data/csfloat/history/*.json  histórico diário, um arquivo por skin
                        data/csfloat/state.json      o que já foi coletado e quando
+collector/backtest.py  data/analysis/backtest.json  regras de compra testadas no histórico
 collector/build.py     site/index.html              página com tudo embutido
 ```
 
@@ -45,3 +46,14 @@ python -m collector.build      # abre site/index.html no navegador
 `config.json` define as categorias (por `def_index` do CS2), quantos itens buscar por execução e por quantos dias manter pontos diários na página (antes disso, semanais).
 
 Para acompanhar outras armas, acrescente o `def_index` delas numa categoria. Por exemplo, a AWP é 9 e a M4A4 é 16.
+
+## Oportunidades
+
+A aba **Oportunidades** (`#oportunidades`) mostra quatro coisas:
+
+- **O que o histórico diz:** o resultado do backtest.
+- **Anúncios abaixo do preço:** anúncios da Skinport abaixo da mediana de venda dos últimos 7 dias, já com a taxa da revenda.
+- **Abaixo da média:** itens abaixo da mediana de 90 dias que continuam vendendo.
+- **Desgaste invertido:** desgastes melhores vendendo mais barato que piores.
+
+Dopplers e Case Hardened ficam de fora, porque o preço deles depende da fase ou do padrão. Isso é um levantamento de dados, não recomendação de compra.
