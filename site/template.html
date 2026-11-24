@@ -136,6 +136,21 @@ tbody tr:hover{background:var(--card2)}
 .tip b{font-size:15px}
 .note{padding:14px;border:1px dashed var(--rule);border-radius:12px;color:var(--mut);margin-bottom:12px}
 .foot{color:var(--mut);font-size:13px;padding-bottom:30px}
+.views{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin-bottom:20px}
+.vt{background:none;border:0;border-bottom:3px solid transparent;color:var(--mut);font:600 16px Inter,sans-serif;padding:10px 14px;min-height:46px;cursor:pointer}
+.vt[aria-pressed=true]{color:var(--ink);border-bottom-color:var(--acc)}
+.warn{background:color-mix(in srgb,var(--acc) 10%,var(--card));border:1px solid color-mix(in srgb,var(--acc) 40%,var(--rule));border-radius:12px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.warn b{font-weight:600}
+.oc{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:16px}
+.oc label{font-size:14px;color:var(--mut);display:flex;gap:8px;align-items:center}
+.op{margin-bottom:22px}
+.op .sh{margin-bottom:8px}
+.op .sub b{color:var(--ink);font-weight:600}
+td.g{color:var(--up);font-weight:600}
+td.r{color:var(--dn);font-weight:600}
+td a{color:var(--acc);font-weight:600;text-decoration:none;white-space:nowrap}
+.bt td,.bt th{text-align:right}.bt td:first-child,.bt th:first-child{text-align:left;white-space:normal}
+.find{font:600 clamp(18px,2.2vw,22px)/1.25 "Space Grotesk",Inter,sans-serif;margin:4px 0 10px;text-wrap:balance}
 @media(max-width:980px){.ov2{grid-template-columns:1fr 1fr}.ov2>.panel:first-child{grid-column:1/-1}}
 @media(max-width:760px){.tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}.tiles .tile{flex:0 0 72%;scroll-snap-align:start}.dcols{grid-template-columns:1fr}.dimg{aspect-ratio:16/9}.wl{flex-direction:row;overflow-x:auto}.wl button{flex:0 0 150px}.bar{position:static}}
 @media(max-width:600px){.top{grid-template-columns:1fr}.ov2{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:10px}.sk{font-size:15px}.pr{font-size:17px}.dh{grid-template-columns:1fr}.big{text-align:left}.hide-s{display:none}.mtiles{grid-template-columns:repeat(2,minmax(0,1fr))}.fig.big2{min-height:260px}}
@@ -151,6 +166,21 @@ tbody tr:hover{background:var(--card2)}
   </div>
 </header>
 <main class="wrap">
+  <nav class="views" role="group" aria-label="Seção"><button class="vt" data-v="market">Mercado</button><button class="vt" data-v="opp">Oportunidades</button></nav>
+  <div id="vopp" hidden>
+    <div class="warn"><b>Antes de comprar:</b> Dopplers e Case Hardened ficam de fora destas listas, porque o preço depende da fase ou do padrão e a média junta tudo. A revenda paga taxa (CSFloat 2%, Skinport 8%) e, pela Trade Protection da Steam, um item recebido fica 7 dias sem poder ser negociado, então o preço pode mudar até você conseguir vender. Os dados são atualizados uma vez por dia e os anúncios mais baratos somem rápido. Isto é um levantamento de dados, não recomendação de compra.</div>
+    <div class="oc">
+      <div class="seg" id="ocat" role="group" aria-label="Categoria"><button data-v="all">Todas</button><button data-v="rf">Rifles</button><button data-v="kn">Facas</button><button data-v="gl">Luvas</button></div>
+      <label>Revender em <span class="seg" id="ofee" role="group" aria-label="Onde revender"><button data-v="0.02">CSFloat (2%)</button><button data-v="0.08">Skinport (8%)</button></span></label>
+      <label for="omin">Vendas em 7 dias <select id="omin"><option value="5">5+</option><option value="10">10+</option><option value="20">20+</option><option value="50">50+</option></select></label>
+      <label for="ominp">Preço a partir de <select id="ominp"></select></label>
+    </div>
+    <section class="op panel"><div class="sh"><div><h2>O que o histórico diz</h2><p class="sub">Regras simples testadas no histórico do CSFloat: comprar na semana em que o preço está X% abaixo ou acima da mediana das 13 semanas anteriores e vender depois, já descontando 2% de taxa. Só semanas com 10+ vendas.</p></div><div class="seg" id="bth" role="group" aria-label="Tempo segurando"><button data-v="2">2 sem.</button><button data-v="4">4 sem.</button><button data-v="8">8 sem.</button><button data-v="12">12 sem.</button></div></div><p class="find" id="btf"></p><div class="scroll"><table class="bt" id="bt"></table></div></section>
+    <section class="op"><div class="sh"><div><h2>Anúncio abaixo do preço de venda</h2><p class="sub">Menor anúncio na Skinport contra a mediana das vendas da Skinport nos últimos 7 dias, já com a taxa da revenda. O anúncio mais barato costuma ter o pior float do desgaste, então parte da diferença é justa.</p></div></div><div class="scroll"><table id="o1"></table></div></section>
+    <section class="op"><div class="sh"><div><h2>Abaixo da média de 90 dias</h2><p class="sub">Mediana das vendas na Skinport nos últimos 7 dias contra a dos últimos 90, só itens que continuam vendendo. Desconto não garante volta: veja o teste acima.</p></div></div><div class="scroll"><table id="o2"></table></div></section>
+    <section class="op"><div class="sh"><div><h2>Desgaste melhor mais barato que um pior</h2><p class="sub">Mesma skin em que um desgaste melhor vendeu mais barato que um pior nos últimos 30 dias (Skinport, 10+ vendas em cada).</p></div></div><div class="scroll"><table id="o3"></table></div></section>
+  </div>
+  <div id="vmarket">
   <section class="sec"><div class="sh"><h2>Categoria</h2><p class="sub">Índice de preço dos últimos 6 meses e variação típica em 30 dias</p></div><div class="tiles" id="cats"></div></section>
   <section class="sec" id="msec"><div class="sh"><h2 id="mtitle">Modelos</h2><p class="sub" id="msub"></p></div><div class="mtiles" id="models"></div></section>
   <section class="sec ov2" id="overview">
@@ -170,6 +200,7 @@ tbody tr:hover{background:var(--card2)}
     <p class="sub" id="count" style="margin:-4px 0 10px"></p>
     <div id="grid"></div>
   </section>
+  </div>
 </main>
 <p class="wrap foot" id="foot"></p>
 <div class="ovl" id="ov" hidden>
@@ -202,9 +233,9 @@ const WC=["#3fb950","#86c94a","#e3b341","#ef8a3c","#e5534b"];
 const CATS=[["all","Todas"],["rf","Rifles"],["kn","Facas"],["gl","Luvas"]];
 const TIERS=[[0,1e9],[0,10],[10,50],[50,250],[250,1e9]];
 const PERS=[["1M",30],["3M",91],["6M",182],["1A",365],["2A",730],["Tudo",0]];
-const S={cat:"all",wpn:"",wear:"",q:"",sort:"vol",tier:0,onlyh:false,view:"cards",ixw:26,lim:48,cur:"BRL",per:"1A",fx:5.86492,sel:null,rng:null};
-let fxUser=false;try{const sv=JSON.parse(localStorage.getItem("cs-var5")||"{}");for(const k of["cur","per","cat","sort","view","ixw"])if(sv[k]!=null)S[k]=sv[k];if(sv.fxUser){S.fx=sv.fxUser;fxUser=true}}catch(e){}
-const save=()=>{try{localStorage.setItem("cs-var5",JSON.stringify({cur:S.cur,per:S.per,cat:S.cat,sort:S.sort,view:S.view,ixw:S.ixw,fxUser:fxUser?S.fx:null}))}catch(e){}};
+const S={cat:"all",wpn:"",wear:"",q:"",sort:"vol",tier:0,onlyh:false,view:"cards",ixw:26,lim:48,cur:"BRL",per:"1A",fx:5.86492,sel:null,rng:null,page:"market",ocat:"all",ofee:0.02,omin:10,ominp:2,bth:4};
+let fxUser=false;try{const sv=JSON.parse(localStorage.getItem("cs-var5")||"{}");for(const k of["cur","per","cat","sort","view","ixw","ofee","omin","ominp","bth"])if(sv[k]!=null)S[k]=sv[k];if(sv.fxUser){S.fx=sv.fxUser;fxUser=true}}catch(e){}
+const save=()=>{try{localStorage.setItem("cs-var5",JSON.stringify({cur:S.cur,per:S.per,cat:S.cat,sort:S.sort,view:S.view,ixw:S.ixw,ofee:S.ofee,omin:S.omin,ominp:S.ominp,bth:S.bth,fxUser:fxUser?S.fx:null}))}catch(e){}};
 let H,IT=[],SK=[],L=0;
 const kx=()=>S.cur==="BRL"?S.fx:1;
 const money=v=>(S.cur==="BRL"?"R$ ":"US$ ")+v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -221,10 +252,10 @@ const decode=async()=>{
   const hl=u[0]|u[1]<<8|u[2]<<16|u[3]<<24;H=JSON.parse(new TextDecoder().decode(u.subarray(4,4+hl)));
   let p=4+hl;const rv=()=>{let x=0,s=1,b;do{b=u[p++];x+=(b&127)*s;s*=128}while(b&128);return x},zz=x=>x%2?-(x+1)/2:x/2;
   if(!fxUser&&H.fx)S.fx=H.fx;
-  IT=H.items.map(([w,pi,wr,rp,rvol,sp])=>{const n=rv(),pts=[];let day=0,code=0;for(let i=0;i<n;i++){day=i?day+rv():rv();code=i?code+zz(rv()):rv();pts.push({t:day*DAY,p:Math.exp(code/200)/100,c:rv()})}const W=H.weapons[w];
-    return{w,cat:W[1],star:W[1]==="gl"||W[1]==="kn",wn:W[0],pn:H.paints[pi],wr,pts,rp:rp/100,rvol,sp:sp?{m7:sp[0]/100,m30:sp[1]/100,m90:sp[2]/100,v7:sp[3],v30:sp[4],v90:sp[5],min:sp[6]==null?null:sp[6]/100,qty:sp[7],m24:sp[8]==null?null:sp[8]/100,v24:sp[9]}:null}});
+  IT=H.items.map(([w,pi,wr,rp,rvol,sp],oi)=>{const n=rv(),pts=[];let day=0,code=0;for(let i=0;i<n;i++){day=i?day+rv():rv();code=i?code+zz(rv()):rv();pts.push({t:day*DAY,p:Math.exp(code/200)/100,c:rv()})}const W=H.weapons[w];
+    return{oi,w,cat:W[1],star:W[1]==="gl"||W[1]==="kn",wn:W[0],pn:H.paints[pi],wr,pts,rp:rp/100,rvol,sp:sp?{m7:sp[0]/100,m30:sp[1]/100,m90:sp[2]/100,v7:sp[3],v30:sp[4],v90:sp[5],min:sp[6]==null?null:sp[6]/100,qty:sp[7],m24:sp[8]==null?null:sp[8]/100,v24:sp[9],nv:sp[10]||1}:null}});
   IT=IT.filter(x=>x.pts.length||x.rp>0||x.sp);const ends=IT.filter(x=>x.pts.length).map(x=>x.pts[x.pts.length-1].t);L=ends.length?Math.max(...ends):Date.parse(H.asof);
-  const MS=H.skins||{};IT.forEach((it,i)=>{it.i=i;const m=MS[it.wn+"|"+it.pn];it.img=m&&m[0];it.rar=m&&m[1];it.rc=m&&m[2];stats(it)});
+  const MS=H.skins||{},LK=H.links||[];IT.forEach((it,i)=>{it.i=i;const lk=LK[it.oi];it.link=lk&&/^[\w\-\/.%]+$/.test(lk)?"https://skinport.com/"+lk:null;const m=MS[it.wn+"|"+it.pn];it.img=m&&m[0];it.rar=m&&m[1];it.rc=m&&m[2];stats(it)});
   const by=new Map();for(const it of IT){const k=it.wn+"|"+it.pn;if(!by.has(k))by.set(k,{key:k,wn:it.wn,pn:it.pn,cat:it.cat,star:it.star,items:[]});by.get(k).items.push(it)}
   SK=[...by.values()];for(const s of SK){s.items.sort((a,b)=>a.wr-b.wr);s.lead=s.items.slice().sort((a,b)=>(b.v30??-1)-(a.v30??-1)||(b.rvol-a.rvol))[0];s.v30=s.items.reduce((t,i)=>t+(i.v30||0),0);s.h=s.items.some(i=>i.h);
     const ps=s.items.map(i=>i.now).filter(x=>x!=null);s.lo=ps.length?Math.min(...ps):null;s.hi=ps.length?Math.max(...ps):null;s.name=s.pn==="Vanilla"?"Vanilla":s.pn;s.model=(s.star?"★ ":"")+s.wn;s.img=s.items[0].img;s.rar=s.items[0].rar;s.rc=s.items[0].rc}
@@ -331,7 +362,39 @@ const grid=()=>{
   if($("mr"))$("mr").onclick=()=>{S.lim+=48;grid()};
 };
 const more=n=>n>S.lim?`<div class="more"><button class="btn" id="mr">Mostrar mais (${(n-S.lim).toLocaleString("pt-BR")} restantes)</button></div>`:"";
-const all=()=>{cats();models();overview();grid();for(const b of $("cur").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.cur);$("fx").value=S.fx;save()};
+
+const OMINP=[0,2,5,20,100,500];
+const skinCell=i=>`<td class="n"><div class="sn">${pic(i,"th")}<div>${esc(i.model)} | ${esc(i.name)}<small>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")}${i.rar?" · "+esc(i.rar):""}</small></div></div></td>`;
+const spLink=i=>i.link?`<a href="${esc(i.link)}" target="_blank" rel="noopener">Skinport ↗</a>`:"";
+const PATTERN=/^(Case Hardened|Heat Treated)$/;
+const oppBase=()=>IT.filter(i=>(S.ocat==="all"||i.cat===S.ocat)&&i.sp&&i.sp.nv===1&&!PATTERN.test(i.pn));
+const bt=()=>{
+  for(const b of $("bth").querySelectorAll("button"))b.setAttribute("aria-pressed",+b.dataset.v===S.bth);
+  const B=H.backtest;if(!B||!B.rules){$("bt").innerHTML="";$("btf").textContent="O teste roda quando houver histórico suficiente.";return}
+  const ck={all:null,rf:"rf",kn:"kn",gl:"gl"}[S.ocat];
+  const get=(r,scope)=>{const h=r.holds.find(x=>x.weeks===S.bth);if(!h)return null;return ck?(scope==="all"?h.by_cat[ck]:null):h[scope]};
+  const cell=x=>x?`<td class="${x.median>=0?"g":"r"}">${pct(x.median)}</td><td>${Math.round(x.win*100)}%</td><td class="hide-s">${x.n.toLocaleString("pt-BR")}</td>`:`<td>—</td><td>—</td><td class="hide-s">—</td>`;
+  $("bt").innerHTML=`<thead><tr><th>Regra</th><th>Mediana ${ck?"":"(12 meses)"}</th><th>Ganharam</th><th class="hide-s">Operações</th>${ck?"":`<th class="hide-s">Mediana (tudo)</th><th class="hide-s">Ganharam</th><th class="hide-s">Operações</th>`}</tr></thead><tbody>`+
+    B.rules.map(r=>`<tr style="cursor:default"><td>${esc(r.label)}</td>${cell(get(r,ck?"all":"last12m"))}${ck?"":cell(get(r,"all")).replace(/<td/g,'<td class="hide-s"').replace(/class="hide-s" class="/g,'class="hide-s ')}</tr>`).join("")+`</tbody>`;
+  const sc=ck?"all":"last12m",best=B.rules.map(r=>[r,get(r,sc)]).filter(x=>x[1]).sort((a,b)=>b[1].median-a[1].median)[0],any=get(B.rules[0],sc);
+  $("btf").textContent=best?(best[1].median>0?`Melhor regra ${ck?"":"nos últimos 12 meses "}com ${S.bth} semanas: "${best[0].label.toLowerCase()}", mediana de ${pct(best[1].median)} por operação.`:`${ck?"Nesta categoria":"Nos últimos 12 meses"}, nenhuma regra teve mediana positiva segurando ${S.bth} semanas; a melhor ficou em ${pct(best[1].median)}${any?` e comprar em qualquer semana deu ${pct(any.median)}`:""}.`):"Ainda sem operações suficientes nesta categoria.";
+};
+const opp=()=>{
+  for(const[id,k]of[["ocat","ocat"],["ofee","ofee"]])for(const b of $(id).querySelectorAll("button"))b.setAttribute("aria-pressed",String(+b.dataset.v===S[k]||b.dataset.v===S[k]));
+  $("omin").value=S.omin;$("ominp").innerHTML=OMINP.map(v=>`<option value="${v}"${v===S.ominp?" selected":""}>${v?ax(v*kx()):"qualquer"}</option>`).join("");
+  bt();
+  const base=oppBase().filter(i=>i.sp.m7>=S.ominp);
+  const a=base.filter(i=>i.sp.min&&i.sp.v7>=S.omin).map(i=>({i,net:i.sp.m7*(1-S.ofee)-i.sp.min})).filter(x=>x.net>0).sort((x,y)=>y.net/y.i.sp.min-x.net/x.i.sp.min).slice(0,25);
+  $("o1").innerHTML=a.length?`<thead><tr><th class="hide-s">#</th><th>Skin</th><th>Menor anúncio</th><th>Mediana 7d</th><th>Lucro líquido</th><th class="hide-s">Vendas 7d</th><th class="hide-s">À venda</th><th></th></tr></thead><tbody>`+a.map((x,k)=>`<tr data-i="${x.i.i}"><td class="hide-s">${k+1}</td>${skinCell(x.i)}<td>${esc(short(x.i.sp.min*kx()))}</td><td>${esc(short(x.i.sp.m7*kx()))}</td><td class="g">${pct(x.net/x.i.sp.min)} · ${esc(short(x.net*kx()))}</td><td class="hide-s">${x.i.sp.v7}</td><td class="hide-s">${x.i.sp.qty}</td><td>${spLink(x.i)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nenhum anúncio abaixo do preço de venda com esses filtros.</td></tr></tbody>`;
+  const b=base.filter(i=>i.sp.m90&&i.sp.v7>=S.omin&&i.sp.v90>=30).map(i=>({i,d:i.sp.m7/i.sp.m90-1})).filter(x=>x.d<-0.05).sort((x,y)=>x.d-y.d).slice(0,25);
+  $("o2").innerHTML=b.length?`<thead><tr><th class="hide-s">#</th><th>Skin</th><th>Mediana 7d</th><th>Mediana 90d</th><th>Desconto</th><th class="hide-s">Vendas 7d / 90d</th><th class="hide-s">1 ano (CSFloat)</th><th></th></tr></thead><tbody>`+b.map((x,k)=>`<tr data-i="${x.i.i}"><td class="hide-s">${k+1}</td>${skinCell(x.i)}<td>${esc(short(x.i.sp.m7*kx()))}</td><td>${esc(short(x.i.sp.m90*kx()))}</td><td class="r">${pct(x.d)}</td><td class="hide-s">${x.i.sp.v7} / ${x.i.sp.v90}</td><td class="hide-s" style="color:${col(x.i.c365)}">${pct(x.i.c365)}</td><td>${spLink(x.i)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nada abaixo da média com esses filtros.</td></tr></tbody>`;
+  const by=new Map();for(const i of base)if(i.wr<5&&i.sp.m30&&i.sp.v30>=10){if(!by.has(i.key))by.set(i.key,[]);by.get(i.key).push(i)}
+  const c=[];for(const xs of by.values())for(const g of xs)for(const w of xs)if(g.wr<w.wr&&g.sp.m30<w.sp.m30*0.97)c.push({g,w,d:g.sp.m30/w.sp.m30-1});
+  c.sort((x,y)=>x.d-y.d);
+  $("o3").innerHTML=c.length?`<thead><tr><th>Skin</th><th>Desgaste melhor</th><th>Desgaste pior</th><th>Diferença</th><th></th></tr></thead><tbody>`+c.slice(0,20).map(x=>`<tr data-i="${x.g.i}">${skinCell(x.g)}<td>${WS[x.g.wr]} ${esc(short(x.g.sp.m30*kx()))} <span class="sub">(${x.g.sp.v30})</span></td><td>${WS[x.w.wr]} ${esc(short(x.w.sp.m30*kx()))} <span class="sub">(${x.w.sp.v30})</span></td><td class="g">${pct(x.d)}</td><td>${spLink(x.g)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nenhuma inversão com esses filtros.</td></tr></tbody>`;
+};
+const page=()=>{for(const b of document.querySelectorAll(".vt"))b.setAttribute("aria-pressed",b.dataset.v===S.page);$("vmarket").hidden=S.page!=="market";$("vopp").hidden=S.page!=="opp";if(S.page==="opp")opp()};
+const all=()=>{cats();models();overview();grid();if(S.page==="opp")opp();for(const b of $("cur").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.cur);$("fx").value=S.fx;save()};
 let view=[],X1,Y1,hov=-1,lastFocus=null;
 const V=d=>d.s*kx(),VR=d=>d.p*kx();
 const smooth=it=>{if(it.sm)return;const a=it.pts;let j=0;for(let i=0;i<a.length;i++){while(a[j].t<=a[i].t-7*DAY)j++;a[i].s=md(a.slice(j,i+1).map(d=>d.p))}it.sm=1};
@@ -414,7 +477,7 @@ const close=()=>{$("ov").hidden=true;document.body.style.overflow="";S.sel=null;
   $("title").textContent=cs.length?"Em 30 dias: "+cs.map(([l,m])=>`${l} ${pct(m)}`).join(", "):"Variação de preço das skins";
   $("lede").textContent=`Mediana da variação por categoria. ${SK.length.toLocaleString("pt-BR")} skins (${IT.length.toLocaleString("pt-BR")} itens contando desgastes) de AK-47, M4A1-S, facas e luvas: ${hs.toLocaleString("pt-BR")} itens com gráfico diário do CSFloat e ${ss.toLocaleString("pt-BR")} com estatísticas de venda da Skinport.`;
   $("foot").textContent=`Dados de ${fd(Date.parse(H.asof))}. Índice: mediana, entre as skins com histórico do CSFloat, do preço semanal dividido pelo da semana-base. Com gráfico (CSFloat): preço = mediana dos preços médios diários dos últimos 7 dias; cada variação compara com a mediana da semana em torno da data. Sem gráfico (Skinport): preço = mediana das vendas em 7 dias; "30d" e "90d" comparam com a mediana desses períodos, então são estimativas. Sem nenhum dos dois: preço de referência do CSFloat, omitido com menos de 3 vendas. Sem StatTrak e Souvenir. Câmbio padrão: ${H.fx?"implícito nos preços da Skinport":"fixo"}. Atualizado pelo repositório cs-skin-prices.`;
-  all();hook($("s1"));hook($("s2"));
+  S.page=location.hash==="#oportunidades"?"opp":"market";all();page();hook($("s1"));hook($("s2"));
   pk.then(()=>{all();if(S.sel)detail()});
   const ro=new ResizeObserver(()=>{if(S.sel){draw1();draw2()}});ro.observe($("f1"));ro.observe($("f2"));
   const rx=new ResizeObserver(()=>drawIx(index(scope(),S.ixw)));rx.observe($("fi"));
@@ -437,6 +500,14 @@ $("fx").addEventListener("change",e=>{const v=parseFloat(String(e.target.value).
 $("per").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.per=b.dataset.v;S.rng=null;save();detail()});
 $("wl").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.sel=IT[+b.dataset.i];S.rng=null;hov=-1;detail()});
 document.addEventListener("error",e=>{if(e.target.tagName==="IMG")e.target.remove()},true);
+document.querySelector(".views").addEventListener("click",e=>{const b=e.target.closest(".vt");if(!b)return;S.page=b.dataset.v;try{history.replaceState(null,"",S.page==="opp"?"#oportunidades":location.pathname+location.search)}catch(_){location.hash=S.page==="opp"?"oportunidades":""}page()});
+window.addEventListener("hashchange",()=>{S.page=location.hash==="#oportunidades"?"opp":"market";page()});
+$("ocat").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.ocat=b.dataset.v;opp()});
+$("ofee").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.ofee=+b.dataset.v;save();opp()});
+$("omin").addEventListener("change",e=>{S.omin=+e.target.value;save();opp()});
+$("ominp").addEventListener("change",e=>{S.ominp=+e.target.value;save();opp()});
+$("bth").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.bth=+b.dataset.v;save();bt()});
+$("vopp").addEventListener("click",e=>{if(e.target.closest("a"))return;const r=e.target.closest("tr[data-i]");if(r)open(IT[+r.dataset.i])});
 $("x").onclick=close;$("ov").addEventListener("click",e=>{if(e.target===$("ov"))close()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("ov").hidden)close()});
 }
