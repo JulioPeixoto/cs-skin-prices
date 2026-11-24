@@ -323,7 +323,7 @@ const close=()=>{$("ov").hidden=true;document.body.style.overflow="";S.sel=null;
 (async()=>{
   try{await decode()}catch(e){$("lede").textContent="Seu navegador não conseguiu abrir os dados desta página. Tente no Chrome, Edge, Firefox ou Safari atualizados.";return}
   const m30=k=>{const v=IT.filter(i=>i.cat===k&&i.c30!=null&&i.v30>0).map(i=>i.c30);return v.length>=10?md(v):null},cs=[["facas","kn"],["luvas","gl"],["rifles","rf"]].map(([l,k])=>[l,m30(k)]).filter(x=>x[1]!=null);
-  const hs=IT.filter(i=>i.h).length,ss=IT.filter(i=>i.src==="sp").length;
+  const hs=IT.filter(i=>i.h).length,ss=IT.filter(i=>i.sp).length;
   $("title").textContent=cs.length?"Em 30 dias: "+cs.map(([l,m])=>`${l} ${pct(m)}`).join(", "):"Variação de preço das skins";
   $("lede").textContent=`Mediana da variação por categoria. ${IT.length.toLocaleString("pt-BR")} skins de AK-47, M4A1-S, facas e luvas: ${hs.toLocaleString("pt-BR")} com gráfico diário do CSFloat e ${ss.toLocaleString("pt-BR")} com estatísticas de venda da Skinport. Clique numa skin para ver os detalhes.`;
   $("foot").textContent=`Dados de ${fd(Date.parse(H.asof))}. Com gráfico (CSFloat): preço = mediana dos preços médios diários dos últimos 7 dias; cada variação compara com a mediana da semana em torno da data. Sem gráfico (Skinport): preço = mediana das vendas em 7 dias; "30d" e "90d" comparam com a mediana das vendas desses períodos, então são uma estimativa. Sem nenhum dos dois: preço de referência do CSFloat, omitido com menos de 3 vendas. Sem StatTrak e Souvenir. Câmbio padrão: ${H.fx?"implícito nos preços da Skinport":"fixo"}. Atualizado automaticamente pelo repositório cs-skin-prices.`;
