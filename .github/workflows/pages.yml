@@ -1,0 +1,40 @@
+name: Deploy page
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**"]
+  workflow_run:
+    workflows: ["CSFloat history", "Skinport, catalog and images"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main   # workflow_run would otherwise check out the commit before the data push
+      - name: Drop build-only files
+        # pack.json is for hosts that can't serve images; Pages serves img/*.webp directly
+        run: rm -f site/template.html site/img/pack.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
