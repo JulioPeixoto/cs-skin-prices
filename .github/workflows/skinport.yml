@@ -1,4 +1,4 @@
-name: Skinport + catalog
+name: Skinport, catalog and images
 
 on:
   schedule:
@@ -27,13 +27,15 @@ jobs:
         run: python -m collector.catalog
       - name: Collect Skinport sales stats
         run: python -m collector.skinport
+      - name: Refresh skin images and rarity
+        run: python -m collector.images
       - name: Build page
         run: python -m collector.build
       - name: Commit data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data site/index.html
+          git add data site/index.html site/img
           if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
           git commit -m "data: skinport stats $(date -u +%F)"
           git pull --rebase --quiet
