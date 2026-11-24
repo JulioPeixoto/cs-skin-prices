@@ -8,7 +8,8 @@ The data is packed small enough for one self-contained page:
           links [Skinport item page path per item, "" when unknown]
           backtest  data/analysis/backtest.json as is
           skinport = [med7d, med30d, med90d, vol7d, vol30d, vol90d,
-                      min listing, listings, med24h, vol24h] in USD cents
+                      min listing, listings, med24h, vol24h, versions] in USD cents;
+                      versions > 1 means Doppler phases with different prices merged
   series: n, then per point day, log-price code (ln(cents) * 200) and sales,
           the first point absolute and the rest as deltas (code zigzag).
 Points are daily for the last `daily_days` days and weekly before that.
@@ -77,7 +78,7 @@ def skinport_by_name():
         out[name] = [wmed(rs, "med7d", "vol7d"), wmed(rs, "med30d", "vol30d"), wmed(rs, "med90d", "vol90d"),
                      sum(r[f["vol7d"]] for r in rs), sum(r[f["vol30d"]] for r in rs), sum(r[f["vol90d"]] for r in rs),
                      min(mins) if mins else None, sum(r[f["listings"]] or 0 for r in rs),
-                     wmed(rs, "med24h", "vol24h"), sum(r[f["vol24h"]] for r in rs)]
+                     wmed(rs, "med24h", "vol24h"), sum(r[f["vol24h"]] for r in rs), len(rs)]
     return out, sp["updated"]
 
 
