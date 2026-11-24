@@ -1,0 +1,15 @@
+{
+  "categories": {
+    "rf": {"label": "Rifles", "def_indexes": [7, 60]},
+    "kn": {"label": "Facas", "def_range": [500, 599]},
+    "gl": {"label": "Luvas", "def_indexes": [4725, 5027, 5030, 5031, 5032, 5033, 5034, 5035]}
+  },
+  "csfloat": {
+    "per_run": 180,
+    "delay_seconds": 1.0,
+    "refresh_after_hours": 20
+  },
+  "history": {
+    "daily_days": 180
+  }
+}
