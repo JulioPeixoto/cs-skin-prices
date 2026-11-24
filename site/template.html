@@ -4,209 +4,426 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Variação de skins CS2</title>
+<script>try{const t=localStorage.getItem("cs-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* VOICE work: a skin market terminal, dense but calm
-   IDEA a market overview like Pricempire on top of a catalog like csgoskins.gg: pick a category, then a model, then a skin
-   PICTURE the price index of the current selection, beside the biggest risers and fallers
-   COLOUR night slate ground, bronze accent, gold for ★ items, green up, red down; light theme mirrors it
-   TYPE Space Grotesk 700 figures + Inter text
-   LAYOUT laptop: category tiles, model tiles, index + movers, toolbar, skins; phone: tiles scroll sideways, everything stacks */
-:root{color-scheme:light dark;--bg:light-dark(#f4f1ee,#0f1115);--card:light-dark(#ffffff,#181b22);--card2:light-dark(#f8f5f2,#1f232c);--ink:light-dark(#16130f,#eef0f4);--mut:light-dark(#6f6862,#9aa1ae);--rule:light-dark(#e3ddd6,#2a2f3a);--acc:light-dark(#a8501c,#e8894a);--gold:light-dark(#9a7400,#e7b93e);--up:light-dark(#13803b,#4fcf80);--dn:light-dark(#c42a2a,#ff6b6b);--q:light-dark(#bdb5ae,#4a5160)}
+/* VOICE  a skin market terminal: dense, calm, numbers first
+   IDEA   market overview on top of a catalog: pick a category, then a model, then a skin
+   COLOUR night slate ground (light theme: cool neutral grey), bronze accent, gold for ★ items, green up, red down
+   TYPE   Space Grotesk for figures and headings, Inter for text; tabular figures everywhere a number lines up
+   LAYOUT sticky app bar (brand, sections, currency, theme) · hero with coverage stats · category + model tiles ·
+          index + movers · two-row filter bar · cards or table · native dialog for the skin detail (bottom sheet on phones) */
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f3f4f6,#0e1014);--card:light-dark(#ffffff,#161920);--card2:light-dark(#eef0f3,#1d212a);
+  --ink:light-dark(#121418,#eef0f4);--mut:light-dark(#596070,#9aa1ae);--rule:light-dark(#dfe2e8,#282d38);
+  --acc:light-dark(#a54e1b,#e8894a);--gold:light-dark(#8a6700,#e7b93e);
+  --up:light-dark(#12783a,#4fcf80);--dn:light-dark(#bf2626,#ff6b6b);--q:light-dark(#b9bec8,#4a5160);
+  --scrim:rgb(6 8 12/.62);--shadow:0 1px 2px rgb(0 0 0/.08),0 12px 32px rgb(0 0 0/.14);
+  --f-num:"Space Grotesk",Inter,system-ui,sans-serif;--f-txt:Inter,system-ui,sans-serif;
+  --r-sm:8px;--r-md:12px;--r-lg:16px;
+  --t-fast:150ms;--t-med:250ms;--ease-out:cubic-bezier(.2,.7,.2,1);--ease-in:cubic-bezier(.4,0,1,1);
+  --hh:64px;
+}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
-[hidden]{display:none!important}
+[hidden]:not([hidden="until-found" i]){display:none!important}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;overflow-x:clip}
+html{scroll-padding-top:calc(var(--hh) + 16px)}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--f-txt);overflow-x:clip;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.od-icon{width:var(--od-icon-size,1em);height:var(--od-icon-size,1em);flex:none;display:inline-block;vertical-align:-.125em}
+.od-truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nw{white-space:nowrap}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .wrap{max-width:1320px;margin:0 auto;padding:0 max(3vw,16px)}
-h1,h2,h3,.big,.pr,.kv b,.tile b,.mv b{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.02em}
-h1{font-size:clamp(26px,3.4vw,40px);line-height:1.05;margin:0 0 6px;text-wrap:balance}
-h2{font-size:21px;margin:0}
-.sub{color:var(--mut);margin:0;font-size:14px}
-.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px;align-items:end;padding-top:clamp(18px,3vw,32px);padding-bottom:18px}
-.money{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.seg{display:inline-flex;border:1px solid var(--rule);border-radius:9px;overflow:hidden;background:var(--card)}
-.seg button{font:500 14px Inter,sans-serif;background:none;color:var(--mut);border:0;min-height:40px;padding:0 12px;cursor:pointer;white-space:nowrap}
+h1,h2,h3{font-family:var(--f-num);margin:0}
+h2{font-size:20px;line-height:1.2;font-weight:600;letter-spacing:-.01em}
+h3{font-size:16px;line-height:1.3;font-weight:600;font-family:var(--f-txt)}
+.sub{color:var(--mut);margin:0;font-size:14px;line-height:1.5}
+button{font:inherit;color:inherit}
+input,select{font:16px var(--f-txt);color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:var(--r-sm);padding:8px 12px;min-height:44px}
+select{padding-right:32px}
+a{color:var(--acc)}
+
+/* app bar */
+.app{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+.hbar{display:flex;align-items:center;gap:0 24px;min-height:64px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.mk{width:36px;height:36px;border-radius:10px;background:var(--ink);color:var(--bg);display:grid;place-items:center;flex:none}
+.mk svg{width:20px;height:20px}
+.bn{display:flex;flex-direction:column;line-height:1.15}
+.bn b{font:700 17px var(--f-num);letter-spacing:-.01em}
+.bn span{font-size:12px;color:var(--mut);letter-spacing:.02em}
+.views{display:flex;gap:4px;align-self:stretch}
+.vt{background:none;border:0;border-bottom:2px solid transparent;color:var(--mut);font:600 15px var(--f-txt);letter-spacing:.01em;padding:0 12px;min-height:48px;cursor:pointer;transition:color var(--t-fast)}
+.vt[aria-pressed=true]{color:var(--ink);border-bottom-color:var(--acc)}
+.money{margin-left:auto;display:flex;gap:8px;align-items:center}
+.fx{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut);white-space:nowrap}
+#fx{width:6.5em;font-variant-numeric:tabular-nums}
+.ib{width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-sm);border:1px solid var(--rule);background:var(--card);color:var(--ink);cursor:pointer;--od-icon-size:20px;transition:border-color var(--t-fast)}
+
+/* segmented controls and pills */
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;background:var(--card);flex:none}
+.seg button{font:500 14px var(--f-txt);background:none;color:var(--mut);border:0;min-height:42px;padding:0 12px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;transition:background var(--t-fast),color var(--t-fast)}
 .seg button+button{border-left:1px solid var(--rule)}
 .seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
-button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,tr:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-input,select{font:16px Inter,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;min-height:42px}
-label.fx{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut);white-space:nowrap}
-#fx{width:7.5em}
-.sec{margin:0 0 22px}
-.sh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.pill{font:600 13px var(--f-txt);letter-spacing:.02em;border:1px solid var(--rule);background:var(--card2);color:var(--ink);border-radius:var(--r-sm);min-height:42px;min-width:44px;cursor:pointer;padding:0 8px;transition:background var(--t-fast),border-color var(--t-fast)}
+.pill[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn{font:500 14px var(--f-txt);min-height:44px;padding:0 16px;border-radius:var(--r-sm);border:1px solid var(--rule);background:var(--card);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;transition:border-color var(--t-fast)}
+.btn.q{background:none;border-color:transparent;color:var(--acc);padding:0 8px}
+.fld{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut);white-space:nowrap}
+.tog{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer;min-height:44px;white-space:nowrap}
+.tog input{width:18px;height:18px;min-height:0;margin:0;accent-color:var(--acc)}
+
+/* hero: title + date on one line, coverage as one quiet line */
+.hero{padding:24px 0 16px}
+.hl{display:flex;align-items:baseline;gap:4px 16px;flex-wrap:wrap}
+.eyebrow{font:600 12px var(--f-txt);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin:0;white-space:nowrap}
+h1{font-size:clamp(24px,2.6vw,32px);line-height:1.15;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lede{color:var(--mut);max-width:70ch;margin:8px 0 0;font-size:14px}
+.cov{display:flex;flex-wrap:wrap;gap:4px 16px;margin:8px 0 0;font-size:14px;color:var(--mut)}
+.cov b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.cov>span{white-space:nowrap}
+
+/* sections */
+.sec{margin:0 0 24px}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap;margin-bottom:12px}
+.panel{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:16px}
+
+/* category + model tiles */
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.mtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.tile{text-align:left;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:14px 14px 10px;cursor:pointer;display:flex;flex-direction:column;gap:2px;position:relative;overflow:hidden;transition:border-color .15s,transform .15s}
-.tile:hover{border-color:var(--acc)}
+.mtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:8px}
+.tile{text-align:left;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:12px 16px 8px;cursor:pointer;display:flex;flex-direction:column;gap:4px;position:relative;transition:border-color var(--t-fast),box-shadow var(--t-fast)}
+.mtiles .tile{padding:12px 12px 8px}
 .tile[aria-pressed=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
-.tile b{font-size:22px;line-height:1.1}
-.mtiles .tile b{font-size:17px}
-.tile .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;color:var(--mut)}
-.tile .ch{font:700 15px "Space Grotesk",Inter,sans-serif;white-space:nowrap}
-.tile svg{width:100%;height:46px;display:block;margin-top:6px}
-.mtiles .tile svg{height:34px}
-.ov2{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
-.panel{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:14px}
-.panel h3{font-size:15px;margin:0 0 2px;font-family:Inter,sans-serif;letter-spacing:0;font-weight:600}
-.fig{position:relative;min-height:240px}
+.tile .hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tile .nm{font:600 16px/1.2 var(--f-num);letter-spacing:-.01em}
+.mtiles .tile .nm{font-size:15px}
+.tile .ch{font:600 18px/1.1 var(--f-num);letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.mtiles .tile .ch{font-size:15px}
+.tile .meta{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut)}
+.tile .mc{width:100%;height:36px;display:block;margin:4px 0}
+.mtiles .tile .mc{height:32px}
+
+/* highlights rail: biggest 30-day movers with large images */
+.hlr{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 36px)/4);gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:thin}
+.hc{scroll-snap-align:start;display:flex;flex-direction:column;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:0;color:var(--ink);cursor:pointer;overflow:hidden;transition:border-color var(--t-fast),transform var(--t-fast) var(--ease-out),box-shadow var(--t-fast)}
+.hc .im{border-radius:0}
+.hcb{display:flex;flex-direction:column;gap:2px;padding:12px}
+.hcm{display:block;font-size:12.5px;color:var(--mut)}
+.hcn{display:block;font:600 16px/1.25 var(--f-num);letter-spacing:-.01em}
+.hcr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:4px}
+.hcp{font:700 18px/1.2 var(--f-num);white-space:nowrap;font-variant-numeric:tabular-nums}
+.hcc{font:600 15px/1.2 var(--f-num);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* index panel */
+#fi{min-height:216px}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:8px 12px;flex-wrap:wrap;margin-bottom:8px}
+.fig{position:relative;min-height:248px}
 .fig.big2{min-height:320px}
-.fig.sm{min-height:110px}
+.fig.sm{min-height:112px}
 .fig>svg{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y}
 #s1,#s2{cursor:crosshair}
-svg text{font:12.5px Inter,sans-serif;fill:var(--mut);paint-order:stroke;stroke:var(--card);stroke-width:4px}
-.mv{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:8px 6px;border-radius:8px;cursor:pointer;border:0;background:none;font:inherit;color:var(--ink);text-align:left;width:100%}
-.mv:hover{background:var(--card2)}
-.mv span{font-size:12.5px;color:var(--mut)}
-.mv .th{grid-row:span 2;width:48px;height:36px}
-.mv b{font-size:15px;white-space:nowrap;text-align:right}
-.mv i{font-style:normal;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:10px;position:sticky;top:8px;z-index:4;margin-bottom:14px}
-#q{flex:1 1 14em}
+svg text{font:12.5px var(--f-txt);fill:var(--mut);paint-order:stroke;stroke:var(--card);stroke-width:4px;font-variant-numeric:tabular-nums}
+.emp{color:var(--mut);font-size:14px;margin:12px 8px}
+
+/* filter bar */
+.bar{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:8px;position:sticky;top:calc(var(--hh) + 8px);z-index:4;margin-bottom:12px;box-shadow:0 8px 16px -12px rgb(0 0 0/.35)}
+.brow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.srch{position:relative;flex:1 1 16em;display:block}
+.srch .od-icon{position:absolute;left:12px;top:50%;margin-top:-9px;--od-icon-size:18px;color:var(--mut);pointer-events:none}
+#q{width:100%;padding-left:40px}
+.frow{display:flex;gap:8px 20px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:8px;padding-top:8px}
 .wp{display:inline-flex;gap:4px}
-.pill{font:500 13px Inter,sans-serif;border:1px solid var(--rule);background:var(--card2);color:var(--ink);border-radius:7px;min-height:40px;min-width:40px;cursor:pointer;padding:0 8px}
-.pill[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.tog{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer;min-height:40px;white-space:nowrap}
-.tog input{width:18px;height:18px;min-height:0;accent-color:var(--acc)}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.card{position:relative;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px;color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:7px;overflow:hidden;transition:transform .15s,border-color .15s}
-.card:hover{border-color:var(--acc);transform:translateY(-2px)}
-.card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--rc,var(--q))}
-.rar{color:var(--rc,var(--mut));font-weight:600;white-space:nowrap}
-.ct span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.im{aspect-ratio:4/3;margin:0 -4px;border-radius:10px;background:radial-gradient(60% 55% at 50% 58%,color-mix(in srgb,var(--rc,var(--q)) 30%,transparent),transparent 72%),var(--card2);display:grid;place-items:center;overflow:hidden}
-.im img{width:88%;height:88%;object-fit:contain;filter:drop-shadow(0 6px 10px rgb(0 0 0/.35));transition:transform .2s}
-.card:hover .im img{transform:scale(1.06) rotate(-2deg)}
-.th{width:56px;height:42px;flex:none;border-radius:8px;background:radial-gradient(60% 60% at 50% 55%,color-mix(in srgb,var(--rc,var(--q)) 30%,transparent),transparent 75%),var(--card2);display:grid;place-items:center;overflow:hidden}
-.th img{width:92%;height:92%;object-fit:contain}
-.sn{display:flex;gap:10px;align-items:center}
-.dimg{aspect-ratio:4/3;border-radius:12px;margin-bottom:10px;background:radial-gradient(60% 55% at 50% 58%,color-mix(in srgb,var(--rc,var(--q)) 34%,transparent),transparent 72%),var(--card2);display:grid;place-items:center;overflow:hidden;border-bottom:3px solid var(--rc,var(--q))}
-.dimg img{width:86%;height:86%;object-fit:contain;filter:drop-shadow(0 10px 16px rgb(0 0 0/.4))}
-.ct{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut)}
-.ct .st{color:var(--gold)}
-.sk{font:600 17px/1.2 "Space Grotesk",Inter,sans-serif;letter-spacing:-.01em}
-.pr{font-size:19px;font-weight:700;white-space:nowrap}
-.wears{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
-.wcell{border-radius:6px;background:var(--card2);padding:3px 0 4px;text-align:center;font-size:11.5px;line-height:1.25;color:var(--mut);border-top:3px solid var(--q)}
-.wcell b{display:block;color:var(--ink);font-weight:600;font-size:12px;white-space:nowrap}
-.wcell.off{opacity:.35}
-.cs{display:flex;gap:6px;flex-wrap:wrap;font-size:13px}
-.c{font-weight:600;padding:1px 6px;border-radius:5px;white-space:nowrap;background:var(--card2);color:var(--mut)}
+#sorts{display:none}
+#ftog{display:none}
+.badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--acc);color:var(--card);font:600 12px var(--f-txt)}
+.count{margin:0 0 12px;font-size:14px;color:var(--mut)}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
+.card{position:relative;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:12px;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;gap:8px;transition:transform var(--t-fast) var(--ease-out),border-color var(--t-fast),box-shadow var(--t-fast)}
+.card .im{margin:-12px -12px 0;border-radius:var(--r-md) var(--r-md) 0 0}
+.card .im img{width:92%}
+.ct{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+.ct .st{color:var(--gold);font-weight:600}
+.rar{display:inline-flex;align-items:center;gap:6px;color:var(--mut);white-space:nowrap}
+.rar i{width:8px;height:8px;border-radius:50%;background:var(--rc,var(--q));flex:none}
+.im{display:grid;place-items:center;aspect-ratio:4/3;border-radius:var(--r-sm);background:radial-gradient(60% 55% at 50% 58%,color-mix(in srgb,var(--rc,var(--q)) 28%,transparent),transparent 72%),var(--card2);overflow:hidden;box-shadow:inset 0 -2px 0 var(--rc,var(--q))}
+.im img{width:88%;height:auto;aspect-ratio:4/3;object-fit:contain;filter:drop-shadow(0 6px 10px rgb(0 0 0/.35));transition:transform var(--t-med) var(--ease-out)}
+.th{display:grid;place-items:center;width:56px;height:42px;flex:none;border-radius:var(--r-sm);background:radial-gradient(60% 60% at 50% 55%,color-mix(in srgb,var(--rc,var(--q)) 30%,transparent),transparent 75%),var(--card2);overflow:hidden}
+.th img{width:92%;height:auto;aspect-ratio:4/3;object-fit:contain}
+.sk{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font:600 17px/1.25 var(--f-num);letter-spacing:-.01em}
+.pr{display:block;font:700 20px/1.2 var(--f-num);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.pr .nw{white-space:nowrap}
+.wears{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.wcell{display:block;border-radius:6px;background:var(--card2);padding:4px 0;text-align:center;font-size:11.5px;letter-spacing:.02em;line-height:1.3;color:var(--mut);box-shadow:inset 0 2px 0 var(--wc,var(--q))}
+.wcell b{display:block;color:var(--ink);font-weight:600;font-size:12px;letter-spacing:0;white-space:nowrap;font-variant-numeric:tabular-nums}
+.wcell.off{opacity:.4}
+.cs{display:flex;gap:4px;flex-wrap:wrap;font-size:13px}
+.c{font-weight:600;padding:2px 6px;border-radius:6px;white-space:nowrap;background:var(--card2);color:var(--mut);font-variant-numeric:tabular-nums}
 .c.u{color:var(--up);background:color-mix(in srgb,var(--up) 14%,transparent)}
 .c.d{color:var(--dn);background:color-mix(in srgb,var(--dn) 14%,transparent)}
-.sp{width:100%;height:30px;display:block}
-.ft{font-size:12.5px;color:var(--mut);display:flex;justify-content:space-between}
-.scroll{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:14px;background:var(--card);border-radius:12px;overflow:hidden}
-th,td{padding:9px 8px;border-bottom:1px solid var(--rule);white-space:nowrap;text-align:right}
-th{color:var(--mut);font-weight:500;font-size:13px}
+.sp{width:100%;height:28px;display:block}
+.ft{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--mut);border-top:1px solid var(--rule);padding-top:8px;margin-top:auto}
+
+/* tables */
+.tbl{overflow:auto;background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md)}
+.tbl.cap{max-height:min(76vh,960px)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}
+th,td{padding:8px 12px;border-bottom:1px solid var(--rule);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+thead th{position:sticky;top:0;z-index:1;background:var(--card);color:var(--mut);font-weight:500;font-size:13px;letter-spacing:.01em}
+tbody tr:last-child td{border-bottom:0}
 th:nth-child(2),td:nth-child(2){text-align:left}
-td{font-variant-numeric:tabular-nums}
-td.n{white-space:normal;min-width:13em}
+td.n{white-space:normal;min-width:14em}
 td.n small{display:block;color:var(--mut);font-size:12.5px}
-tbody tr{cursor:pointer}
-tbody tr:hover{background:var(--card2)}
-.tsp{width:110px;height:28px;display:block;margin-left:auto}
-.more{display:flex;justify-content:center;margin:18px 0}
-.btn{font:500 14px Inter,sans-serif;min-height:42px;padding:0 16px;border-radius:9px;border:1px solid var(--rule);background:var(--card);color:var(--ink);cursor:pointer}
-.empty{padding:40px;text-align:center;color:var(--mut);background:var(--card);border-radius:12px;border:1px dashed var(--rule)}
-.ovl{position:fixed;inset:0;background:rgb(0 0 0/.55);z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow-y:auto}
-.dlg{background:var(--card);border:1px solid var(--rule);border-radius:16px;width:min(1120px,100%);padding:clamp(16px,2.4vw,26px);position:relative}
-.x{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:10px;border:1px solid var(--rule);background:var(--card2);color:var(--ink);font-size:20px;cursor:pointer}
-.dh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;align-items:end;padding-right:50px;margin-bottom:14px}
-.dh h2{font-size:clamp(22px,3vw,32px);line-height:1.1}
-.big{font-size:clamp(28px,4vw,40px);font-weight:700;line-height:1;white-space:nowrap;text-align:right}
-.dcols{display:grid;grid-template-columns:240px minmax(0,1fr);gap:18px}
-.wl{display:flex;flex-direction:column;gap:6px}
-.wl button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 10px;align-items:center;text-align:left;font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--rule);border-radius:10px;padding:8px 10px;cursor:pointer;min-height:48px}
-.wl button[aria-current=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
-.wl .tag{grid-row:span 2;width:32px;height:32px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:700;color:#111}
-.wl small{color:var(--mut);font-size:12px}
-.wl b{text-align:right;white-space:nowrap}
-.dctr{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(8em,1fr));border:1px solid var(--rule);border-radius:12px;overflow:hidden}
-.kv{padding:10px 14px;border-right:1px solid var(--rule);margin-right:-1px}
-.kv span{display:block;font-size:13px;color:var(--mut)}
-.kv b{display:block;font-size:20px;white-space:nowrap}
-.kv small{font-size:12.5px;color:var(--mut);white-space:nowrap}
-.read{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:12px 0 4px;font-size:14px;min-height:42px}
-.read .btn{margin-left:auto;min-height:36px}
-.tip{position:absolute;pointer-events:none;background:var(--card2);border:1px solid var(--rule);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.45;display:none;z-index:2;white-space:nowrap;box-shadow:0 4px 14px rgb(0 0 0/.2)}
-.tip b{font-size:15px}
-.note{padding:14px;border:1px dashed var(--rule);border-radius:12px;color:var(--mut);margin-bottom:12px}
-.foot{color:var(--mut);font-size:13px;padding-bottom:30px}
-.views{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin-bottom:20px}
-.vt{background:none;border:0;border-bottom:3px solid transparent;color:var(--mut);font:600 16px Inter,sans-serif;padding:10px 14px;min-height:46px;cursor:pointer}
-.vt[aria-pressed=true]{color:var(--ink);border-bottom-color:var(--acc)}
-.warn{background:color-mix(in srgb,var(--acc) 10%,var(--card));border:1px solid color-mix(in srgb,var(--acc) 40%,var(--rule));border-radius:12px;padding:12px 14px;font-size:14px;margin-bottom:16px}
-.warn b{font-weight:600}
-.oc{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:16px}
-.oc label{font-size:14px;color:var(--mut);display:flex;gap:8px;align-items:center}
-.op{margin-bottom:22px}
-.op .sh{margin-bottom:8px}
-.op .sub b{color:var(--ink);font-weight:600}
+.sn{display:flex;gap:12px;align-items:center}
+tbody tr[data-i]{cursor:pointer;transition:background var(--t-fast)}
+tr:focus-visible{outline-offset:-2px}
+.tsp{width:112px;height:28px;display:block;margin-left:auto}
 td.g{color:var(--up);font-weight:600}
 td.r{color:var(--dn);font-weight:600}
-td a{color:var(--acc);font-weight:600;text-decoration:none;white-space:nowrap}
+td a{color:var(--acc);font-weight:600;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;min-height:44px}
+td.empty{text-align:center;color:var(--mut);padding:32px 16px;white-space:normal}
 .bt td,.bt th{text-align:right}.bt td:first-child,.bt th:first-child{text-align:left;white-space:normal}
-.find{font:600 clamp(18px,2.2vw,22px)/1.25 "Space Grotesk",Inter,sans-serif;margin:4px 0 10px;text-wrap:balance}
-@media(max-width:980px){.ov2{grid-template-columns:1fr 1fr}.ov2>.panel:first-child{grid-column:1/-1}}
-@media(max-width:760px){.tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}.tiles .tile{flex:0 0 72%;scroll-snap-align:start}.dcols{grid-template-columns:1fr}.dimg{aspect-ratio:16/9}.wl{flex-direction:row;overflow-x:auto}.wl button{flex:0 0 150px}.bar{position:static}}
-@media(max-width:600px){.top{grid-template-columns:1fr}.ov2{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:10px}.sk{font-size:15px}.pr{font-size:17px}.dh{grid-template-columns:1fr}.big{text-align:left}.hide-s{display:none}.mtiles{grid-template-columns:repeat(2,minmax(0,1fr))}.fig.big2{min-height:260px}}
-@media(prefers-reduced-motion:reduce){.card,.tile,.im img{transition:none}.card:hover,.card:hover .im img{transform:none}}
+.more{display:flex;justify-content:center;margin:20px 0}
+.empty{padding:40px 24px;text-align:center;color:var(--mut);background:var(--card);border-radius:var(--r-md);border:1px dashed var(--rule);display:flex;flex-direction:column;align-items:center;gap:8px}
+.empty p{margin:0}
+.empty b{color:var(--ink);font-weight:600}
+
+/* skeletons */
+.skel{display:block;border-radius:var(--r-sm);background:linear-gradient(90deg,var(--card2) 30%,color-mix(in srgb,var(--card2) 50%,var(--card)) 50%,var(--card2) 70%) 0 0/200% 100%;animation:shim 1.4s linear infinite}
+@keyframes shim{to{background-position:-200% 0}}
+.sk-tile{min-height:112px;cursor:default}
+.sk-hc{min-height:264px;cursor:default;padding:0}
+.sk-card{min-height:360px;cursor:default}
+
+/* skin detail dialog */
+dialog.dlg{padding:0;border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--card);color:var(--ink);width:min(1120px,calc(100% - 24px));max-width:none;max-height:calc(100dvh - 48px);margin:24px auto auto;overflow:auto;overscroll-behavior:contain;box-shadow:var(--shadow)}
+dialog.dlg::backdrop{background:var(--scrim)}
+dialog.dlg[open]{animation:dlgIn var(--t-med) var(--ease-out)}
+@keyframes dlgIn{from{opacity:0;transform:translateY(16px)}}
+.dtop{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 8px 8px clamp(16px,2.4vw,24px);background:var(--card);border-bottom:1px solid var(--rule)}
+.dtop .sub{font-weight:500}
+.dlgin{padding:clamp(16px,2.4vw,24px)}
+.dh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;align-items:end;margin-bottom:16px}
+.dh h2{font-size:clamp(24px,3vw,34px);line-height:1.1;letter-spacing:-.02em}
+.big{font:700 clamp(28px,4vw,40px)/1 var(--f-num);letter-spacing:-.02em;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+.nows{text-align:right;margin-top:4px}
+.dcols{display:grid;grid-template-columns:248px minmax(0,1fr);gap:24px}
+.dimg{aspect-ratio:4/3;border-radius:var(--r-md);margin-bottom:12px;background:radial-gradient(60% 55% at 50% 58%,color-mix(in srgb,var(--rc,var(--q)) 34%,transparent),transparent 72%),var(--card2);display:grid;place-items:center;overflow:hidden;box-shadow:inset 0 -3px 0 var(--rc,var(--q))}
+.dimg img{width:86%;height:auto;aspect-ratio:4/3;object-fit:contain;filter:drop-shadow(0 10px 16px rgb(0 0 0/.4))}
+.wl{display:flex;flex-direction:column;gap:8px}
+.wl button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0 12px;align-items:center;text-align:left;color:var(--ink);background:var(--card2);border:1px solid var(--rule);border-radius:var(--r-sm);padding:8px 12px;cursor:pointer;min-height:52px;transition:border-color var(--t-fast)}
+.wl button[aria-current=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.wl .tag{grid-row:span 2;width:32px;height:32px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:700;letter-spacing:.02em;color:#111}
+.wl small{color:var(--mut);font-size:12px}
+.wl b{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dctr{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(9em,1fr));border:1px solid var(--rule);border-radius:var(--r-md);overflow:hidden}
+.kv{padding:12px 16px;border-right:1px solid var(--rule);margin-right:-1px}
+.kv span{display:block;font-size:13px;color:var(--mut)}
+.kv b{display:block;font:600 20px/1.3 var(--f-num);white-space:nowrap;font-variant-numeric:tabular-nums}
+.kv small{display:block;font-size:12.5px;color:var(--mut)}
+.read{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;margin:12px 0 4px;font-size:14px;min-height:44px;font-variant-numeric:tabular-nums}
+.read .btn{margin-left:auto;min-height:36px}
+.tip{position:absolute;pointer-events:none;background:var(--card2);border:1px solid var(--rule);border-radius:10px;padding:8px 12px;font-size:13px;line-height:1.45;display:none;z-index:2;white-space:nowrap;box-shadow:0 4px 16px rgb(0 0 0/.2);font-variant-numeric:tabular-nums}
+.tip b{font-size:15px}
+.note{padding:16px;border:1px dashed var(--rule);border-radius:var(--r-md);color:var(--mut);margin-bottom:12px}
+.leg{margin-top:8px}
+
+/* opportunities */
+.warn{background:color-mix(in srgb,var(--acc) 8%,var(--card));border:1px solid color-mix(in srgb,var(--acc) 36%,var(--rule));border-radius:var(--r-md);font-size:14px;margin-bottom:16px}
+.warn summary{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;list-style:none;min-height:48px}
+.warn summary::-webkit-details-marker{display:none}
+.warn summary>.od-icon{--od-icon-size:20px;color:var(--acc)}
+.warn summary b{font-weight:600}
+.warn .more-l{margin-left:auto;color:var(--acc);font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.warn .more-l .od-icon{transition:transform var(--t-fast)}
+.warn[open] .more-l .od-icon{transform:rotate(180deg)}
+.warn p{margin:0;padding:0 16px 16px 48px;max-width:80ch;color:var(--ink)}
+.oc{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-bottom:24px}
+.op{margin-bottom:32px}
+.op .sh{margin-bottom:12px}
+.op .sh .sub{max-width:75ch;margin-top:4px}
+.find{font:600 clamp(18px,2.2vw,22px)/1.3 var(--f-num);letter-spacing:-.01em;margin:12px 0;text-wrap:balance}
+
+/* footer */
+.foot{color:var(--mut);font-size:14px;padding:24px 0 48px;border-top:1px solid var(--rule);margin-top:16px}
+.foot summary{cursor:pointer;color:var(--ink);font-weight:500;min-height:44px;display:flex;align-items:center}
+.foot p{margin:8px 0 0;max-width:80ch}
+
+@media(hover:hover){
+  .vt:hover{color:var(--ink)}
+  .ib:hover,.btn:hover{border-color:var(--acc)}
+  .btn.q:hover{border-color:transparent;text-decoration:underline}
+  .seg button:hover:not([aria-pressed=true]){background:var(--card2);color:var(--ink)}
+  .pill:hover:not([aria-pressed=true]){border-color:var(--acc)}
+  .tile:hover{border-color:var(--acc)}
+  .hc:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .hc:hover .im img{transform:scale(1.06) rotate(-2deg)}
+  .card:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .card:hover .im img{transform:scale(1.06) rotate(-2deg)}
+  tbody tr[data-i]:hover{background:var(--card2)}
+  .wl button:hover{border-color:var(--acc)}
+}
+@media(max-width:1080px){.hlr{grid-auto-columns:calc((100% - 24px)/3)}}
+@media(max-width:900px){.bn span,.fxl{display:none}#fx{width:5em}.hbar{gap:0 16px}}
+@media(max-width:760px){
+  .bn{display:none}
+  .tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+  .tiles .tile{flex:0 0 calc(50% - 6px);scroll-snap-align:start}
+  .hlr{grid-auto-columns:42%}
+  .bar{position:static;box-shadow:none}
+  #sort{display:none}#sorts{display:block;flex:1 1 10em}
+  #ftog{display:inline-flex}
+  .frow:not(.open){display:none}
+  .dcols{grid-template-columns:1fr}
+  .wl{flex-direction:row;overflow-x:auto}.wl button{flex:0 0 156px}
+}
+@media(max-width:600px){
+  .hbar{gap:0 12px;padding-top:8px}
+  .views{order:3;flex-basis:100%;align-self:auto}
+  .vt{flex:1}
+  .hero{padding:16px 0 12px}
+  .tiles .tile{flex-basis:44%}
+  .card .im{margin:-8px -8px 0}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .card{padding:8px}.sk{font-size:15px}.pr{font-size:17px}
+  .wcell{font-size:10.5px}.wcell b{font-size:11px}
+  .ft{flex-direction:column;gap:0}
+  .hide-s{display:none}
+  .mtiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fig.big2{min-height:260px}
+  dialog.dlg{width:100%;max-height:92dvh;margin:auto 0 0;border-radius:var(--r-lg) var(--r-lg) 0 0;border-bottom:0}
+  dialog.dlg[open]{animation-name:sheetIn}
+  .dh{grid-template-columns:1fr}.big,.nows{text-align:left}
+  .warn p{padding-left:16px}
+}
+@media(max-width:480px){.card .wears{display:none}.hlr{grid-auto-columns:62%}.tiles .tile{flex-basis:62%}}
+@keyframes sheetIn{from{transform:translateY(40px);opacity:0}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .card:hover,.card:hover .im img{transform:none}
+}
 </style>
 </head>
 <body>
-<header class="wrap top">
-  <div><h1 id="title">Variação de preço das skins</h1><p class="sub" id="lede">Carregando…</p></div>
-  <div class="money">
-    <div class="seg" id="cur" role="group" aria-label="Moeda"><button data-v="BRL">R$</button><button data-v="USD">US$</button></div>
-    <label class="fx" for="fx">US$ 1 = R$ <input id="fx" type="number" step="0.01" min="0.5" inputmode="decimal"></label>
+<header class="app" id="app">
+  <div class="wrap hbar">
+    <div class="brand">
+      <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg></span>
+      <span class="bn"><b>Skins CS2</b><span>preço e variação</span></span>
+    </div>
+    <nav class="views" aria-label="Seção"><button class="vt" type="button" data-v="market">Mercado</button><button class="vt" type="button" data-v="opp">Oportunidades</button></nav>
+    <div class="money">
+      <div class="seg" id="cur" role="group" aria-label="Moeda"><button type="button" data-v="BRL">R$</button><button type="button" data-v="USD">US$</button></div>
+      <label class="fx" for="fx"><span class="fxl">US$ 1 =</span> R$ <input id="fx" type="number" step="0.01" min="0.5" inputmode="decimal" aria-label="Câmbio: quantos reais vale US$ 1"></label>
+      <button class="ib" type="button" id="theme" aria-label="Alternar tema"></button>
+    </div>
   </div>
 </header>
-<main class="wrap">
-  <nav class="views" role="group" aria-label="Seção"><button class="vt" data-v="market">Mercado</button><button class="vt" data-v="opp">Oportunidades</button></nav>
-  <div id="vopp" hidden>
-    <div class="warn"><b>Antes de comprar:</b> Dopplers e Case Hardened ficam de fora destas listas, porque o preço depende da fase ou do padrão e a média junta tudo. A revenda paga taxa (CSFloat 2%, Skinport 8%) e, pela Trade Protection da Steam, um item recebido fica 7 dias sem poder ser negociado, então o preço pode mudar até você conseguir vender. Os dados são atualizados uma vez por dia e os anúncios mais baratos somem rápido. Isto é um levantamento de dados, não recomendação de compra.</div>
-    <div class="oc">
-      <div class="seg" id="ocat" role="group" aria-label="Categoria"><button data-v="all">Todas</button><button data-v="rf">Rifles</button><button data-v="kn">Facas</button><button data-v="gl">Luvas</button></div>
-      <label>Revender em <span class="seg" id="ofee" role="group" aria-label="Onde revender"><button data-v="0.02">CSFloat (2%)</button><button data-v="0.08">Skinport (8%)</button></span></label>
-      <label for="omin">Vendas em 7 dias <select id="omin"><option value="5">5+</option><option value="10">10+</option><option value="20">20+</option><option value="50">50+</option></select></label>
-      <label for="ominp">Preço a partir de <select id="ominp"></select></label>
-    </div>
-    <section class="op panel"><div class="sh"><div><h2>O que o histórico diz</h2><p class="sub">Regras simples testadas no histórico do CSFloat: comprar na semana em que o preço está X% abaixo ou acima da mediana das 13 semanas anteriores e vender depois, já descontando 2% de taxa. Só semanas com 10+ vendas.</p></div><div class="seg" id="bth" role="group" aria-label="Tempo segurando"><button data-v="2">2 sem.</button><button data-v="4">4 sem.</button><button data-v="8">8 sem.</button><button data-v="12">12 sem.</button></div></div><p class="find" id="btf"></p><div class="scroll"><table class="bt" id="bt"></table></div></section>
-    <section class="op"><div class="sh"><div><h2>Anúncio abaixo do preço de venda</h2><p class="sub">Menor anúncio na Skinport contra a mediana das vendas da Skinport nos últimos 7 dias, já com a taxa da revenda. O anúncio mais barato costuma ter o pior float do desgaste, então parte da diferença é justa.</p></div></div><div class="scroll"><table id="o1"></table></div></section>
-    <section class="op"><div class="sh"><div><h2>Abaixo da média de 90 dias</h2><p class="sub">Mediana das vendas na Skinport nos últimos 7 dias contra a dos últimos 90, só itens que continuam vendendo. Desconto não garante volta: veja o teste acima.</p></div></div><div class="scroll"><table id="o2"></table></div></section>
-    <section class="op"><div class="sh"><div><h2>Desgaste melhor mais barato que um pior</h2><p class="sub">Mesma skin em que um desgaste melhor vendeu mais barato que um pior nos últimos 30 dias (Skinport, 10+ vendas em cada).</p></div></div><div class="scroll"><table id="o3"></table></div></section>
-  </div>
+
+<main class="wrap" id="main" aria-busy="true">
   <div id="vmarket">
-  <section class="sec"><div class="sh"><h2>Categoria</h2><p class="sub">Índice de preço dos últimos 6 meses e variação típica em 30 dias</p></div><div class="tiles" id="cats"></div></section>
-  <section class="sec" id="msec"><div class="sh"><h2 id="mtitle">Modelos</h2><p class="sub" id="msub"></p></div><div class="mtiles" id="models"></div></section>
-  <section class="sec ov2" id="overview">
-    <div class="panel"><div class="sh" style="margin-bottom:0"><div><h3 id="ixt">Índice de preço</h3><p class="sub" id="ixs"></p></div><div class="seg" id="ixp" role="group" aria-label="Período do índice"><button data-v="13">3M</button><button data-v="26">6M</button><button data-v="52">1A</button></div></div><div class="fig" id="fi"><svg id="si" aria-label="Índice de preço da seleção"></svg></div></div>
-    <div class="panel"><h3>Maiores altas em 30 dias</h3><p class="sub">itens com 20+ vendas no mês e acima de US$ 2</p><div id="up"></div></div>
-    <div class="panel"><h3>Maiores quedas em 30 dias</h3><p class="sub">itens com 20+ vendas no mês e acima de US$ 2</p><div id="dn"></div></div>
-  </section>
-  <section class="sec">
-    <div class="bar">
-      <input id="q" type="search" placeholder="Buscar skin: fade, redline, vice…" aria-label="Buscar skin">
-      <div class="wp" id="wear" role="group" aria-label="Desgaste"><button class="pill" data-v="0">FN</button><button class="pill" data-v="1">MW</button><button class="pill" data-v="2">FT</button><button class="pill" data-v="3">WW</button><button class="pill" data-v="4">BS</button></div>
-      <select id="tier" aria-label="Faixa de preço"></select>
-      <div class="seg" id="sort" role="group" aria-label="Ordem"><button data-v="vol">Populares</button><button data-v="up30">Em alta</button><button data-v="dn30">Em queda</button><button data-v="pd">Mais caras</button><button data-v="pa">Mais baratas</button></div>
-      <div class="seg" id="view" role="group" aria-label="Visualização"><button data-v="cards">Cards</button><button data-v="table">Tabela</button></div>
-      <label class="tog"><input type="checkbox" id="onlyh"> Só com gráfico</label>
+    <section class="hero" aria-labelledby="h1">
+      <div class="hl"><h1 id="h1">Mercado de skins de CS2</h1><p class="eyebrow" id="asof">Carregando dados</p></div>
+      <p class="cov" id="stats" aria-label="Cobertura dos dados"><span class="skel" style="width:360px;max-width:100%;height:20px"></span></p>
+      <p class="lede" id="lede" hidden></p>
+    </section>
+
+    <section class="sec" aria-labelledby="hcat">
+      <div class="sh"><h2 id="hcat">Categoria</h2><p class="sub">Mediana da variação em 30 dias e índice de preço dos últimos 6 meses</p></div>
+      <div class="tiles" id="cats">
+        <div class="tile sk-tile"><span class="skel" style="width:60%;height:20px"></span><span class="skel" style="height:36px;margin-top:8px"></span><span class="skel" style="width:40%;height:14px"></span></div>
+        <div class="tile sk-tile"><span class="skel" style="width:60%;height:20px"></span><span class="skel" style="height:36px;margin-top:8px"></span><span class="skel" style="width:40%;height:14px"></span></div>
+        <div class="tile sk-tile"><span class="skel" style="width:60%;height:20px"></span><span class="skel" style="height:36px;margin-top:8px"></span><span class="skel" style="width:40%;height:14px"></span></div>
+        <div class="tile sk-tile"><span class="skel" style="width:60%;height:20px"></span><span class="skel" style="height:36px;margin-top:8px"></span><span class="skel" style="width:40%;height:14px"></span></div>
+      </div>
+    </section>
+
+    <section class="sec" id="msec" hidden aria-labelledby="mtitle">
+      <div class="sh"><h2 id="mtitle">Modelos</h2><p class="sub" id="msub"></p></div>
+      <div class="mtiles" id="models"></div>
+    </section>
+
+    <section class="sec" aria-labelledby="hlh">
+      <div class="sh"><div><h2 id="hlh">Maiores altas em 30 dias</h2><p class="sub" id="hls">Itens com 20+ vendas no mês e acima de US$ 2</p></div><div class="seg" id="hlt" role="group" aria-label="Mostrar altas ou quedas"><button type="button" data-v="up">Altas</button><button type="button" data-v="dn">Quedas</button></div></div>
+      <div class="hlr" id="hl">
+        <div class="hc sk-hc"><span class="skel" style="aspect-ratio:4/3;border-radius:0"></span><span class="hcb"><span class="skel" style="height:14px;width:70%"></span><span class="skel" style="height:18px;width:50%;margin-top:4px"></span></span></div>
+        <div class="hc sk-hc"><span class="skel" style="aspect-ratio:4/3;border-radius:0"></span><span class="hcb"><span class="skel" style="height:14px;width:70%"></span><span class="skel" style="height:18px;width:50%;margin-top:4px"></span></span></div>
+        <div class="hc sk-hc"><span class="skel" style="aspect-ratio:4/3;border-radius:0"></span><span class="hcb"><span class="skel" style="height:14px;width:70%"></span><span class="skel" style="height:18px;width:50%;margin-top:4px"></span></span></div>
+        <div class="hc sk-hc"><span class="skel" style="aspect-ratio:4/3;border-radius:0"></span><span class="hcb"><span class="skel" style="height:14px;width:70%"></span><span class="skel" style="height:18px;width:50%;margin-top:4px"></span></span></div>
+      </div>
+    </section>
+
+    <section class="sec panel" id="overview" aria-labelledby="ixt">
+      <div class="ph"><div><h3 id="ixt">Índice de preço</h3><p class="sub" id="ixs"></p></div><div class="seg" id="ixp" role="group" aria-label="Período do índice"><button type="button" data-v="13">3M</button><button type="button" data-v="26">6M</button><button type="button" data-v="52">1A</button></div></div>
+      <div class="fig" id="fi"><svg id="si" role="img" aria-label="Índice de preço da seleção"></svg></div>
+    </section>
+
+    <section class="sec" aria-labelledby="hcat2">
+      <h2 class="vh" id="hcat2">Catálogo de skins</h2>
+      <div class="bar">
+        <div class="brow">
+          <label class="srch" for="q"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="vh">Buscar skin</span><input id="q" type="search" placeholder="Buscar skin: fade, redline, vice…" autocomplete="off"></label>
+          <div class="seg" id="sort" role="group" aria-label="Ordem"><button type="button" data-v="vol">Populares</button><button type="button" data-v="up30">Em alta</button><button type="button" data-v="dn30">Em queda</button><button type="button" data-v="pd">Mais caras</button><button type="button" data-v="pa">Mais baratas</button></div>
+          <select id="sorts" aria-label="Ordem"><option value="vol">Populares</option><option value="up30">Em alta</option><option value="dn30">Em queda</option><option value="pd">Mais caras</option><option value="pa">Mais baratas</option></select>
+          <button class="btn" type="button" id="ftog" aria-expanded="false" aria-controls="frow"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Filtros <span class="badge" id="fcount" hidden></span></button>
+          <div class="seg" id="view" role="group" aria-label="Visualização"><button type="button" data-v="cards"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Cards</button><button type="button" data-v="table"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Tabela</button></div>
+        </div>
+        <div class="frow" id="frow">
+          <div class="fld"><span id="wlab">Desgaste</span><div class="wp" id="wear" role="group" aria-labelledby="wlab"><button class="pill" type="button" data-v="0" aria-label="Factory New" title="Factory New">FN</button><button class="pill" type="button" data-v="1" aria-label="Minimal Wear" title="Minimal Wear">MW</button><button class="pill" type="button" data-v="2" aria-label="Field-Tested" title="Field-Tested">FT</button><button class="pill" type="button" data-v="3" aria-label="Well-Worn" title="Well-Worn">WW</button><button class="pill" type="button" data-v="4" aria-label="Battle-Scarred" title="Battle-Scarred">BS</button></div></div>
+          <label class="fld" for="tier">Preço <select id="tier"></select></label>
+          <label class="tog"><input type="checkbox" id="onlyh"> Só com gráfico diário</label>
+          <button class="btn q" type="button" id="clrf" hidden>Limpar filtros</button>
+        </div>
+      </div>
+      <p class="count" id="count" aria-live="polite"></p>
+      <div id="grid"><div class="cards">
+        <div class="card sk-card"><span class="skel" style="height:14px;width:60%"></span><span class="skel" style="aspect-ratio:4/3"></span><span class="skel" style="height:20px;width:70%"></span><span class="skel" style="height:22px;width:50%"></span><span class="skel" style="height:36px"></span></div>
+        <div class="card sk-card"><span class="skel" style="height:14px;width:60%"></span><span class="skel" style="aspect-ratio:4/3"></span><span class="skel" style="height:20px;width:70%"></span><span class="skel" style="height:22px;width:50%"></span><span class="skel" style="height:36px"></span></div>
+        <div class="card sk-card"><span class="skel" style="height:14px;width:60%"></span><span class="skel" style="aspect-ratio:4/3"></span><span class="skel" style="height:20px;width:70%"></span><span class="skel" style="height:22px;width:50%"></span><span class="skel" style="height:36px"></span></div>
+        <div class="card sk-card"><span class="skel" style="height:14px;width:60%"></span><span class="skel" style="aspect-ratio:4/3"></span><span class="skel" style="height:20px;width:70%"></span><span class="skel" style="height:22px;width:50%"></span><span class="skel" style="height:36px"></span></div>
+      </div></div>
+    </section>
+  </div>
+
+  <div id="vopp" hidden>
+    <section class="hero" aria-labelledby="h1o" style="padding-bottom:24px">
+      <div>
+        <div class="hl"><h1 id="h1o">Onde o preço parece fora do lugar</h1></div>
+        <p class="lede">Anúncios abaixo do preço de venda, itens abaixo da média de 90 dias e desgastes melhores vendendo mais barato, ao lado do que o histórico diz sobre essas regras.</p>
+      </div>
+    </section>
+    <details class="warn">
+      <summary><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span><b>Levantamento de dados, não recomendação de compra.</b> Taxas, trava de 7 dias e anúncios que somem rápido mudam a conta.</span><span class="more-l">Detalhes <svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+      <p>Dopplers e Case Hardened ficam de fora destas listas, porque o preço depende da fase ou do padrão e a média junta tudo. A revenda paga taxa (CSFloat 2%, Skinport 8%) e, pela Trade Protection da Steam, um item recebido fica 7 dias sem poder ser negociado, então o preço pode mudar até você conseguir vender. Os dados são atualizados uma vez por dia e os anúncios mais baratos somem rápido. Isto é um levantamento de dados, não recomendação de compra.</p>
+    </details>
+    <div class="bar oc" style="position:static">
+      <div class="seg" id="ocat" role="group" aria-label="Categoria"><button type="button" data-v="all">Todas</button><button type="button" data-v="rf">Rifles</button><button type="button" data-v="kn">Facas</button><button type="button" data-v="gl">Luvas</button></div>
+      <div class="fld"><span id="ofeel">Revender em</span><div class="seg" id="ofee" role="group" aria-labelledby="ofeel"><button type="button" data-v="0.02">CSFloat (2%)</button><button type="button" data-v="0.08">Skinport (8%)</button></div></div>
+      <label class="fld" for="omin">Vendas em 7 dias <select id="omin"><option value="5">5+</option><option value="10">10+</option><option value="20">20+</option><option value="50">50+</option></select></label>
+      <label class="fld" for="ominp">Preço a partir de <select id="ominp"></select></label>
     </div>
-    <p class="sub" id="count" style="margin:-4px 0 10px"></p>
-    <div id="grid"></div>
-  </section>
+    <section class="op panel" aria-labelledby="hbt"><div class="sh"><div><h2 id="hbt">O que o histórico diz</h2><p class="sub">Regras simples testadas no histórico do CSFloat: comprar na semana em que o preço está X% abaixo ou acima da mediana das 13 semanas anteriores e vender depois, já descontando 2% de taxa. Só semanas com 10+ vendas.</p></div><div class="seg" id="bth" role="group" aria-label="Tempo segurando"><button type="button" data-v="2">2 sem.</button><button type="button" data-v="4">4 sem.</button><button type="button" data-v="8">8 sem.</button><button type="button" data-v="12">12 sem.</button></div></div><p class="find" id="btf"></p><div class="tbl"><table class="bt" id="bt"></table></div></section>
+    <section class="op" aria-labelledby="ho1"><div class="sh"><div><h2 id="ho1">Anúncio abaixo do preço de venda</h2><p class="sub">Menor anúncio na Skinport contra a mediana das vendas da Skinport nos últimos 7 dias, já com a taxa da revenda. O anúncio mais barato costuma ter o pior float do desgaste, então parte da diferença é justa.</p></div></div><div class="tbl"><table id="o1"></table></div></section>
+    <section class="op" aria-labelledby="ho2"><div class="sh"><div><h2 id="ho2">Abaixo da média de 90 dias</h2><p class="sub">Mediana das vendas na Skinport nos últimos 7 dias contra a dos últimos 90, só itens que continuam vendendo. Desconto não garante volta: veja o teste acima.</p></div></div><div class="tbl"><table id="o2"></table></div></section>
+    <section class="op" aria-labelledby="ho3"><div class="sh"><div><h2 id="ho3">Desgaste melhor mais barato que um pior</h2><p class="sub">Mesma skin em que um desgaste melhor vendeu mais barato que um pior nos últimos 30 dias (Skinport, 10+ vendas em cada).</p></div></div><div class="tbl"><table id="o3"></table></div></section>
   </div>
 </main>
-<p class="wrap foot" id="foot"></p>
-<div class="ovl" id="ov" hidden>
-  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dname">
-    <button class="x" id="x" aria-label="Fechar">×</button>
-    <div class="dh"><div><p class="sub" id="dmodel"></p><h2 id="dname">—</h2><p class="sub" id="dsub"></p></div><div><div class="big" id="now">—</div><p class="sub" id="nowSub" style="text-align:right"></p></div></div>
+
+<footer class="wrap foot">
+  <p id="fdate" style="margin:0 0 8px"></p>
+  <details><summary>Como os números são calculados</summary><p id="foot"></p></details>
+</footer>
+
+<dialog class="dlg" id="ov" aria-labelledby="dname">
+  <div class="dtop"><p class="sub" id="dmodel"></p><button class="ib" type="button" id="x" aria-label="Fechar"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlgin">
+    <div class="dh"><div><h2 id="dname">—</h2><p class="sub" id="dsub"></p></div><div><div class="big" id="now">—</div><p class="sub nows" id="nowSub"></p></div></div>
     <div class="dcols">
       <div><div class="dimg" id="dimg"></div><div class="wl" id="wl" role="group" aria-label="Desgastes"></div></div>
       <div>
@@ -214,14 +431,14 @@ td a{color:var(--acc);font-weight:600;text-decoration:none;white-space:nowrap}
         <div class="dctr" id="dctr"><div class="seg" id="per" role="group" aria-label="Período do gráfico"></div></div>
         <div class="kpis" id="kpis"></div>
         <div class="read" id="read"></div>
-        <div class="fig big2" id="f1"><svg id="s1" aria-label="Gráfico de preço"></svg><div class="tip" id="tip"></div></div>
-        <p class="sub" id="f2l" style="margin-top:8px">Laranja: mediana móvel de 7 dias. Cinza: média de cada dia (picos vêm de vendas raras, como skins com adesivos caros). Abaixo, a variação acumulada desde o início do período.</p>
-        <div class="fig sm" id="f2"><svg id="s2" aria-label="Variação acumulada"></svg></div>
-        <div id="spb" hidden><h3 style="margin:18px 0 8px;font-size:15px">Vendas na Skinport</h3><div class="kpis" id="spk"></div></div>
+        <div class="fig big2" id="f1"><svg id="s1" role="img" aria-label="Gráfico de preço"></svg><div class="tip" id="tip"></div></div>
+        <p class="sub leg" id="f2l">Laranja: mediana móvel de 7 dias. Cinza: média de cada dia (picos vêm de vendas raras, como skins com adesivos caros). Abaixo, a variação acumulada desde o início do período.</p>
+        <div class="fig sm" id="f2"><svg id="s2" role="img" aria-label="Variação acumulada"></svg></div>
+        <div id="spb" hidden><h3 style="margin:24px 0 8px">Vendas na Skinport</h3><div class="kpis" id="spk"></div></div>
       </div>
     </div>
   </div>
-</div>
+</dialog>
 <script>
 {
 const B64="__B64__";
@@ -233,7 +450,9 @@ const WC=["#3fb950","#86c94a","#e3b341","#ef8a3c","#e5534b"];
 const CATS=[["all","Todas"],["rf","Rifles"],["kn","Facas"],["gl","Luvas"]];
 const TIERS=[[0,1e9],[0,10],[10,50],[50,250],[250,1e9]];
 const PERS=[["1M",30],["3M",91],["6M",182],["1A",365],["2A",730],["Tudo",0]];
-const S={cat:"all",wpn:"",wear:"",q:"",sort:"vol",tier:0,onlyh:false,view:"cards",ixw:26,lim:48,cur:"BRL",per:"1A",fx:5.86492,sel:null,rng:null,page:"market",ocat:"all",ofee:0.02,omin:10,ominp:2,bth:4};
+const IC={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>',ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'};
+const icon=n=>`<svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const S={hl:"up",cat:"all",wpn:"",wear:"",q:"",sort:"vol",tier:0,onlyh:false,view:"cards",ixw:26,lim:48,cur:"BRL",per:"1A",fx:5.86492,sel:null,rng:null,page:"market",ocat:"all",ofee:0.02,omin:10,ominp:2,bth:4};
 let fxUser=false;try{const sv=JSON.parse(localStorage.getItem("cs-var5")||"{}");for(const k of["cur","per","cat","sort","view","ixw","ofee","omin","ominp","bth"])if(sv[k]!=null)S[k]=sv[k];if(sv.fxUser){S.fx=sv.fxUser;fxUser=true}}catch(e){}
 const save=()=>{try{localStorage.setItem("cs-var5",JSON.stringify({cur:S.cur,per:S.per,cat:S.cat,sort:S.sort,view:S.view,ixw:S.ixw,ofee:S.ofee,omin:S.omin,ominp:S.ominp,bth:S.bth,fxUser:fxUser?S.fx:null}))}catch(e){}};
 let H,IT=[],SK=[],L=0;
@@ -286,22 +505,22 @@ const inCat=(i,c)=>c==="all"||i.cat===c;
 const rcs=x=>x.rc&&/^#[0-9a-f]{6}$/i.test(x.rc)?` style="--rc:${x.rc}"`:"";
 let PACK=null,PACKED=false;
 const src=f=>f&&/^[\w.-]+$/.test(f)&&PACKED?(PACK&&PACK[f]&&PACK[f].startsWith("data:image/")?PACK[f]:"img/"+f):null;
-const pic=(x,cls)=>{const u=src(x.img);return `<div class="${cls}"${rcs(x)}>${u?`<img src="${u}" alt="" loading="lazy">`:""}</div>`};
-const mini=(ix,h)=>{const p=ix.pts;if(p.length<2)return `<svg viewBox="0 0 200 ${h}" aria-hidden="true"><text x="0" y="${h-6}" style="stroke:none">sem histórico suficiente ainda</text></svg>`;
+const pic=(x,cls)=>{const u=src(x.img);return `<span class="${cls}"${rcs(x)}>${u?`<img src="${u}" alt="" loading="lazy" width="192" height="144">`:""}</span>`};
+const mini=(ix,h)=>{const p=ix.pts;if(p.length<2)return `<svg class="mc" viewBox="0 0 200 ${h}" aria-hidden="true"><text x="0" y="${h-6}" style="stroke:none">sem histórico suficiente ainda</text></svg>`;
   const vs=p.map(x=>x.v),lo=Math.min(...vs,100),hi=Math.max(...vs,100),X=k=>k/(p.length-1)*200,Y=v=>h-3-(v-lo)/((hi-lo)||1)*(h-6),last=vs[vs.length-1],c=last>=100?"var(--up)":"var(--dn)";
   const d=p.map((x,k)=>(k?"L":"M")+X(k).toFixed(1)+","+Y(x.v).toFixed(1)).join("");
-  return `<svg viewBox="0 0 200 ${h}" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="200" y1="${Y(100)}" y2="${Y(100)}" stroke="var(--rule)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/><path d="${d}L200,${h}L0,${h}Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`};
+  return `<svg class="mc" viewBox="0 0 200 ${h}" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="200" y1="${Y(100)}" y2="${Y(100)}" stroke="var(--rule)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/><path d="${d}L200,${h}L0,${h}Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`};
 const m30=xs=>{const v=xs.filter(i=>i.c30!=null&&i.v30>0).map(i=>i.c30);return v.length>=5?md(v):null};
 const cats=()=>{
   $("cats").innerHTML=CATS.map(([k,l])=>{const xs=IT.filter(i=>inCat(i,k)),m=m30(xs),ix=index(xs,26);
-    return `<button class="tile" data-v="${k}" aria-pressed="${S.cat===k&&!S.wpn}"><div class="row"><b style="color:var(--ink)">${l}</b><span class="ch" style="color:${col(m)}">${pct(m)}</span></div><div class="row"><span>${xs.length.toLocaleString("pt-BR")} itens</span><span>30 dias</span></div>${mini(ix,46)}<div class="row"><span>${ix.n?`índice de ${ix.n} skins`:"índice em coleta"}</span><span>6 meses</span></div></button>`}).join("");
+    return `<button class="tile" type="button" data-v="${k}" aria-pressed="${S.cat===k}"><span class="hd"><span class="nm">${l}</span><span class="ch" style="color:${col(m)}">${pct(m)}</span></span>${mini(ix,36)}<span class="meta"><span>${xs.length.toLocaleString("pt-BR")} itens</span><span class="nw">${ix.n?"índice 6 meses":"índice em coleta"}</span></span></button>`}).join("");
 };
 const models=()=>{
   const cat=S.cat,ms=[...new Set(IT.filter(i=>inCat(i,cat)).map(i=>i.wn))];
   if(cat==="all"){$("msec").hidden=true;return}
-  $("msec").hidden=false;$("mtitle").textContent="Modelos de "+CATS.find(c=>c[0]===cat)[1].toLowerCase();$("msub").textContent="Clique para ver só um modelo";
+  $("msec").hidden=false;$("mtitle").textContent="Modelos de "+CATS.find(c=>c[0]===cat)[1].toLowerCase();$("msub").textContent="Escolha um modelo para filtrar o índice, as listas e o catálogo";
   const rows=ms.map(m=>{const xs=IT.filter(i=>i.wn===m),ps=xs.map(i=>i.now).filter(x=>x!=null);return{m,xs,mm:m30(xs),lo:ps.length?Math.min(...ps):null,hi:ps.length?Math.max(...ps):null,v:xs.reduce((t,i)=>t+(i.v30||0),0)}}).sort((a,b)=>b.v-a.v);
-  $("models").innerHTML=`<button class="tile" data-v="" aria-pressed="${!S.wpn}"><b>Todos</b><div class="row"><span>${IT.filter(i=>inCat(i,cat)).length} itens</span></div></button>`+rows.map(r=>`<button class="tile" data-v="${esc(r.m)}" aria-pressed="${S.wpn===r.m}"><div class="row"><b style="color:var(--ink)">${esc(r.m)}</b><span class="ch" style="color:${col(r.mm)}">${pct(r.mm)}</span></div><div class="row"><span>${r.xs.length} itens</span><span>${r.lo!=null?esc(ax(r.lo*kx()))+" – "+esc(ax(r.hi*kx())):""}</span></div>${mini(index(r.xs,26),34)}</button>`).join("");
+  $("models").innerHTML=`<button class="tile" type="button" data-v="" aria-pressed="${!S.wpn}"><span class="hd"><span class="nm">Todos</span></span><span class="meta"><span>${IT.filter(i=>inCat(i,cat)).length.toLocaleString("pt-BR")} itens</span></span></button>`+rows.map(r=>`<button class="tile" type="button" data-v="${esc(r.m)}" aria-pressed="${S.wpn===r.m}"><span class="hd"><span class="nm od-truncate">${esc(r.m)}</span><span class="ch" style="color:${col(r.mm)}">${pct(r.mm)}</span></span><span class="meta"><span>${r.xs.length} itens</span><span class="nw">${r.lo!=null?esc(ax(r.lo*kx()))+" – "+esc(ax(r.hi*kx())):""}</span></span>${mini(index(r.xs,26),32)}</button>`).join("");
 };
 const scope=()=>IT.filter(i=>inCat(i,S.cat)&&(!S.wpn||i.wn===S.wpn));
 const selName=()=>S.wpn||(S.cat==="all"?"todas as skins":CATS.find(c=>c[0]===S.cat)[1].toLowerCase());
@@ -311,10 +530,13 @@ const overview=()=>{
   const ix=index(xs,S.ixw);drawIx(ix);
   $("ixs").textContent=ix.pts.length?`Mediana do preço de ${ix.n} skins com histórico, base 100 ${S.ixw===13?"há 3 meses":S.ixw===26?"há 6 meses":"há 1 ano"}.`:"Ainda não há skins suficientes com histórico nesta seleção.";
   const liq=xs.filter(i=>i.c30!=null&&(i.v30??0)>=20&&i.now>=2&&(i.src!=="cf"||(i.r30n>=3&&i.n7>=3)));
-  const row=i=>`<button class="mv" data-i="${i.i}">${pic(i,"th")}<i>${esc(i.model+" | "+i.name)}</i><b style="color:${col(i.c30)}">${pct(i.c30)}</b><span>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${i.src==="sp"?"Skinport":"CSFloat"}</span><b style="font-size:13px;color:var(--mut);font-weight:500">${esc(short(i.now*kx()))}</b></button>`;
-  const up=liq.slice().sort((a,b)=>b.c30-a.c30).slice(0,5),dn=liq.slice().sort((a,b)=>a.c30-b.c30).slice(0,5);
-  $("up").innerHTML=up.map(row).join("")||`<p class="sub">Sem dados suficientes.</p>`;$("dn").innerHTML=dn.map(row).join("")||`<p class="sub">Sem dados suficientes.</p>`;
+  for(const b of $("hlt").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.hl);
+  const top=liq.slice().sort((a,b)=>S.hl==="up"?b.c30-a.c30:a.c30-b.c30).slice(0,8),sn=selName();
+  $("hlh").textContent=S.hl==="up"?"Maiores altas em 30 dias":"Maiores quedas em 30 dias";
+  $("hls").textContent=`${sn[0].toUpperCase()+sn.slice(1)} · itens com 20+ vendas no mês e acima de US$ 2`;
+  $("hl").innerHTML=top.map(hcard).join("")||`<p class="emp">Ainda não há itens com vendas suficientes nesta seleção.</p>`;
 };
+const hcard=i=>`<button class="hc" type="button" data-i="${i.i}">${pic(i,"im")}<span class="hcb"><span class="hcm od-truncate">${esc(i.model)} · ${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")}</span><span class="hcn od-truncate">${esc(i.name)}</span><span class="hcr"><span class="hcp">${esc(short(i.now*kx()))}</span><span class="hcc" style="color:${col(i.c30)}">${pct(i.c30)}</span></span></span></button>`;
 const drawIx=ix=>{
   const s=$("si"),W=s.clientWidth,H=s.clientHeight;if(!W)return;const p=ix.pts;
   if(p.length<2){s.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle">Índice disponível quando houver histórico suficiente</text>`;return}
@@ -336,22 +558,26 @@ const spark=(it,cls)=>{const a=it.pts.filter(d=>d.t>L-365*DAY);if(a.length<2)ret
 const steps=(it,cls)=>{const sp=it.sp,pts=[[45,sp.m90],[15,sp.m30],[3.5,sp.m7],[.5,sp.m24]].filter(p=>p[1]);if(pts.length<2)return`<svg class="${cls}" aria-hidden="true"></svg>`;
   const vs=pts.map(p=>Math.log(p[1])),lo=Math.min(...vs),hi=Math.max(...vs),X=d=>(1-d/50)*196+2,Y=v=>28-(v-lo)/((hi-lo)||1)*24;
   return `<svg class="${cls}" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="${pts.map((p,k)=>(k?"L":"M")+X(p[0]).toFixed(1)+","+Y(vs[k]).toFixed(1)).join("")}" fill="none" stroke="${col(it.c90??it.c30)}" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/></svg>`};
+const srcName=i=>i.src==="cf"?"CSFloat":i.src==="sp"?"Skinport":"referência";
 const card=s=>{const L0=s.lead,its=s.vis;
-  return `<button class="card${s.star?" star":""}" data-i="${L0.i}"${rcs(s)}><div class="ct"><span class="${s.star?"st":""}">${esc(s.model)}</span><span class="rar">${esc(s.rar||"")}</span></div>${pic(s,"im")}<div class="sk">${esc(s.name)}</div>`+
-  `<div class="pr">${s.lo==null?"—":s.lo===s.hi?esc(short(s.lo*kx())):esc(short(s.lo*kx()))+" – "+esc(short(s.hi*kx()))}</div>`+
-  (L0.wr<5?`<div class="wears">${[0,1,2,3,4].map(w=>{const x=s.items.find(i=>i.wr===w);return `<div class="wcell${!x||!its.includes(x)?" off":""}" style="border-top-color:${WC[w]}">${WS[w]}<b>${x&&x.now!=null?esc(ax(x.now*kx())):"—"}</b></div>`}).join("")}</div>`:"")+
-  `<div class="cs"><span class="c ${cl(L0.c30)}">${WS[L0.wr]?WS[L0.wr]+" ":""}30d ${pct(L0.c30)}</span>${L0.h?`<span class="c ${cl(L0.c365)}">1a ${pct(L0.c365)}</span>`:L0.c90!=null?`<span class="c ${cl(L0.c90)}">90d ${pct(L0.c90)}</span>`:""}</div>${spark(L0,"sp")}<div class="ft"><span>${s.v30} vendas/30d</span><span>${L0.src==="cf"?"CSFloat":L0.src==="sp"?"Skinport":"referência"}</span></div></button>`};
+  return `<button class="card" type="button" data-i="${L0.i}"${rcs(s)}>${pic(s,"im")}<span class="ct"><span class="od-truncate${s.star?" st":""}">${esc(s.model)}</span>${s.rar?`<span class="rar"><i aria-hidden="true"></i>${esc(s.rar)}</span>`:""}</span><span class="sk">${esc(s.name)}</span>`+
+  `<span class="pr">${s.lo==null?"—":s.lo===s.hi?esc(short(s.lo*kx())):`<span class="nw">${esc(short(s.lo*kx()))}</span> – <span class="nw">${esc(short(s.hi*kx()))}</span>`}</span>`+
+  (L0.wr<5?`<span class="wears">${[0,1,2,3,4].map(w=>{const x=s.items.find(i=>i.wr===w);return `<span class="wcell${!x||!its.includes(x)?" off":""}" style="--wc:${WC[w]}">${WS[w]}<b>${x&&x.now!=null?esc(ax(x.now*kx())):"—"}</b></span>`}).join("")}</span>`:"")+
+  `<span class="cs"><span class="c ${cl(L0.c30)}">${WS[L0.wr]?WS[L0.wr]+" ":""}30d ${pct(L0.c30)}</span>${L0.h?`<span class="c ${cl(L0.c365)}">1a ${pct(L0.c365)}</span>`:L0.c90!=null?`<span class="c ${cl(L0.c90)}">90d ${pct(L0.c90)}</span>`:""}</span>${spark(L0,"sp")}<span class="ft"><span>${s.v30.toLocaleString("pt-BR")} vendas em 30d</span><span>${srcName(L0)}</span></span></button>`};
+const nFilt=()=>(S.wear!==""?1:0)+(S.tier!==0?1:0)+(S.onlyh?1:0);
 const grid=()=>{
   for(const[id,k]of[["sort","sort"],["view","view"]])for(const b of $(id).querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S[k]);
+  $("sorts").value=S.sort;
   for(const b of $("wear").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.wear);
   $("tier").innerHTML=TIERS.map(([a,b],i)=>`<option value="${i}"${i===S.tier?" selected":""}>${i===0?"Qualquer preço":i===1?"Até "+ax(b*kx()):i===4?"Acima de "+ax(a*kx()):ax(a*kx())+" – "+ax(b*kx())}</option>`).join("");
   $("onlyh").checked=S.onlyh;
+  const nf=nFilt();$("fcount").textContent=nf?String(nf):"";$("fcount").hidden=!nf;$("clrf").hidden=!(nf||S.q);
   const r=filt(),f=keyf(S.sort);
-  if(!r.length){$("count").textContent="";$("grid").innerHTML=`<div class="empty">Nenhuma skin com esses filtros.</div>`;return}
+  if(!r.length){$("count").textContent="Nenhum resultado · "+selName();$("grid").innerHTML=`<div class="empty"><p><b>Nenhuma skin com esses filtros.</b></p><p>Tente outro desgaste, outra faixa de preço ou uma busca mais curta.</p><button class="btn" type="button" data-act="clear">Limpar filtros</button></div>`;return}
   if(S.view==="table"){
     r.sort(cmp(f));$("count").textContent=`${r.length.toLocaleString("pt-BR")} itens · ${selName()}`;
-    $("grid").innerHTML=`<div class="scroll"><table><thead><tr><th class="hide-s">#</th><th>Skin</th><th>Preço</th><th class="hide-s">7 dias</th><th>30 dias</th><th class="hide-s">90 dias</th><th class="hide-s">1 ano</th><th class="hide-s">Vendas 30d</th><th class="hide-s">Tendência</th></tr></thead><tbody>`+
-      r.slice(0,S.lim).map((i,k)=>`<tr tabindex="0" data-i="${i.i}"><td class="hide-s">${k+1}</td><td class="n"><div class="sn">${pic(i,"th")}<div>${esc(i.model)} | ${esc(i.name)}<small>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${esc(i.rar||"")} · ${i.src==="cf"?"CSFloat":i.src==="sp"?"Skinport":"referência"}</small></div></div></td><td>${i.now==null?"—":esc(short(i.now*kx()))}</td>`+["c7","c30","c90","c365"].map(c=>`<td class="${c==="c30"?"":"hide-s"}" style="color:${col(i[c])}">${pct(i[c])}</td>`).join("")+`<td class="hide-s">${i.v30??"—"}</td><td class="hide-s">${spark(i,"tsp")}</td></tr>`).join("")+`</tbody></table></div>`+more(r.length);
+    $("grid").innerHTML=`<div class="tbl cap"><table><thead><tr><th class="hide-s" scope="col">#</th><th scope="col">Skin</th><th scope="col">Preço</th><th class="hide-s" scope="col">7 dias</th><th scope="col">30 dias</th><th class="hide-s" scope="col">90 dias</th><th class="hide-s" scope="col">1 ano</th><th class="hide-s" scope="col">Vendas 30d</th><th class="hide-s" scope="col">Tendência</th></tr></thead><tbody>`+
+      r.slice(0,S.lim).map((i,k)=>`<tr tabindex="0" data-i="${i.i}"><td class="hide-s">${k+1}</td><td class="n"><div class="sn">${pic(i,"th")}<div>${esc(i.model)} | ${esc(i.name)}<small>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")}${i.rar?" · "+esc(i.rar):""} · ${srcName(i)}</small></div></div></td><td>${i.now==null?"—":esc(short(i.now*kx()))}</td>`+["c7","c30","c90","c365"].map(c=>`<td class="${c==="c30"?"":"hide-s"}" style="color:${col(i[c])}">${pct(i[c])}</td>`).join("")+`<td class="hide-s">${i.v30??"—"}</td><td class="hide-s">${spark(i,"tsp")}</td></tr>`).join("")+`</tbody></table></div>`+more(r.length);
   }else{
     const g=new Map();for(const i of r){if(!g.has(i.key))g.set(i.key,[]);g.get(i.key).push(i)}
     const sk=[...g.entries()].map(([k,its])=>{const s=SK.find(x=>x.key===k);return Object.assign(Object.create(s),{vis:its,lead:its.slice().sort((a,b)=>(b.v30??-1)-(a.v30??-1)||(b.rvol-a.rvol))[0]})});
@@ -359,13 +585,14 @@ const grid=()=>{
     $("count").textContent=`${sk.length.toLocaleString("pt-BR")} skins (${r.length.toLocaleString("pt-BR")} itens contando desgastes) · ${selName()}`;
     $("grid").innerHTML=`<div class="cards">${sk.slice(0,S.lim).map(card).join("")}</div>`+more(sk.length);
   }
-  if($("mr"))$("mr").onclick=()=>{S.lim+=48;grid()};
+  if($("mr"))$("mr").onclick=()=>{S.lim+=48;grid();if($("mr"))$("mr").focus()};
 };
-const more=n=>n>S.lim?`<div class="more"><button class="btn" id="mr">Mostrar mais (${(n-S.lim).toLocaleString("pt-BR")} restantes)</button></div>`:"";
+const more=n=>n>S.lim?`<div class="more"><button class="btn" type="button" id="mr">Mostrar mais (${(n-S.lim).toLocaleString("pt-BR")} restantes)</button></div>`:"";
+const clearF=()=>{S.wear="";S.tier=0;S.onlyh=false;S.q="";$("q").value="";reset();grid();$("q").focus()};
 
 const OMINP=[0,2,5,20,100,500];
 const skinCell=i=>`<td class="n"><div class="sn">${pic(i,"th")}<div>${esc(i.model)} | ${esc(i.name)}<small>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")}${i.rar?" · "+esc(i.rar):""}</small></div></div></td>`;
-const spLink=i=>i.link?`<a href="${esc(i.link)}" target="_blank" rel="noopener">Skinport ↗</a>`:"";
+const spLink=i=>i.link?`<a href="${esc(i.link)}" target="_blank" rel="noopener" aria-label="Ver na Skinport (abre em nova aba)">Skinport ${icon("ext")}</a>`:"";
 const PATTERN=/^(Case Hardened|Heat Treated)$/;
 const oppBase=()=>IT.filter(i=>(S.ocat==="all"||i.cat===S.ocat)&&i.sp&&i.sp.nv===1&&!PATTERN.test(i.pn));
 const bt=()=>{
@@ -374,8 +601,8 @@ const bt=()=>{
   const ck={all:null,rf:"rf",kn:"kn",gl:"gl"}[S.ocat];
   const get=(r,scope)=>{const h=r.holds.find(x=>x.weeks===S.bth);if(!h)return null;return ck?(scope==="all"?h.by_cat[ck]:null):h[scope]};
   const cell=x=>x?`<td class="${x.median>=0?"g":"r"}">${pct(x.median)}</td><td>${Math.round(x.win*100)}%</td><td class="hide-s">${x.n.toLocaleString("pt-BR")}</td>`:`<td>—</td><td>—</td><td class="hide-s">—</td>`;
-  $("bt").innerHTML=`<thead><tr><th>Regra</th><th>Mediana ${ck?"":"(12 meses)"}</th><th>Ganharam</th><th class="hide-s">Operações</th>${ck?"":`<th class="hide-s">Mediana (tudo)</th><th class="hide-s">Ganharam</th><th class="hide-s">Operações</th>`}</tr></thead><tbody>`+
-    B.rules.map(r=>`<tr style="cursor:default"><td>${esc(r.label)}</td>${cell(get(r,ck?"all":"last12m"))}${ck?"":cell(get(r,"all")).replace(/<td/g,'<td class="hide-s"').replace(/class="hide-s" class="/g,'class="hide-s ')}</tr>`).join("")+`</tbody>`;
+  $("bt").innerHTML=`<thead><tr><th scope="col">Regra</th><th scope="col">Mediana ${ck?"":"(12 meses)"}</th><th scope="col">Ganharam</th><th class="hide-s" scope="col">Operações</th>${ck?"":`<th class="hide-s" scope="col">Mediana (tudo)</th><th class="hide-s" scope="col">Ganharam</th><th class="hide-s" scope="col">Operações</th>`}</tr></thead><tbody>`+
+    B.rules.map(r=>`<tr><td>${esc(r.label)}</td>${cell(get(r,ck?"all":"last12m"))}${ck?"":cell(get(r,"all")).replace(/<td/g,'<td class="hide-s"').replace(/class="hide-s" class="/g,'class="hide-s ')}</tr>`).join("")+`</tbody>`;
   const sc=ck?"all":"last12m",best=B.rules.map(r=>[r,get(r,sc)]).filter(x=>x[1]).sort((a,b)=>b[1].median-a[1].median)[0],any=get(B.rules[0],sc);
   $("btf").textContent=best?(best[1].median>0?`Melhor regra ${ck?"":"nos últimos 12 meses "}com ${S.bth} semanas: "${best[0].label.toLowerCase()}", mediana de ${pct(best[1].median)} por operação.`:`${ck?"Nesta categoria":"Nos últimos 12 meses"}, nenhuma regra teve mediana positiva segurando ${S.bth} semanas; a melhor ficou em ${pct(best[1].median)}${any?` e comprar em qualquer semana deu ${pct(any.median)}`:""}.`):"Ainda sem operações suficientes nesta categoria.";
 };
@@ -385,27 +612,27 @@ const opp=()=>{
   bt();
   const base=oppBase().filter(i=>i.sp.m7>=S.ominp);
   const a=base.filter(i=>i.sp.min&&i.sp.v7>=S.omin).map(i=>({i,net:i.sp.m7*(1-S.ofee)-i.sp.min})).filter(x=>x.net>0).sort((x,y)=>y.net/y.i.sp.min-x.net/x.i.sp.min).slice(0,25);
-  $("o1").innerHTML=a.length?`<thead><tr><th class="hide-s">#</th><th>Skin</th><th>Menor anúncio</th><th>Mediana 7d</th><th>Lucro líquido</th><th class="hide-s">Vendas 7d</th><th class="hide-s">À venda</th><th></th></tr></thead><tbody>`+a.map((x,k)=>`<tr data-i="${x.i.i}"><td class="hide-s">${k+1}</td>${skinCell(x.i)}<td>${esc(short(x.i.sp.min*kx()))}</td><td>${esc(short(x.i.sp.m7*kx()))}</td><td class="g">${pct(x.net/x.i.sp.min)} · ${esc(short(x.net*kx()))}</td><td class="hide-s">${x.i.sp.v7}</td><td class="hide-s">${x.i.sp.qty}</td><td>${spLink(x.i)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nenhum anúncio abaixo do preço de venda com esses filtros.</td></tr></tbody>`;
+  $("o1").innerHTML=a.length?`<thead><tr><th class="hide-s" scope="col">#</th><th scope="col">Skin</th><th scope="col">Menor anúncio</th><th scope="col">Mediana 7d</th><th scope="col">Lucro líquido</th><th class="hide-s" scope="col">Vendas 7d</th><th class="hide-s" scope="col">À venda</th><th scope="col"><span class="vh">Link</span></th></tr></thead><tbody>`+a.map((x,k)=>`<tr tabindex="0" data-i="${x.i.i}"><td class="hide-s">${k+1}</td>${skinCell(x.i)}<td>${esc(short(x.i.sp.min*kx()))}</td><td>${esc(short(x.i.sp.m7*kx()))}</td><td class="g">${pct(x.net/x.i.sp.min)} · ${esc(short(x.net*kx()))}</td><td class="hide-s">${x.i.sp.v7}</td><td class="hide-s">${x.i.sp.qty}</td><td>${spLink(x.i)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nenhum anúncio abaixo do preço de venda com esses filtros. Tente baixar o mínimo de vendas ou o preço.</td></tr></tbody>`;
   const b=base.filter(i=>i.sp.m90&&i.sp.v7>=S.omin&&i.sp.v90>=30).map(i=>({i,d:i.sp.m7/i.sp.m90-1})).filter(x=>x.d<-0.05).sort((x,y)=>x.d-y.d).slice(0,25);
-  $("o2").innerHTML=b.length?`<thead><tr><th class="hide-s">#</th><th>Skin</th><th>Mediana 7d</th><th>Mediana 90d</th><th>Desconto</th><th class="hide-s">Vendas 7d / 90d</th><th class="hide-s">1 ano (CSFloat)</th><th></th></tr></thead><tbody>`+b.map((x,k)=>`<tr data-i="${x.i.i}"><td class="hide-s">${k+1}</td>${skinCell(x.i)}<td>${esc(short(x.i.sp.m7*kx()))}</td><td>${esc(short(x.i.sp.m90*kx()))}</td><td class="r">${pct(x.d)}</td><td class="hide-s">${x.i.sp.v7} / ${x.i.sp.v90}</td><td class="hide-s" style="color:${col(x.i.c365)}">${pct(x.i.c365)}</td><td>${spLink(x.i)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nada abaixo da média com esses filtros.</td></tr></tbody>`;
+  $("o2").innerHTML=b.length?`<thead><tr><th class="hide-s" scope="col">#</th><th scope="col">Skin</th><th scope="col">Mediana 7d</th><th scope="col">Mediana 90d</th><th scope="col">Desconto</th><th class="hide-s" scope="col">Vendas 7d / 90d</th><th class="hide-s" scope="col">1 ano (CSFloat)</th><th scope="col"><span class="vh">Link</span></th></tr></thead><tbody>`+b.map((x,k)=>`<tr tabindex="0" data-i="${x.i.i}"><td class="hide-s">${k+1}</td>${skinCell(x.i)}<td>${esc(short(x.i.sp.m7*kx()))}</td><td>${esc(short(x.i.sp.m90*kx()))}</td><td class="r">${pct(x.d)}</td><td class="hide-s">${x.i.sp.v7} / ${x.i.sp.v90}</td><td class="hide-s" style="color:${col(x.i.c365)}">${pct(x.i.c365)}</td><td>${spLink(x.i)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nada abaixo da média com esses filtros. Tente outra categoria ou um mínimo de vendas menor.</td></tr></tbody>`;
   const by=new Map();for(const i of base)if(i.wr<5&&i.sp.m30&&i.sp.v30>=10){if(!by.has(i.key))by.set(i.key,[]);by.get(i.key).push(i)}
   const c=[];for(const xs of by.values())for(const g of xs)for(const w of xs)if(g.wr<w.wr&&g.sp.m30<w.sp.m30*0.97)c.push({g,w,d:g.sp.m30/w.sp.m30-1});
   c.sort((x,y)=>x.d-y.d);
-  $("o3").innerHTML=c.length?`<thead><tr><th>Skin</th><th>Desgaste melhor</th><th>Desgaste pior</th><th>Diferença</th><th></th></tr></thead><tbody>`+c.slice(0,20).map(x=>`<tr data-i="${x.g.i}">${skinCell(x.g)}<td>${WS[x.g.wr]} ${esc(short(x.g.sp.m30*kx()))} <span class="sub">(${x.g.sp.v30})</span></td><td>${WS[x.w.wr]} ${esc(short(x.w.sp.m30*kx()))} <span class="sub">(${x.w.sp.v30})</span></td><td class="g">${pct(x.d)}</td><td>${spLink(x.g)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nenhuma inversão com esses filtros.</td></tr></tbody>`;
+  $("o3").innerHTML=c.length?`<thead><tr><th scope="col">Skin</th><th scope="col">Desgaste melhor</th><th scope="col">Desgaste pior</th><th scope="col">Diferença</th><th scope="col"><span class="vh">Link</span></th></tr></thead><tbody>`+c.slice(0,20).map(x=>`<tr tabindex="0" data-i="${x.g.i}">${skinCell(x.g)}<td>${WS[x.g.wr]} ${esc(short(x.g.sp.m30*kx()))} <span class="sub">(${x.g.sp.v30})</span></td><td>${WS[x.w.wr]} ${esc(short(x.w.sp.m30*kx()))} <span class="sub">(${x.w.sp.v30})</span></td><td class="g">${pct(x.d)}</td><td>${spLink(x.g)}</td></tr>`).join("")+`</tbody>`:`<tbody><tr><td class="empty">Nenhuma inversão com esses filtros. Tente outra categoria ou um preço mínimo menor.</td></tr></tbody>`;
 };
-const page=()=>{for(const b of document.querySelectorAll(".vt"))b.setAttribute("aria-pressed",b.dataset.v===S.page);$("vmarket").hidden=S.page!=="market";$("vopp").hidden=S.page!=="opp";if(S.page==="opp")opp()};
+const page=()=>{for(const b of document.querySelectorAll(".vt"))b.setAttribute("aria-pressed",b.dataset.v===S.page);$("vmarket").hidden=S.page!=="market";$("vopp").hidden=S.page!=="opp";if(S.page==="opp"&&H)opp()};
 const all=()=>{cats();models();overview();grid();if(S.page==="opp")opp();for(const b of $("cur").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.cur);$("fx").value=S.fx;save()};
-let view=[],X1,Y1,hov=-1,lastFocus=null;
+let view=[],X1,Y1,hov=-1,lastFocus=null,lastI=null;
 const V=d=>d.s*kx(),VR=d=>d.p*kx();
 const smooth=it=>{if(it.sm)return;const a=it.pts;let j=0;for(let i=0;i<a.length;i++){while(a[j].t<=a[i].t-7*DAY)j++;a[i].s=md(a.slice(j,i+1).map(d=>d.p))}it.sm=1};
 const detail=()=>{
   const it=S.sel;if(!it)return;const a=it.pts,days=PERS.find(p=>p[0]===S.per)[1];
-  $("per").innerHTML=PERS.map(([l])=>`<button data-v="${l}" aria-pressed="${l===S.per}">${l}</button>`).join("");
-  const di=$("dimg");di.style.setProperty("--rc",it.rc&&/^#[0-9a-f]{6}$/i.test(it.rc)?it.rc:"var(--q)");const u=src(it.img);di.innerHTML=u?`<img src="${u}" alt="${esc(it.model+" | "+it.name)}">`:"";
+  $("per").innerHTML=PERS.map(([l])=>`<button type="button" data-v="${l}" aria-pressed="${l===S.per}">${l}</button>`).join("");
+  const di=$("dimg");di.style.setProperty("--rc",it.rc&&/^#[0-9a-f]{6}$/i.test(it.rc)?it.rc:"var(--q)");const u=src(it.img);di.innerHTML=u?`<img src="${u}" alt="${esc(it.model+" | "+it.name)}" width="192" height="144">`:"";
   $("dmodel").textContent=it.model+(it.rar?" · "+it.rar:"");$("dname").textContent=it.name;$("dsub").textContent=it.wr<5?WEAR[it.wr]+" · float "+WR[it.wr]:"Sem desgaste";
   $("now").textContent=it.now==null?"—":money(it.now*kx());
   const sibs=IT.filter(x=>x.key===it.key).sort((x,y)=>x.wr-y.wr);
-  $("wl").innerHTML=sibs.map(x=>`<button data-i="${x.i}" aria-current="${x===it}"><span class="tag" style="background:${x.wr<5?WC[x.wr]:"var(--gold)"}">${WS[x.wr]||"★"}</span><span>${esc(x.wr<5?WEAR[x.wr]:"Vanilla")}</span><b>${x.now==null?"—":esc(short(x.now*kx()))}</b><small>${x.wr<5?WR[x.wr]:""}</small><small style="text-align:right;color:${col(x.c30)}">${x.c30!=null?pct(x.c30)+" 30d":""}</small></button>`).join("");
+  $("wl").innerHTML=sibs.map(x=>`<button type="button" data-i="${x.i}" aria-current="${x===it}"><span class="tag" style="background:${x.wr<5?WC[x.wr]:"var(--gold)"}">${WS[x.wr]||"★"}</span><span>${esc(x.wr<5?WEAR[x.wr]:"Vanilla")}</span><b>${x.now==null?"—":esc(short(x.now*kx()))}</b><small>${x.wr<5?WR[x.wr]:""}</small><small style="text-align:right;color:${col(x.c30)}">${x.c30!=null?pct(x.c30)+" 30d":""}</small></button>`).join("");
   for(const id of["dctr","kpis","read","f1","f2","f2l"])$(id).hidden=!it.h;$("nohist").hidden=it.h;
   const sp=it.sp;$("spb").hidden=!sp;
   if(sp){const W=[["24 horas",sp.m24,sp.v24],["7 dias",sp.m7,sp.v7],["30 dias",sp.m30,sp.v30],["90 dias",sp.m90,sp.v90]];
@@ -420,7 +647,7 @@ const readout=()=>{
   let A=view[0],B=view[view.length-1],lab="No período";
   if(S.rng){const[i,j]=S.rng[0]<=S.rng[1]?S.rng:[S.rng[1],S.rng[0]];A=view[i];B=view[j];lab="Seleção"}
   const sg=view.filter(d=>d.t>=A.t&&d.t<=B.t),vs=sg.map(V),x=V(B)/V(A)-1,n=sg.reduce((s,d)=>s+d.c,0);
-  $("read").innerHTML=`<b>${lab}:</b> <span>${esc(fd(A.t))} ${esc(money(V(A)))} → ${esc(fd(B.t))} ${esc(money(V(B)))}</span> <span class="c ${cl(x)}">${pct(x)} · ${V(B)-V(A)>=0?"+":"−"}${esc(money(Math.abs(V(B)-V(A))))}</span> <span class="sub">mín ${esc(ax(Math.min(...vs)))} · máx ${esc(ax(Math.max(...vs)))} · ${n} vendas</span>`+(S.rng?`<button class="btn" id="clr">Limpar seleção</button>`:`<span class="sub">Arraste no gráfico para medir entre dois dias.</span>`);
+  $("read").innerHTML=`<b>${lab}:</b> <span>${esc(fd(A.t))} ${esc(money(V(A)))} → ${esc(fd(B.t))} ${esc(money(V(B)))}</span> <span class="c ${cl(x)}">${pct(x)} · ${V(B)-V(A)>=0?"+":"−"}${esc(money(Math.abs(V(B)-V(A))))}</span> <span class="sub">mín ${esc(ax(Math.min(...vs)))} · máx ${esc(ax(Math.max(...vs)))} · ${n} vendas</span>`+(S.rng?`<button class="btn" type="button" id="clr">Limpar seleção</button>`:`<span class="sub">Arraste no gráfico para medir entre dois dias.</span>`);
   if(S.rng)$("clr").onclick=()=>{S.rng=null;readout();draw1()};
 };
 const nice=(lo,hi,n)=>{const r=(hi-lo)/n||1,p=10**Math.floor(Math.log10(r)),m=r/p,st=(m<1.5?1:m<3?2:m<7?5:10)*p,o=[];for(let v=Math.ceil(lo/st)*st;v<=hi+1e-9;v+=st)o.push(v);return o};
@@ -441,17 +668,17 @@ const draw1=()=>{
   g+=`<g clip-path="url(#cp)"><path d="${raw}" fill="none" stroke="var(--q)" stroke-width="1" opacity=".9"/><path d="${line}L${X1(t1)},${pb}L${X1(t0)},${pb}Z" fill="url(#ga)"/><path d="${line}" fill="none" stroke="var(--acc)" stroke-width="2.2" stroke-linejoin="round"/></g>`;
   let iM=0,im=0;view.forEach((d,i)=>{if(V(d)>V(view[iM]))iM=i;if(V(d)<V(view[im]))im=i});
   for(const[i,lab,dy]of[[iM,"máx",-10],[im,"mín",18]]){const x=X1(view[i].t),y=Y1(V(view[i]));g+=`<circle cx="${x}" cy="${y}" r="3.5" fill="var(--acc)"/><text x="${Math.min(Math.max(x,40),W-mr-40)}" y="${Math.min(Math.max(y+dy,mt+10),pb-4)}" text-anchor="middle" style="fill:var(--ink)">${lab} ${esc(ax(V(view[i])))}</text>`}
-  s.innerHTML=g+`<g id="o1"></g>`;cross();
+  s.innerHTML=g+`<g id="g1"></g>`;cross();
 };
 const draw2=()=>{
   const s=$("s2"),W=s.clientWidth,H=s.clientHeight;if(!W||!X1||!view.length)return;
   const ml=6,mr=W-X1(view[view.length-1].t),mt=8,mb=6,b0=V(view[0]),ys=view.map(d=>V(d)/b0-1);
   let lo=Math.min(0,...ys),hi=Math.max(0,...ys);const pad=(hi-lo)*.08||.01;lo-=pad;hi+=pad;const Y2=v=>mt+(hi-v)/(hi-lo)*(H-mt-mb),z=Y2(0);
   const p=view.map((d,i)=>(i?"L":"M")+X1(d.t).toFixed(1)+","+Y2(ys[i]).toFixed(1)).join(""),ar=p+`L${X1(view[view.length-1].t)},${z}L${X1(view[0].t)},${z}Z`;
-  s.innerHTML=`<defs><clipPath id="ca"><rect x="0" y="0" width="${W}" height="${z}"/></clipPath><clipPath id="cb"><rect x="0" y="${z}" width="${W}" height="${H}"/></clipPath></defs>`+nice(lo,hi,3).map(v=>`<line x1="${ml}" x2="${W-mr}" y1="${Y2(v)}" y2="${Y2(v)}" stroke="var(--rule)"/><text x="${W-mr+6}" y="${Y2(v)+4}">${v>0?"+":v<0?"−":""}${Math.abs(Math.round(v*100))}%</text>`).join("")+`<path d="${ar}" fill="var(--up)" opacity=".25" clip-path="url(#ca)"/><path d="${ar}" fill="var(--dn)" opacity=".25" clip-path="url(#cb)"/><path d="${p}" fill="none" stroke="var(--ink)" stroke-width="1.3"/><line x1="${ml}" x2="${W-mr}" y1="${z}" y2="${z}" stroke="var(--mut)"/><g id="o2"></g>`;cross();
+  s.innerHTML=`<defs><clipPath id="ca"><rect x="0" y="0" width="${W}" height="${z}"/></clipPath><clipPath id="cb"><rect x="0" y="${z}" width="${W}" height="${H}"/></clipPath></defs>`+nice(lo,hi,3).map(v=>`<line x1="${ml}" x2="${W-mr}" y1="${Y2(v)}" y2="${Y2(v)}" stroke="var(--rule)"/><text x="${W-mr+6}" y="${Y2(v)+4}">${v>0?"+":v<0?"−":""}${Math.abs(Math.round(v*100))}%</text>`).join("")+`<path d="${ar}" fill="var(--up)" opacity=".25" clip-path="url(#ca)"/><path d="${ar}" fill="var(--dn)" opacity=".25" clip-path="url(#cb)"/><path d="${p}" fill="none" stroke="var(--ink)" stroke-width="1.3"/><line x1="${ml}" x2="${W-mr}" y1="${z}" y2="${z}" stroke="var(--mut)"/><g id="g2"></g>`;cross();
 };
 const cross=()=>{
-  const o1=$("o1"),o2=$("o2"),tip=$("tip");
+  const o1=$("g1"),o2=$("g2"),tip=$("tip");
   if(hov<0||!view[hov]){if(o1)o1.innerHTML="";if(o2)o2.innerHTML="";tip.style.display="none";return}
   const d=view[hov],x=X1(d.t);
   if(o1)o1.innerHTML=`<line x1="${x}" x2="${x}" y1="0" y2="${$("s1").clientHeight}" stroke="var(--mut)" stroke-dasharray="2 3"/><circle cx="${x}" cy="${Y1(V(d))}" r="5" fill="var(--card)" stroke="var(--acc)" stroke-width="2.5"/>`;
@@ -467,40 +694,68 @@ const hook=s=>{let dr=null;const px=e=>e.clientX-s.getBoundingClientRect().left;
   const end=()=>{if(dr&&dr.m&&S.rng&&S.rng[0]===S.rng[1])S.rng=null;dr=null};
   s.addEventListener("pointerup",end);s.addEventListener("pointercancel",end);
   s.addEventListener("pointerleave",e=>{if(e.pointerType!=="touch"){hov=-1;cross()}end()})};
-const open=it=>{lastFocus=document.activeElement;S.sel=it;S.rng=null;hov=-1;$("ov").hidden=false;document.body.style.overflow="hidden";detail();$("x").focus()};
-const close=()=>{$("ov").hidden=true;document.body.style.overflow="";S.sel=null;if(lastFocus)lastFocus.focus()};
+
+/* skin detail dialog */
+const dlg=$("ov");
+const open=it=>{if(!it)return;if(!dlg.open){lastFocus=document.activeElement;lastI=it.i;dlg.showModal();document.body.style.overflow="hidden";dlg.scrollTop=0}S.sel=it;S.rng=null;hov=-1;detail();$("x").focus()};
+dlg.addEventListener("close",()=>{document.body.style.overflow="";S.sel=null;hov=-1;
+  let f=lastFocus&&document.contains(lastFocus)&&lastFocus.offsetParent!==null?lastFocus:null;
+  if(!f){const v=$(S.page==="opp"?"vopp":"vmarket");f=v.querySelector(`[data-i="${lastI}"]`)||(S.page==="opp"?$("ocat").querySelector("button"):$("q"))}
+  if(f)f.focus()});
+$("x").addEventListener("click",()=>dlg.close());
+dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
+
+/* theme */
+const mq=matchMedia("(prefers-color-scheme: dark)");
+const effTheme=()=>document.documentElement.dataset.theme||(mq.matches?"dark":"light");
+const paintTheme=()=>{const d=effTheme()==="dark";$("theme").innerHTML=icon(d?"sun":"moon");$("theme").setAttribute("aria-label",d?"Usar tema claro":"Usar tema escuro");$("theme").title=d?"Tema claro":"Tema escuro"};
+$("theme").addEventListener("click",()=>{const t=effTheme()==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("cs-theme",t)}catch(e){}paintTheme()});
+mq.addEventListener("change",paintTheme);paintTheme();
+
+/* header height for sticky offsets */
+new ResizeObserver(()=>document.documentElement.style.setProperty("--hh",$("app").offsetHeight+"px")).observe($("app"));
+
 (async()=>{
   const pk=fetch("img/pack.json").then(r=>r.ok?r.json():null).then(j=>{PACK=j}).catch(()=>{}).finally(()=>{PACKED=true});
-  try{await decode()}catch(e){$("lede").textContent="Seu navegador não conseguiu abrir os dados desta página. Tente no Chrome, Edge, Firefox ou Safari atualizados.";return}
-  const cs=[["facas","kn"],["luvas","gl"],["rifles","rf"]].map(([l,k])=>[l,m30(IT.filter(i=>i.cat===k))]).filter(x=>x[1]!=null);
-  const hs=IT.filter(i=>i.h).length,ss=IT.filter(i=>i.sp).length;
-  $("title").textContent=cs.length?"Em 30 dias: "+cs.map(([l,m])=>`${l} ${pct(m)}`).join(", "):"Variação de preço das skins";
-  $("lede").textContent=`Mediana da variação por categoria. ${SK.length.toLocaleString("pt-BR")} skins (${IT.length.toLocaleString("pt-BR")} itens contando desgastes) de AK-47, M4A1-S, facas e luvas: ${hs.toLocaleString("pt-BR")} itens com gráfico diário do CSFloat e ${ss.toLocaleString("pt-BR")} com estatísticas de venda da Skinport.`;
-  $("foot").textContent=`Dados de ${fd(Date.parse(H.asof))}. Índice: mediana, entre as skins com histórico do CSFloat, do preço semanal dividido pelo da semana-base. Com gráfico (CSFloat): preço = mediana dos preços médios diários dos últimos 7 dias; cada variação compara com a mediana da semana em torno da data. Sem gráfico (Skinport): preço = mediana das vendas em 7 dias; "30d" e "90d" comparam com a mediana desses períodos, então são estimativas. Sem nenhum dos dois: preço de referência do CSFloat, omitido com menos de 3 vendas. Sem StatTrak e Souvenir. Câmbio padrão: ${H.fx?"implícito nos preços da Skinport":"fixo"}. Atualizado pelo repositório cs-skin-prices.`;
+  try{await decode()}catch(e){
+    $("asof").textContent="Erro ao abrir os dados";$("lede").textContent="Seu navegador não conseguiu abrir os dados desta página. Tente no Chrome, Edge, Firefox ou Safari atualizados.";$("lede").hidden=false;
+    $("stats").textContent="";$("cats").innerHTML="";$("hl").innerHTML="";$("count").textContent="";
+    $("grid").innerHTML=`<div class="empty"><p><b>Não foi possível carregar as skins.</b></p><p>Atualize o navegador e abra a página de novo.</p></div>`;$("main").setAttribute("aria-busy","false");return}
+  const hs=IT.filter(i=>i.h).length,ss=IT.filter(i=>i.sp).length,ad=Date.parse(H.asof);
+  const dl=isFinite(ad)?new Date(ad).toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}):null;
+  $("asof").textContent=dl?"Dados de "+dl:"Dados mais recentes";
+  $("stats").innerHTML=[[SK.length,"skins"],[IT.length,"itens contando desgastes"],[hs,"com gráfico diário"],[ss,"com vendas da Skinport"]].map(([n,l])=>`<span><b>${n.toLocaleString("pt-BR")}</b> ${l}</span>`).join("");
+  $("fdate").textContent=(dl?`Dados de ${dl}. `:"")+"Atualizado pelo repositório cs-skin-prices. Sem StatTrak e Souvenir.";
+  $("foot").textContent=`Índice: mediana, entre as skins com histórico do CSFloat, do preço semanal dividido pelo da semana-base. Com gráfico (CSFloat): preço = mediana dos preços médios diários dos últimos 7 dias; cada variação compara com a mediana da semana em torno da data. Sem gráfico (Skinport): preço = mediana das vendas em 7 dias; "30d" e "90d" comparam com a mediana desses períodos, então são estimativas. Sem nenhum dos dois: preço de referência do CSFloat, omitido com menos de 3 vendas. Câmbio padrão: ${H.fx?"implícito nos preços da Skinport":"fixo"}.`;
+  $("main").setAttribute("aria-busy","false");
   S.page=location.hash==="#oportunidades"?"opp":"market";all();page();hook($("s1"));hook($("s2"));
   pk.then(()=>{all();if(S.sel)detail()});
   const ro=new ResizeObserver(()=>{if(S.sel){draw1();draw2()}});ro.observe($("f1"));ro.observe($("f2"));
   const rx=new ResizeObserver(()=>drawIx(index(scope(),S.ixw)));rx.observe($("fi"));
 })();
 const reset=()=>{S.lim=48};
-$("cats").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b)return;S.cat=b.dataset.v;S.wpn="";reset();all()});
-$("models").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b)return;S.wpn=b.dataset.v;reset();cats();models();overview();grid()});
+$("cats").addEventListener("click",e=>{const b=e.target.closest("button.tile");if(!b||!H)return;S.cat=b.dataset.v;S.wpn="";reset();all();b.blur();const nb=$("cats").querySelector(`[data-v="${S.cat}"]`);if(nb)nb.focus()});
+$("models").addEventListener("click",e=>{const b=e.target.closest("button.tile");if(!b)return;S.wpn=b.dataset.v;reset();cats();models();overview();grid();const nb=[...$("models").querySelectorAll("button.tile")].find(x=>x.dataset.v===S.wpn);if(nb)nb.focus()});
 $("ixp").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.ixw=+b.dataset.v;save();overview()});
-for(const id of["up","dn"])$(id).addEventListener("click",e=>{const b=e.target.closest(".mv");if(b)open(IT[+b.dataset.i])});
-$("grid").addEventListener("click",e=>{const c=e.target.closest("[data-i]");if(c)open(IT[+c.dataset.i])});
+$("hl").addEventListener("click",e=>{const b=e.target.closest("button.hc");if(b)open(IT[+b.dataset.i])});
+$("hlt").addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!H)return;S.hl=b.dataset.v;overview();$("hl").scrollLeft=0});
+$("grid").addEventListener("click",e=>{if(e.target.closest("[data-act=clear]")){clearF();return}const c=e.target.closest("[data-i]");if(c)open(IT[+c.dataset.i])});
 $("grid").addEventListener("keydown",e=>{if(e.key==="Enter"){const c=e.target.closest("tr[data-i]");if(c)open(IT[+c.dataset.i])}});
 $("wear").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.wear=S.wear===b.dataset.v?"":b.dataset.v;reset();grid()});
 $("tier").addEventListener("change",e=>{S.tier=+e.target.value;reset();grid()});
 $("sort").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.sort=b.dataset.v;reset();save();grid()});
+$("sorts").addEventListener("change",e=>{S.sort=e.target.value;reset();save();grid()});
 $("view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.view=b.dataset.v;reset();save();grid()});
 $("onlyh").addEventListener("change",e=>{S.onlyh=e.target.checked;reset();grid()});
 $("q").addEventListener("input",e=>{S.q=e.target.value;reset();grid()});
-$("cur").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.cur=b.dataset.v;all();detail()});
-$("fx").addEventListener("change",e=>{const v=parseFloat(String(e.target.value).replace(",","."));if(v>0){S.fx=v;fxUser=true;all();detail()}});
-$("per").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.per=b.dataset.v;S.rng=null;save();detail()});
-$("wl").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.sel=IT[+b.dataset.i];S.rng=null;hov=-1;detail()});
+$("clrf").addEventListener("click",clearF);
+$("ftog").addEventListener("click",()=>{const o=$("frow").classList.toggle("open");$("ftog").setAttribute("aria-expanded",String(o))});
+$("cur").addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!H)return;S.cur=b.dataset.v;all();detail()});
+$("fx").addEventListener("change",e=>{const v=parseFloat(String(e.target.value).replace(",","."));if(v>0&&H){S.fx=v;fxUser=true;all();detail()}});
+$("per").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.per=b.dataset.v;S.rng=null;save();detail();const nb=$("per").querySelector(`[data-v="${S.per}"]`);if(nb)nb.focus()});
+$("wl").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.sel=IT[+b.dataset.i];S.rng=null;hov=-1;detail();const nb=$("wl").querySelector(`[data-i="${b.dataset.i}"]`);if(nb)nb.focus()});
 document.addEventListener("error",e=>{if(e.target.tagName==="IMG")e.target.remove()},true);
-document.querySelector(".views").addEventListener("click",e=>{const b=e.target.closest(".vt");if(!b)return;S.page=b.dataset.v;try{history.replaceState(null,"",S.page==="opp"?"#oportunidades":location.pathname+location.search)}catch(_){location.hash=S.page==="opp"?"oportunidades":""}page()});
+document.querySelector(".views").addEventListener("click",e=>{const b=e.target.closest(".vt");if(!b)return;S.page=b.dataset.v;try{history.replaceState(null,"",S.page==="opp"?"#oportunidades":location.pathname+location.search)}catch(_){}page();window.scrollTo({top:0})});
 window.addEventListener("hashchange",()=>{S.page=location.hash==="#oportunidades"?"opp":"market";page()});
 $("ocat").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.ocat=b.dataset.v;opp()});
 $("ofee").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.ofee=+b.dataset.v;save();opp()});
@@ -508,8 +763,7 @@ $("omin").addEventListener("change",e=>{S.omin=+e.target.value;save();opp()});
 $("ominp").addEventListener("change",e=>{S.ominp=+e.target.value;save();opp()});
 $("bth").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.bth=+b.dataset.v;save();bt()});
 $("vopp").addEventListener("click",e=>{if(e.target.closest("a"))return;const r=e.target.closest("tr[data-i]");if(r)open(IT[+r.dataset.i])});
-$("x").onclick=close;$("ov").addEventListener("click",e=>{if(e.target===$("ov"))close()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("ov").hidden)close()});
+$("vopp").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.target.closest("a")){const r=e.target.closest("tr[data-i]");if(r)open(IT[+r.dataset.i])}});
 }
 </script>
 </body>
