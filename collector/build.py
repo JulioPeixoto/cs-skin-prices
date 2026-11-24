@@ -5,6 +5,8 @@ The data is packed small enough for one self-contained page:
   header: asof, fx, weapons [[name, cat]], paints [name],
           items [[weapon, paint, wear (5 = none), ref cents, ref volume, skinport|null]]
           skins {"weapon|paint": [image file|null, rarity, rarity colour]}
+          links [Skinport item page path per item, "" when unknown]
+          backtest  data/analysis/backtest.json as is
           skinport = [med7d, med30d, med90d, vol7d, vol30d, vol90d,
                       min listing, listings, med24h, vol24h] in USD cents
   series: n, then per point day, log-price code (ln(cents) * 200) and sales,
@@ -98,6 +100,10 @@ def main() -> int:
     sp, sp_updated = skinport_by_name()
     fx = (read_json(DATA / "skinport" / "fx.json") or {}).get("usd_brl")
     meta = read_json(DATA / "meta.json", {})
+    sp_links = read_json(DATA / "skinport" / "links.json", {})
+    backtest = read_json(DATA / "analysis" / "backtest.json")
+    prefix = "https://skinport.com/"
+    links = []
     daily_days = CONFIG["history"]["daily_days"]
 
     weapons, widx, paints, pidx = [], {}, [], {}
@@ -114,6 +120,8 @@ def main() -> int:
         if s and not any(s[:3]):
             s = None
         with_sp += s is not None
+        url = sp_links.get(it["name"], "")
+        links.append(url[len(prefix):] if url.startswith(prefix) else "")
         items.append([widx[it["weapon"]], pidx[it["paint"]], 5 if it["wear"] is None else it["wear"],
                       it["ref_price"], it["ref_volume"], s])
         hist = read_json(DATA / "csfloat" / "history" / f"{slug(it['name'])}.json", {"rows": []})
@@ -136,7 +144,7 @@ def main() -> int:
     asof = max(filter(None, [sp_updated, catalog.get("updated")]), default="")
     skins = {k: [m.get("img"), m.get("rarity"), m.get("color")] for k, m in meta.items()}
     header = json.dumps({"asof": asof, "fx": fx, "weapons": weapons, "paints": paints, "items": items,
-                         "skins": skins},
+                         "skins": skins, "links": links, "backtest": backtest},
                         ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     packed = gzip.compress(struct.pack("<I", len(header)) + header + bytes(blob), 9, mtime=0)
     page = TEMPLATE.read_text(encoding="utf-8").replace("__B64__", base64.b64encode(packed).decode())
