@@ -78,38 +78,48 @@ a{color:var(--acc)}
 .tog{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer;min-height:44px;white-space:nowrap}
 .tog input{width:18px;height:18px;min-height:0;margin:0;accent-color:var(--acc)}
 
-/* hero */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px 48px;align-items:end;padding:40px 0 32px}
-.eyebrow{font:600 12px var(--f-txt);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin:0 0 12px}
-h1{font-size:clamp(30px,3.8vw,48px);line-height:1.06;font-weight:600;letter-spacing:-.025em;margin:0 0 12px;max-width:18ch;text-wrap:balance}
-.lede{color:var(--mut);max-width:60ch;margin:0}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,auto));gap:16px 40px}
-.stat{display:flex;flex-direction:column}
-.stat b{font:600 28px/1.1 var(--f-num);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
-.stat span{font-size:13px;color:var(--mut)}
+/* hero: title + date on one line, coverage as one quiet line */
+.hero{padding:24px 0 16px}
+.hl{display:flex;align-items:baseline;gap:4px 16px;flex-wrap:wrap}
+.eyebrow{font:600 12px var(--f-txt);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin:0;white-space:nowrap}
+h1{font-size:clamp(24px,2.6vw,32px);line-height:1.15;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lede{color:var(--mut);max-width:70ch;margin:8px 0 0;font-size:14px}
+.cov{display:flex;flex-wrap:wrap;gap:4px 16px;margin:8px 0 0;font-size:14px;color:var(--mut)}
+.cov b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.cov>span{white-space:nowrap}
 
 /* sections */
-.sec{margin:0 0 32px}
+.sec{margin:0 0 24px}
 .sh{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap;margin-bottom:12px}
 .panel{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:16px}
 
 /* category + model tiles */
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .mtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:8px}
-.tile{text-align:left;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:16px 16px 12px;cursor:pointer;display:flex;flex-direction:column;gap:4px;position:relative;transition:border-color var(--t-fast),box-shadow var(--t-fast)}
+.tile{text-align:left;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:12px 16px 8px;cursor:pointer;display:flex;flex-direction:column;gap:4px;position:relative;transition:border-color var(--t-fast),box-shadow var(--t-fast)}
 .mtiles .tile{padding:12px 12px 8px}
 .tile[aria-pressed=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
 .tile .hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.tile .nm{font:600 18px/1.2 var(--f-num);letter-spacing:-.01em}
+.tile .nm{font:600 16px/1.2 var(--f-num);letter-spacing:-.01em}
 .mtiles .tile .nm{font-size:15px}
-.tile .ch{font:600 22px/1.1 var(--f-num);letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tile .ch{font:600 18px/1.1 var(--f-num);letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums}
 .mtiles .tile .ch{font-size:15px}
 .tile .meta{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut)}
-.tile .mc{width:100%;height:46px;display:block;margin:4px 0}
+.tile .mc{width:100%;height:36px;display:block;margin:4px 0}
 .mtiles .tile .mc{height:32px}
 
-/* overview */
-.ov2{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+/* highlights rail: biggest 30-day movers with large images */
+.hlr{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 36px)/4);gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:thin}
+.hc{scroll-snap-align:start;display:flex;flex-direction:column;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:0;color:var(--ink);cursor:pointer;overflow:hidden;transition:border-color var(--t-fast),transform var(--t-fast) var(--ease-out),box-shadow var(--t-fast)}
+.hc .im{border-radius:0}
+.hcb{display:flex;flex-direction:column;gap:2px;padding:12px}
+.hcm{display:block;font-size:12.5px;color:var(--mut)}
+.hcn{display:block;font:600 16px/1.25 var(--f-num);letter-spacing:-.01em}
+.hcr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:4px}
+.hcp{font:700 18px/1.2 var(--f-num);white-space:nowrap;font-variant-numeric:tabular-nums}
+.hcc{font:600 15px/1.2 var(--f-num);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* index panel */
+#fi{min-height:216px}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:8px 12px;flex-wrap:wrap;margin-bottom:8px}
 .fig{position:relative;min-height:248px}
 .fig.big2{min-height:320px}
@@ -117,13 +127,6 @@ h1{font-size:clamp(30px,3.8vw,48px);line-height:1.06;font-weight:600;letter-spac
 .fig>svg{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y}
 #s1,#s2{cursor:crosshair}
 svg text{font:12.5px var(--f-txt);fill:var(--mut);paint-order:stroke;stroke:var(--card);stroke-width:4px;font-variant-numeric:tabular-nums}
-.mvl{display:flex;flex-direction:column;margin:8px -8px 0}
-.mv{display:grid;grid-template-columns:48px minmax(0,1fr) auto;grid-template-rows:auto auto;gap:0 12px;align-items:center;padding:8px;border-radius:var(--r-sm);cursor:pointer;border:0;background:none;color:var(--ink);text-align:left;width:100%;min-height:56px;transition:background var(--t-fast)}
-.mv .th{grid-row:span 2;width:48px;height:36px}
-.mvn{display:block;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mvc{display:block;font:600 15px var(--f-num);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
-.mvm{display:block;font-size:12.5px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mvp{display:block;font-size:13px;color:var(--mut);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .emp{color:var(--mut);font-size:14px;margin:12px 8px}
 
 /* filter bar */
@@ -142,6 +145,8 @@ svg text{font:12.5px var(--f-txt);fill:var(--mut);paint-order:stroke;stroke:var(
 /* cards */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
 .card{position:relative;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:var(--r-md);padding:12px;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;gap:8px;transition:transform var(--t-fast) var(--ease-out),border-color var(--t-fast),box-shadow var(--t-fast)}
+.card .im{margin:-12px -12px 0;border-radius:var(--r-md) var(--r-md) 0 0}
+.card .im img{width:92%}
 .ct{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
 .ct .st{color:var(--gold);font-weight:600}
 .rar{display:inline-flex;align-items:center;gap:6px;color:var(--mut);white-space:nowrap}
@@ -191,7 +196,8 @@ td.empty{text-align:center;color:var(--mut);padding:32px 16px;white-space:normal
 /* skeletons */
 .skel{display:block;border-radius:var(--r-sm);background:linear-gradient(90deg,var(--card2) 30%,color-mix(in srgb,var(--card2) 50%,var(--card)) 50%,var(--card2) 70%) 0 0/200% 100%;animation:shim 1.4s linear infinite}
 @keyframes shim{to{background-position:-200% 0}}
-.sk-tile{min-height:148px;cursor:default}
+.sk-tile{min-height:112px;cursor:default}
+.sk-hc{min-height:264px;cursor:default;padding:0}
 .sk-card{min-height:360px;cursor:default}
 
 /* skin detail dialog */
@@ -256,33 +262,34 @@ dialog.dlg[open]{animation:dlgIn var(--t-med) var(--ease-out)}
   .seg button:hover:not([aria-pressed=true]){background:var(--card2);color:var(--ink)}
   .pill:hover:not([aria-pressed=true]){border-color:var(--acc)}
   .tile:hover{border-color:var(--acc)}
-  .mv:hover{background:var(--card2)}
+  .hc:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .hc:hover .im img{transform:scale(1.06) rotate(-2deg)}
   .card:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--shadow)}
   .card:hover .im img{transform:scale(1.06) rotate(-2deg)}
   tbody tr[data-i]:hover{background:var(--card2)}
   .wl button:hover{border-color:var(--acc)}
 }
-@media(max-width:1080px){.ov2{grid-template-columns:1fr 1fr}.ov2>.panel:first-child{grid-column:1/-1}.hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(4,minmax(0,auto));justify-content:start}}
+@media(max-width:1080px){.hlr{grid-auto-columns:calc((100% - 24px)/3)}}
+@media(max-width:900px){.bn span,.fxl{display:none}#fx{width:5em}.hbar{gap:0 16px}}
 @media(max-width:760px){
-  .hbar{gap:0 12px;padding-top:8px}
-  .views{order:3;flex-basis:100%;align-self:auto}
-  .vt{flex:1}
+  .bn{display:none}
   .tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
-  .tiles .tile{flex:0 0 72%;scroll-snap-align:start}
+  .tiles .tile{flex:0 0 calc(50% - 6px);scroll-snap-align:start}
+  .hlr{grid-auto-columns:42%}
   .bar{position:static;box-shadow:none}
   #sort{display:none}#sorts{display:block;flex:1 1 10em}
   #ftog{display:inline-flex}
   .frow:not(.open){display:none}
-  .stats{grid-template-columns:repeat(2,minmax(0,auto))}
   .dcols{grid-template-columns:1fr}
   .wl{flex-direction:row;overflow-x:auto}.wl button{flex:0 0 156px}
 }
 @media(max-width:600px){
-  .fxl{display:none}
-  #fx{width:5.5em}
-  .bn span{display:none}
-  .hero{padding:24px 0 20px}
-  .ov2{grid-template-columns:1fr}
+  .hbar{gap:0 12px;padding-top:8px}
+  .views{order:3;flex-basis:100%;align-self:auto}
+  .vt{flex:1}
+  .hero{padding:16px 0 12px}
+  .tiles .tile{flex-basis:44%}
+  .card .im{margin:-8px -8px 0}
   .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .card{padding:8px}.sk{font-size:15px}.pr{font-size:17px}
   .wcell{font-size:10.5px}.wcell b{font-size:11px}
@@ -295,7 +302,7 @@ dialog.dlg[open]{animation:dlgIn var(--t-med) var(--ease-out)}
   .dh{grid-template-columns:1fr}.big,.nows{text-align:left}
   .warn p{padding-left:16px}
 }
-@media(max-width:480px){.bn{display:none}.card .wears{display:none}}
+@media(max-width:480px){.card .wears{display:none}.hlr{grid-auto-columns:62%}.tiles .tile{flex-basis:62%}}
 @keyframes sheetIn{from{transform:translateY(40px);opacity:0}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
@@ -322,26 +329,18 @@ dialog.dlg[open]{animation:dlgIn var(--t-med) var(--ease-out)}
 <main class="wrap" id="main" aria-busy="true">
   <div id="vmarket">
     <section class="hero" aria-labelledby="h1">
-      <div>
-        <p class="eyebrow" id="asof">Carregando dados</p>
-        <h1 id="h1">Quanto as skins de CS2 subiram ou caíram</h1>
-        <p class="lede" id="lede">Histórico diário do CSFloat e vendas da Skinport para AK-47, M4A1-S, facas e luvas. Escolha uma categoria, filtre e abra uma skin para ver o gráfico.</p>
-      </div>
-      <div class="stats" id="stats" aria-label="Cobertura dos dados">
-        <div class="stat"><span class="skel" style="width:96px;height:30px"></span><span>skins</span></div>
-        <div class="stat"><span class="skel" style="width:96px;height:30px"></span><span>itens contando desgastes</span></div>
-        <div class="stat"><span class="skel" style="width:96px;height:30px"></span><span>com gráfico diário</span></div>
-        <div class="stat"><span class="skel" style="width:96px;height:30px"></span><span>com vendas da Skinport</span></div>
-      </div>
+      <div class="hl"><h1 id="h1">Mercado de skins de CS2</h1><p class="eyebrow" id="asof">Carregando dados</p></div>
+      <p class="cov" id="stats" aria-label="Cobertura dos dados"><span class="skel" style="width:360px;max-width:100%;height:20px"></span></p>
+      <p class="lede" id="lede" hidden></p>
     </section>
 
     <section class="sec" aria-labelledby="hcat">
       <div class="sh"><h2 id="hcat">Categoria</h2><p class="sub">Mediana da variação em 30 dias e índice de preço dos últimos 6 meses</p></div>
       <div class="tiles" id="cats">
-        <div class="tile sk-tile"><span class="skel" style="width:60%;height:22px"></span><span class="skel" style="width:40%;height:14px"></span><span class="skel" style="height:46px;margin-top:8px"></span></div>
-        <div class="tile sk-tile"><span class="skel" style="width:60%;height:22px"></span><span class="skel" style="width:40%;height:14px"></span><span class="skel" style="height:46px;margin-top:8px"></span></div>
-        <div class="tile sk-tile"><span class="skel" style="width:60%;height:22px"></span><span class="skel" style="width:40%;height:14px"></span><span class="skel" style="height:46px;margin-top:8px"></span></div>
-        <div class="tile sk-tile"><span class="skel" style="width:60%;height:22px"></span><span class="skel" style="width:40%;height:14px"></span><span class="skel" style="height:46px;margin-top:8px"></span></div>
+        <div class="tile sk-tile"><span class="skel" style="width:60%;height:20px"></span><span class="skel" style="height:36px;margin-top:8px"></span><span class="skel" style="width:40%;height:14px"></span></div>
+        <div class="tile sk-tile"><span class="skel" style="width:60%;height:20px"></span><span class="skel" style="height:36px;margin-top:8px"></span><span class="skel" style="width:40%;height:14px"></span></div>
+        <div class="tile sk-tile"><span class="skel" style="width:60%;height:20px"></span><span class="skel" style="height:36px;margin-top:8px"></span><span class="skel" style="width:40%;height:14px"></span></div>
+        <div class="tile sk-tile"><span class="skel" style="width:60%;height:20px"></span><span class="skel" style="height:36px;margin-top:8px"></span><span class="skel" style="width:40%;height:14px"></span></div>
       </div>
     </section>
 
@@ -350,13 +349,19 @@ dialog.dlg[open]{animation:dlgIn var(--t-med) var(--ease-out)}
       <div class="mtiles" id="models"></div>
     </section>
 
-    <section class="sec ov2" id="overview" aria-label="Visão geral da seleção">
-      <div class="panel">
-        <div class="ph"><div><h3 id="ixt">Índice de preço</h3><p class="sub" id="ixs"></p></div><div class="seg" id="ixp" role="group" aria-label="Período do índice"><button type="button" data-v="13">3M</button><button type="button" data-v="26">6M</button><button type="button" data-v="52">1A</button></div></div>
-        <div class="fig" id="fi"><svg id="si" role="img" aria-label="Índice de preço da seleção"></svg></div>
+    <section class="sec" aria-labelledby="hlh">
+      <div class="sh"><div><h2 id="hlh">Maiores altas em 30 dias</h2><p class="sub" id="hls">Itens com 20+ vendas no mês e acima de US$ 2</p></div><div class="seg" id="hlt" role="group" aria-label="Mostrar altas ou quedas"><button type="button" data-v="up">Altas</button><button type="button" data-v="dn">Quedas</button></div></div>
+      <div class="hlr" id="hl">
+        <div class="hc sk-hc"><span class="skel" style="aspect-ratio:4/3;border-radius:0"></span><span class="hcb"><span class="skel" style="height:14px;width:70%"></span><span class="skel" style="height:18px;width:50%;margin-top:4px"></span></span></div>
+        <div class="hc sk-hc"><span class="skel" style="aspect-ratio:4/3;border-radius:0"></span><span class="hcb"><span class="skel" style="height:14px;width:70%"></span><span class="skel" style="height:18px;width:50%;margin-top:4px"></span></span></div>
+        <div class="hc sk-hc"><span class="skel" style="aspect-ratio:4/3;border-radius:0"></span><span class="hcb"><span class="skel" style="height:14px;width:70%"></span><span class="skel" style="height:18px;width:50%;margin-top:4px"></span></span></div>
+        <div class="hc sk-hc"><span class="skel" style="aspect-ratio:4/3;border-radius:0"></span><span class="hcb"><span class="skel" style="height:14px;width:70%"></span><span class="skel" style="height:18px;width:50%;margin-top:4px"></span></span></div>
       </div>
-      <div class="panel"><h3>Maiores altas em 30 dias</h3><p class="sub">Itens com 20+ vendas no mês e acima de US$ 2</p><div class="mvl" id="up"><span class="skel" style="height:44px;margin:8px"></span><span class="skel" style="height:44px;margin:8px"></span><span class="skel" style="height:44px;margin:8px"></span></div></div>
-      <div class="panel"><h3>Maiores quedas em 30 dias</h3><p class="sub">Itens com 20+ vendas no mês e acima de US$ 2</p><div class="mvl" id="dn"><span class="skel" style="height:44px;margin:8px"></span><span class="skel" style="height:44px;margin:8px"></span><span class="skel" style="height:44px;margin:8px"></span></div></div>
+    </section>
+
+    <section class="sec panel" id="overview" aria-labelledby="ixt">
+      <div class="ph"><div><h3 id="ixt">Índice de preço</h3><p class="sub" id="ixs"></p></div><div class="seg" id="ixp" role="group" aria-label="Período do índice"><button type="button" data-v="13">3M</button><button type="button" data-v="26">6M</button><button type="button" data-v="52">1A</button></div></div>
+      <div class="fig" id="fi"><svg id="si" role="img" aria-label="Índice de preço da seleção"></svg></div>
     </section>
 
     <section class="sec" aria-labelledby="hcat2">
@@ -389,8 +394,7 @@ dialog.dlg[open]{animation:dlgIn var(--t-med) var(--ease-out)}
   <div id="vopp" hidden>
     <section class="hero" aria-labelledby="h1o" style="padding-bottom:24px">
       <div>
-        <p class="eyebrow">Oportunidades</p>
-        <h1 id="h1o">Onde o preço parece fora do lugar</h1>
+        <div class="hl"><h1 id="h1o">Onde o preço parece fora do lugar</h1></div>
         <p class="lede">Anúncios abaixo do preço de venda, itens abaixo da média de 90 dias e desgastes melhores vendendo mais barato, ao lado do que o histórico diz sobre essas regras.</p>
       </div>
     </section>
@@ -448,7 +452,7 @@ const TIERS=[[0,1e9],[0,10],[10,50],[50,250],[250,1e9]];
 const PERS=[["1M",30],["3M",91],["6M",182],["1A",365],["2A",730],["Tudo",0]];
 const IC={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>',ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'};
 const icon=n=>`<svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
-const S={cat:"all",wpn:"",wear:"",q:"",sort:"vol",tier:0,onlyh:false,view:"cards",ixw:26,lim:48,cur:"BRL",per:"1A",fx:5.86492,sel:null,rng:null,page:"market",ocat:"all",ofee:0.02,omin:10,ominp:2,bth:4};
+const S={hl:"up",cat:"all",wpn:"",wear:"",q:"",sort:"vol",tier:0,onlyh:false,view:"cards",ixw:26,lim:48,cur:"BRL",per:"1A",fx:5.86492,sel:null,rng:null,page:"market",ocat:"all",ofee:0.02,omin:10,ominp:2,bth:4};
 let fxUser=false;try{const sv=JSON.parse(localStorage.getItem("cs-var5")||"{}");for(const k of["cur","per","cat","sort","view","ixw","ofee","omin","ominp","bth"])if(sv[k]!=null)S[k]=sv[k];if(sv.fxUser){S.fx=sv.fxUser;fxUser=true}}catch(e){}
 const save=()=>{try{localStorage.setItem("cs-var5",JSON.stringify({cur:S.cur,per:S.per,cat:S.cat,sort:S.sort,view:S.view,ixw:S.ixw,ofee:S.ofee,omin:S.omin,ominp:S.ominp,bth:S.bth,fxUser:fxUser?S.fx:null}))}catch(e){}};
 let H,IT=[],SK=[],L=0;
@@ -509,7 +513,7 @@ const mini=(ix,h)=>{const p=ix.pts;if(p.length<2)return `<svg class="mc" viewBox
 const m30=xs=>{const v=xs.filter(i=>i.c30!=null&&i.v30>0).map(i=>i.c30);return v.length>=5?md(v):null};
 const cats=()=>{
   $("cats").innerHTML=CATS.map(([k,l])=>{const xs=IT.filter(i=>inCat(i,k)),m=m30(xs),ix=index(xs,26);
-    return `<button class="tile" type="button" data-v="${k}" aria-pressed="${S.cat===k}"><span class="hd"><span class="nm">${l}</span><span class="ch" style="color:${col(m)}">${pct(m)}</span></span><span class="meta"><span>${xs.length.toLocaleString("pt-BR")} itens</span><span>mediana 30 dias</span></span>${mini(ix,46)}<span class="meta"><span>${ix.n?`índice de ${ix.n} skins`:"índice em coleta"}</span><span>6 meses</span></span></button>`}).join("");
+    return `<button class="tile" type="button" data-v="${k}" aria-pressed="${S.cat===k}"><span class="hd"><span class="nm">${l}</span><span class="ch" style="color:${col(m)}">${pct(m)}</span></span>${mini(ix,36)}<span class="meta"><span>${xs.length.toLocaleString("pt-BR")} itens</span><span class="nw">${ix.n?"índice 6 meses":"índice em coleta"}</span></span></button>`}).join("");
 };
 const models=()=>{
   const cat=S.cat,ms=[...new Set(IT.filter(i=>inCat(i,cat)).map(i=>i.wn))];
@@ -526,11 +530,13 @@ const overview=()=>{
   const ix=index(xs,S.ixw);drawIx(ix);
   $("ixs").textContent=ix.pts.length?`Mediana do preço de ${ix.n} skins com histórico, base 100 ${S.ixw===13?"há 3 meses":S.ixw===26?"há 6 meses":"há 1 ano"}.`:"Ainda não há skins suficientes com histórico nesta seleção.";
   const liq=xs.filter(i=>i.c30!=null&&(i.v30??0)>=20&&i.now>=2&&(i.src!=="cf"||(i.r30n>=3&&i.n7>=3)));
-  const row=i=>`<button class="mv" type="button" data-i="${i.i}">${pic(i,"th")}<span class="mvn">${esc(i.model+" | "+i.name)}</span><span class="mvc" style="color:${col(i.c30)}">${pct(i.c30)}</span><span class="mvm">${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${i.src==="sp"?"Skinport":"CSFloat"}</span><span class="mvp">${esc(short(i.now*kx()))}</span></button>`;
-  const up=liq.slice().sort((a,b)=>b.c30-a.c30).slice(0,5),dn=liq.slice().sort((a,b)=>a.c30-b.c30).slice(0,5);
-  const none=`<p class="emp">Ainda não há itens com vendas suficientes nesta seleção.</p>`;
-  $("up").innerHTML=up.map(row).join("")||none;$("dn").innerHTML=dn.map(row).join("")||none;
+  for(const b of $("hlt").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.hl);
+  const top=liq.slice().sort((a,b)=>S.hl==="up"?b.c30-a.c30:a.c30-b.c30).slice(0,8),sn=selName();
+  $("hlh").textContent=S.hl==="up"?"Maiores altas em 30 dias":"Maiores quedas em 30 dias";
+  $("hls").textContent=`${sn[0].toUpperCase()+sn.slice(1)} · itens com 20+ vendas no mês e acima de US$ 2`;
+  $("hl").innerHTML=top.map(hcard).join("")||`<p class="emp">Ainda não há itens com vendas suficientes nesta seleção.</p>`;
 };
+const hcard=i=>`<button class="hc" type="button" data-i="${i.i}">${pic(i,"im")}<span class="hcb"><span class="hcm od-truncate">${esc(i.model)} · ${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")}</span><span class="hcn od-truncate">${esc(i.name)}</span><span class="hcr"><span class="hcp">${esc(short(i.now*kx()))}</span><span class="hcc" style="color:${col(i.c30)}">${pct(i.c30)}</span></span></span></button>`;
 const drawIx=ix=>{
   const s=$("si"),W=s.clientWidth,H=s.clientHeight;if(!W)return;const p=ix.pts;
   if(p.length<2){s.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle">Índice disponível quando houver histórico suficiente</text>`;return}
@@ -554,7 +560,7 @@ const steps=(it,cls)=>{const sp=it.sp,pts=[[45,sp.m90],[15,sp.m30],[3.5,sp.m7],[
   return `<svg class="${cls}" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="${pts.map((p,k)=>(k?"L":"M")+X(p[0]).toFixed(1)+","+Y(vs[k]).toFixed(1)).join("")}" fill="none" stroke="${col(it.c90??it.c30)}" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/></svg>`};
 const srcName=i=>i.src==="cf"?"CSFloat":i.src==="sp"?"Skinport":"referência";
 const card=s=>{const L0=s.lead,its=s.vis;
-  return `<button class="card" type="button" data-i="${L0.i}"${rcs(s)}><span class="ct"><span class="od-truncate${s.star?" st":""}">${esc(s.model)}</span>${s.rar?`<span class="rar"><i aria-hidden="true"></i>${esc(s.rar)}</span>`:""}</span>${pic(s,"im")}<span class="sk">${esc(s.name)}</span>`+
+  return `<button class="card" type="button" data-i="${L0.i}"${rcs(s)}>${pic(s,"im")}<span class="ct"><span class="od-truncate${s.star?" st":""}">${esc(s.model)}</span>${s.rar?`<span class="rar"><i aria-hidden="true"></i>${esc(s.rar)}</span>`:""}</span><span class="sk">${esc(s.name)}</span>`+
   `<span class="pr">${s.lo==null?"—":s.lo===s.hi?esc(short(s.lo*kx())):`<span class="nw">${esc(short(s.lo*kx()))}</span> – <span class="nw">${esc(short(s.hi*kx()))}</span>`}</span>`+
   (L0.wr<5?`<span class="wears">${[0,1,2,3,4].map(w=>{const x=s.items.find(i=>i.wr===w);return `<span class="wcell${!x||!its.includes(x)?" off":""}" style="--wc:${WC[w]}">${WS[w]}<b>${x&&x.now!=null?esc(ax(x.now*kx())):"—"}</b></span>`}).join("")}</span>`:"")+
   `<span class="cs"><span class="c ${cl(L0.c30)}">${WS[L0.wr]?WS[L0.wr]+" ":""}30d ${pct(L0.c30)}</span>${L0.h?`<span class="c ${cl(L0.c365)}">1a ${pct(L0.c365)}</span>`:L0.c90!=null?`<span class="c ${cl(L0.c90)}">90d ${pct(L0.c90)}</span>`:""}</span>${spark(L0,"sp")}<span class="ft"><span>${s.v30.toLocaleString("pt-BR")} vendas em 30d</span><span>${srcName(L0)}</span></span></button>`};
@@ -712,13 +718,13 @@ new ResizeObserver(()=>document.documentElement.style.setProperty("--hh",$("app"
 (async()=>{
   const pk=fetch("img/pack.json").then(r=>r.ok?r.json():null).then(j=>{PACK=j}).catch(()=>{}).finally(()=>{PACKED=true});
   try{await decode()}catch(e){
-    $("asof").textContent="Erro ao abrir os dados";$("lede").textContent="Seu navegador não conseguiu abrir os dados desta página. Tente no Chrome, Edge, Firefox ou Safari atualizados.";
-    $("stats").innerHTML="";$("cats").innerHTML="";$("up").innerHTML="";$("dn").innerHTML="";$("count").textContent="";
+    $("asof").textContent="Erro ao abrir os dados";$("lede").textContent="Seu navegador não conseguiu abrir os dados desta página. Tente no Chrome, Edge, Firefox ou Safari atualizados.";$("lede").hidden=false;
+    $("stats").textContent="";$("cats").innerHTML="";$("hl").innerHTML="";$("count").textContent="";
     $("grid").innerHTML=`<div class="empty"><p><b>Não foi possível carregar as skins.</b></p><p>Atualize o navegador e abra a página de novo.</p></div>`;$("main").setAttribute("aria-busy","false");return}
   const hs=IT.filter(i=>i.h).length,ss=IT.filter(i=>i.sp).length,ad=Date.parse(H.asof);
   const dl=isFinite(ad)?new Date(ad).toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}):null;
   $("asof").textContent=dl?"Dados de "+dl:"Dados mais recentes";
-  $("stats").innerHTML=[[SK.length,"skins"],[IT.length,"itens contando desgastes"],[hs,"com gráfico diário"],[ss,"com vendas da Skinport"]].map(([n,l])=>`<div class="stat"><b>${n.toLocaleString("pt-BR")}</b><span>${l}</span></div>`).join("");
+  $("stats").innerHTML=[[SK.length,"skins"],[IT.length,"itens contando desgastes"],[hs,"com gráfico diário"],[ss,"com vendas da Skinport"]].map(([n,l])=>`<span><b>${n.toLocaleString("pt-BR")}</b> ${l}</span>`).join("");
   $("fdate").textContent=(dl?`Dados de ${dl}. `:"")+"Atualizado pelo repositório cs-skin-prices. Sem StatTrak e Souvenir.";
   $("foot").textContent=`Índice: mediana, entre as skins com histórico do CSFloat, do preço semanal dividido pelo da semana-base. Com gráfico (CSFloat): preço = mediana dos preços médios diários dos últimos 7 dias; cada variação compara com a mediana da semana em torno da data. Sem gráfico (Skinport): preço = mediana das vendas em 7 dias; "30d" e "90d" comparam com a mediana desses períodos, então são estimativas. Sem nenhum dos dois: preço de referência do CSFloat, omitido com menos de 3 vendas. Câmbio padrão: ${H.fx?"implícito nos preços da Skinport":"fixo"}.`;
   $("main").setAttribute("aria-busy","false");
@@ -731,7 +737,8 @@ const reset=()=>{S.lim=48};
 $("cats").addEventListener("click",e=>{const b=e.target.closest("button.tile");if(!b||!H)return;S.cat=b.dataset.v;S.wpn="";reset();all();b.blur();const nb=$("cats").querySelector(`[data-v="${S.cat}"]`);if(nb)nb.focus()});
 $("models").addEventListener("click",e=>{const b=e.target.closest("button.tile");if(!b)return;S.wpn=b.dataset.v;reset();cats();models();overview();grid();const nb=[...$("models").querySelectorAll("button.tile")].find(x=>x.dataset.v===S.wpn);if(nb)nb.focus()});
 $("ixp").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.ixw=+b.dataset.v;save();overview()});
-for(const id of["up","dn"])$(id).addEventListener("click",e=>{const b=e.target.closest(".mv");if(b)open(IT[+b.dataset.i])});
+$("hl").addEventListener("click",e=>{const b=e.target.closest("button.hc");if(b)open(IT[+b.dataset.i])});
+$("hlt").addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!H)return;S.hl=b.dataset.v;overview();$("hl").scrollLeft=0});
 $("grid").addEventListener("click",e=>{if(e.target.closest("[data-act=clear]")){clearF();return}const c=e.target.closest("[data-i]");if(c)open(IT[+c.dataset.i])});
 $("grid").addEventListener("keydown",e=>{if(e.key==="Enter"){const c=e.target.closest("tr[data-i]");if(c)open(IT[+c.dataset.i])}});
 $("wear").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.wear=S.wear===b.dataset.v?"":b.dataset.v;reset();grid()});
