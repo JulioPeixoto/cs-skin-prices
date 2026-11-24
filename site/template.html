@@ -56,9 +56,10 @@ label.fx{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut)
 .fig>svg{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y}
 #s1,#s2{cursor:crosshair}
 svg text{font:12.5px Inter,sans-serif;fill:var(--mut);paint-order:stroke;stroke:var(--card);stroke-width:4px}
-.mv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:8px 6px;border-radius:8px;cursor:pointer;border:0;background:none;font:inherit;color:var(--ink);text-align:left;width:100%}
+.mv{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:8px 6px;border-radius:8px;cursor:pointer;border:0;background:none;font:inherit;color:var(--ink);text-align:left;width:100%}
 .mv:hover{background:var(--card2)}
 .mv span{font-size:12.5px;color:var(--mut)}
+.mv .th{grid-row:span 2;width:48px;height:36px}
 .mv b{font-size:15px;white-space:nowrap;text-align:right}
 .mv i{font-style:normal;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:10px;position:sticky;top:8px;z-index:4;margin-bottom:14px}
@@ -71,8 +72,16 @@ svg text{font:12.5px Inter,sans-serif;fill:var(--mut);paint-order:stroke;stroke:
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
 .card{position:relative;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px;color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:7px;overflow:hidden;transition:transform .15s,border-color .15s}
 .card:hover{border-color:var(--acc);transform:translateY(-2px)}
-.card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--q)}
-.card.star::before{background:var(--gold)}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--rc,var(--q))}
+.rar{color:var(--rc,var(--mut));font-weight:600}
+.im{aspect-ratio:4/3;margin:0 -4px;border-radius:10px;background:radial-gradient(60% 55% at 50% 58%,color-mix(in srgb,var(--rc,var(--q)) 30%,transparent),transparent 72%),var(--card2);display:grid;place-items:center;overflow:hidden}
+.im img{width:88%;height:88%;object-fit:contain;filter:drop-shadow(0 6px 10px rgb(0 0 0/.35));transition:transform .2s}
+.card:hover .im img{transform:scale(1.06) rotate(-2deg)}
+.th{width:56px;height:42px;flex:none;border-radius:8px;background:radial-gradient(60% 60% at 50% 55%,color-mix(in srgb,var(--rc,var(--q)) 30%,transparent),transparent 75%),var(--card2);display:grid;place-items:center;overflow:hidden}
+.th img{width:92%;height:92%;object-fit:contain}
+.sn{display:flex;gap:10px;align-items:center}
+.dimg{aspect-ratio:4/3;border-radius:12px;margin-bottom:10px;background:radial-gradient(60% 55% at 50% 58%,color-mix(in srgb,var(--rc,var(--q)) 34%,transparent),transparent 72%),var(--card2);display:grid;place-items:center;overflow:hidden;border-bottom:3px solid var(--rc,var(--q))}
+.dimg img{width:86%;height:86%;object-fit:contain;filter:drop-shadow(0 10px 16px rgb(0 0 0/.4))}
 .ct{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut)}
 .ct .st{color:var(--gold)}
 .sk{font:600 17px/1.2 "Space Grotesk",Inter,sans-serif;letter-spacing:-.01em}
@@ -127,9 +136,9 @@ tbody tr:hover{background:var(--card2)}
 .note{padding:14px;border:1px dashed var(--rule);border-radius:12px;color:var(--mut);margin-bottom:12px}
 .foot{color:var(--mut);font-size:13px;padding-bottom:30px}
 @media(max-width:980px){.ov2{grid-template-columns:1fr 1fr}.ov2>.panel:first-child{grid-column:1/-1}}
-@media(max-width:760px){.tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}.tiles .tile{flex:0 0 72%;scroll-snap-align:start}.dcols{grid-template-columns:1fr}.wl{flex-direction:row;overflow-x:auto}.wl button{flex:0 0 150px}.bar{position:static}}
+@media(max-width:760px){.tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}.tiles .tile{flex:0 0 72%;scroll-snap-align:start}.dcols{grid-template-columns:1fr}.dimg{aspect-ratio:16/9}.wl{flex-direction:row;overflow-x:auto}.wl button{flex:0 0 150px}.bar{position:static}}
 @media(max-width:600px){.top{grid-template-columns:1fr}.ov2{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:10px}.sk{font-size:15px}.pr{font-size:17px}.dh{grid-template-columns:1fr}.big{text-align:left}.hide-s{display:none}.mtiles{grid-template-columns:repeat(2,minmax(0,1fr))}.fig.big2{min-height:260px}}
-@media(prefers-reduced-motion:reduce){.card,.tile{transition:none}.card:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.card,.tile,.im img{transition:none}.card:hover,.card:hover .im img{transform:none}}
 </style>
 </head>
 <body>
@@ -167,7 +176,7 @@ tbody tr:hover{background:var(--card2)}
     <button class="x" id="x" aria-label="Fechar">×</button>
     <div class="dh"><div><p class="sub" id="dmodel"></p><h2 id="dname">—</h2><p class="sub" id="dsub"></p></div><div><div class="big" id="now">—</div><p class="sub" id="nowSub" style="text-align:right"></p></div></div>
     <div class="dcols">
-      <div class="wl" id="wl" role="group" aria-label="Desgastes"></div>
+      <div><div class="dimg" id="dimg"></div><div class="wl" id="wl" role="group" aria-label="Desgastes"></div></div>
       <div>
         <div class="note" id="nohist" hidden>O gráfico diário vem do CSFloat, que libera o histórico de cerca de 200 skins por hora; esta entra numa das próximas coletas. <a id="csl" href="#" target="_blank" rel="noopener">Ver no CSFloat</a></div>
         <div class="dctr" id="dctr"><div class="seg" id="per" role="group" aria-label="Período do gráfico"></div></div>
@@ -214,10 +223,10 @@ const decode=async()=>{
   IT=H.items.map(([w,pi,wr,rp,rvol,sp])=>{const n=rv(),pts=[];let day=0,code=0;for(let i=0;i<n;i++){day=i?day+rv():rv();code=i?code+zz(rv()):rv();pts.push({t:day*DAY,p:Math.exp(code/200)/100,c:rv()})}const W=H.weapons[w];
     return{w,cat:W[1],star:W[1]==="gl"||W[1]==="kn",wn:W[0],pn:H.paints[pi],wr,pts,rp:rp/100,rvol,sp:sp?{m7:sp[0]/100,m30:sp[1]/100,m90:sp[2]/100,v7:sp[3],v30:sp[4],v90:sp[5],min:sp[6]==null?null:sp[6]/100,qty:sp[7],m24:sp[8]==null?null:sp[8]/100,v24:sp[9]}:null}});
   IT=IT.filter(x=>x.pts.length||x.rp>0||x.sp);const ends=IT.filter(x=>x.pts.length).map(x=>x.pts[x.pts.length-1].t);L=ends.length?Math.max(...ends):Date.parse(H.asof);
-  IT.forEach((it,i)=>{it.i=i;stats(it)});
+  const MS=H.skins||{};IT.forEach((it,i)=>{it.i=i;const m=MS[it.wn+"|"+it.pn];it.img=m&&m[0];it.rar=m&&m[1];it.rc=m&&m[2];stats(it)});
   const by=new Map();for(const it of IT){const k=it.wn+"|"+it.pn;if(!by.has(k))by.set(k,{key:k,wn:it.wn,pn:it.pn,cat:it.cat,star:it.star,items:[]});by.get(k).items.push(it)}
   SK=[...by.values()];for(const s of SK){s.items.sort((a,b)=>a.wr-b.wr);s.lead=s.items.slice().sort((a,b)=>(b.v30??-1)-(a.v30??-1)||(b.rvol-a.rvol))[0];s.v30=s.items.reduce((t,i)=>t+(i.v30||0),0);s.h=s.items.some(i=>i.h);
-    const ps=s.items.map(i=>i.now).filter(x=>x!=null);s.lo=ps.length?Math.min(...ps):null;s.hi=ps.length?Math.max(...ps):null;s.name=s.pn==="Vanilla"?"Vanilla":s.pn;s.model=(s.star?"★ ":"")+s.wn}
+    const ps=s.items.map(i=>i.now).filter(x=>x!=null);s.lo=ps.length?Math.min(...ps):null;s.hi=ps.length?Math.max(...ps):null;s.name=s.pn==="Vanilla"?"Vanilla":s.pn;s.model=(s.star?"★ ":"")+s.wn;s.img=s.items[0].img;s.rar=s.items[0].rar;s.rc=s.items[0].rc}
 };
 const win=(a,t0,t1)=>md(a.filter(d=>d.t>t0&&d.t<=t1).map(d=>d.p));
 const near=(a,t,tol)=>{let b=null,bd=tol;for(const d of a){const dd=Math.abs(d.t-t);if(dd<=bd){bd=dd;b=d}}return b};
@@ -242,6 +251,8 @@ const index=(items,weeks)=>{
   return{pts:out,n:n0};
 };
 const inCat=(i,c)=>c==="all"||i.cat===c;
+const rcs=x=>x.rc&&/^#[0-9a-f]{6}$/i.test(x.rc)?` style="--rc:${x.rc}"`:"";
+const pic=(x,cls)=>`<div class="${cls}"${rcs(x)}>${x.img&&/^[\w.-]+$/.test(x.img)?`<img src="img/${x.img}" alt="" loading="lazy">`:""}</div>`;
 const mini=(ix,h)=>{const p=ix.pts;if(p.length<2)return `<svg viewBox="0 0 200 ${h}" aria-hidden="true"><text x="0" y="${h-6}" style="stroke:none">sem histórico suficiente ainda</text></svg>`;
   const vs=p.map(x=>x.v),lo=Math.min(...vs,100),hi=Math.max(...vs,100),X=k=>k/(p.length-1)*200,Y=v=>h-3-(v-lo)/((hi-lo)||1)*(h-6),last=vs[vs.length-1],c=last>=100?"var(--up)":"var(--dn)";
   const d=p.map((x,k)=>(k?"L":"M")+X(k).toFixed(1)+","+Y(x.v).toFixed(1)).join("");
@@ -266,7 +277,7 @@ const overview=()=>{
   const ix=index(xs,S.ixw);drawIx(ix);
   $("ixs").textContent=ix.pts.length?`Mediana do preço de ${ix.n} skins com histórico, base 100 ${S.ixw===13?"há 3 meses":S.ixw===26?"há 6 meses":"há 1 ano"}.`:"Ainda não há skins suficientes com histórico nesta seleção.";
   const liq=xs.filter(i=>i.c30!=null&&(i.v30??0)>=20&&i.now>=2&&(i.src!=="cf"||(i.r30n>=3&&i.n7>=3)));
-  const row=i=>`<button class="mv" data-i="${i.i}"><i>${esc(i.model+" | "+i.name)}</i><b style="color:${col(i.c30)}">${pct(i.c30)}</b><span>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${i.src==="sp"?"Skinport":"CSFloat"}</span><b style="font-size:13px;color:var(--mut);font-weight:500">${esc(short(i.now*kx()))}</b></button>`;
+  const row=i=>`<button class="mv" data-i="${i.i}">${pic(i,"th")}<i>${esc(i.model+" | "+i.name)}</i><b style="color:${col(i.c30)}">${pct(i.c30)}</b><span>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${i.src==="sp"?"Skinport":"CSFloat"}</span><b style="font-size:13px;color:var(--mut);font-weight:500">${esc(short(i.now*kx()))}</b></button>`;
   const up=liq.slice().sort((a,b)=>b.c30-a.c30).slice(0,5),dn=liq.slice().sort((a,b)=>a.c30-b.c30).slice(0,5);
   $("up").innerHTML=up.map(row).join("")||`<p class="sub">Sem dados suficientes.</p>`;$("dn").innerHTML=dn.map(row).join("")||`<p class="sub">Sem dados suficientes.</p>`;
 };
@@ -292,7 +303,7 @@ const steps=(it,cls)=>{const sp=it.sp,pts=[[45,sp.m90],[15,sp.m30],[3.5,sp.m7],[
   const vs=pts.map(p=>Math.log(p[1])),lo=Math.min(...vs),hi=Math.max(...vs),X=d=>(1-d/50)*196+2,Y=v=>28-(v-lo)/((hi-lo)||1)*24;
   return `<svg class="${cls}" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="${pts.map((p,k)=>(k?"L":"M")+X(p[0]).toFixed(1)+","+Y(vs[k]).toFixed(1)).join("")}" fill="none" stroke="${col(it.c90??it.c30)}" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/></svg>`};
 const card=s=>{const L0=s.lead,its=s.vis;
-  return `<button class="card${s.star?" star":""}" data-i="${L0.i}"><div class="ct"><span class="${s.star?"st":""}">${esc(s.model)}</span><span>${s.items.length>1?s.items.length+" desgastes":WS[L0.wr]||"—"}</span></div><div class="sk">${esc(s.name)}</div>`+
+  return `<button class="card${s.star?" star":""}" data-i="${L0.i}"${rcs(s)}><div class="ct"><span class="${s.star?"st":""}">${esc(s.model)}</span><span class="rar">${esc(s.rar||"")}</span></div>${pic(s,"im")}<div class="sk">${esc(s.name)}</div>`+
   `<div class="pr">${s.lo==null?"—":s.lo===s.hi?esc(short(s.lo*kx())):esc(short(s.lo*kx()))+" – "+esc(short(s.hi*kx()))}</div>`+
   (L0.wr<5?`<div class="wears">${[0,1,2,3,4].map(w=>{const x=s.items.find(i=>i.wr===w);return `<div class="wcell${!x||!its.includes(x)?" off":""}" style="border-top-color:${WC[w]}">${WS[w]}<b>${x&&x.now!=null?esc(ax(x.now*kx())):"—"}</b></div>`}).join("")}</div>`:"")+
   `<div class="cs"><span class="c ${cl(L0.c30)}">${WS[L0.wr]?WS[L0.wr]+" ":""}30d ${pct(L0.c30)}</span>${L0.h?`<span class="c ${cl(L0.c365)}">1a ${pct(L0.c365)}</span>`:L0.c90!=null?`<span class="c ${cl(L0.c90)}">90d ${pct(L0.c90)}</span>`:""}</div>${spark(L0,"sp")}<div class="ft"><span>${s.v30} vendas/30d</span><span>${L0.src==="cf"?"CSFloat":L0.src==="sp"?"Skinport":"referência"}</span></div></button>`};
@@ -306,7 +317,7 @@ const grid=()=>{
   if(S.view==="table"){
     r.sort(cmp(f));$("count").textContent=`${r.length.toLocaleString("pt-BR")} itens · ${selName()}`;
     $("grid").innerHTML=`<div class="scroll"><table><thead><tr><th class="hide-s">#</th><th>Skin</th><th>Preço</th><th class="hide-s">7 dias</th><th>30 dias</th><th class="hide-s">90 dias</th><th class="hide-s">1 ano</th><th class="hide-s">Vendas 30d</th><th class="hide-s">Tendência</th></tr></thead><tbody>`+
-      r.slice(0,S.lim).map((i,k)=>`<tr tabindex="0" data-i="${i.i}"><td class="hide-s">${k+1}</td><td class="n">${esc(i.model)} | ${esc(i.name)}<small>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${i.src==="cf"?"CSFloat":i.src==="sp"?"Skinport":"referência"}</small></td><td>${i.now==null?"—":esc(short(i.now*kx()))}</td>`+["c7","c30","c90","c365"].map(c=>`<td class="${c==="c30"?"":"hide-s"}" style="color:${col(i[c])}">${pct(i[c])}</td>`).join("")+`<td class="hide-s">${i.v30??"—"}</td><td class="hide-s">${spark(i,"tsp")}</td></tr>`).join("")+`</tbody></table></div>`+more(r.length);
+      r.slice(0,S.lim).map((i,k)=>`<tr tabindex="0" data-i="${i.i}"><td class="hide-s">${k+1}</td><td class="n"><div class="sn">${pic(i,"th")}<div>${esc(i.model)} | ${esc(i.name)}<small>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${esc(i.rar||"")} · ${i.src==="cf"?"CSFloat":i.src==="sp"?"Skinport":"referência"}</small></div></div></td><td>${i.now==null?"—":esc(short(i.now*kx()))}</td>`+["c7","c30","c90","c365"].map(c=>`<td class="${c==="c30"?"":"hide-s"}" style="color:${col(i[c])}">${pct(i[c])}</td>`).join("")+`<td class="hide-s">${i.v30??"—"}</td><td class="hide-s">${spark(i,"tsp")}</td></tr>`).join("")+`</tbody></table></div>`+more(r.length);
   }else{
     const g=new Map();for(const i of r){if(!g.has(i.key))g.set(i.key,[]);g.get(i.key).push(i)}
     const sk=[...g.entries()].map(([k,its])=>{const s=SK.find(x=>x.key===k);return Object.assign(Object.create(s),{vis:its,lead:its.slice().sort((a,b)=>(b.v30??-1)-(a.v30??-1)||(b.rvol-a.rvol))[0]})});
@@ -324,7 +335,8 @@ const smooth=it=>{if(it.sm)return;const a=it.pts;let j=0;for(let i=0;i<a.length;
 const detail=()=>{
   const it=S.sel;if(!it)return;const a=it.pts,days=PERS.find(p=>p[0]===S.per)[1];
   $("per").innerHTML=PERS.map(([l])=>`<button data-v="${l}" aria-pressed="${l===S.per}">${l}</button>`).join("");
-  $("dmodel").textContent=it.model;$("dname").textContent=it.name;$("dsub").textContent=it.wr<5?WEAR[it.wr]+" · float "+WR[it.wr]:"Sem desgaste";
+  const di=$("dimg");di.style.setProperty("--rc",it.rc&&/^#[0-9a-f]{6}$/i.test(it.rc)?it.rc:"var(--q)");di.innerHTML=it.img&&/^[\w.-]+$/.test(it.img)?`<img src="img/${it.img}" alt="${esc(it.model+" | "+it.name)}">`:"";
+  $("dmodel").textContent=it.model+(it.rar?" · "+it.rar:"");$("dname").textContent=it.name;$("dsub").textContent=it.wr<5?WEAR[it.wr]+" · float "+WR[it.wr]:"Sem desgaste";
   $("now").textContent=it.now==null?"—":money(it.now*kx());
   const sibs=IT.filter(x=>x.key===it.key).sort((x,y)=>x.wr-y.wr);
   $("wl").innerHTML=sibs.map(x=>`<button data-i="${x.i}" aria-current="${x===it}"><span class="tag" style="background:${x.wr<5?WC[x.wr]:"var(--gold)"}">${WS[x.wr]||"★"}</span><span>${esc(x.wr<5?WEAR[x.wr]:"Vanilla")}</span><b>${x.now==null?"—":esc(short(x.now*kx()))}</b><small>${x.wr<5?WR[x.wr]:""}</small><small style="text-align:right;color:${col(x.c30)}">${x.c30!=null?pct(x.c30)+" 30d":""}</small></button>`).join("");
@@ -419,6 +431,7 @@ $("cur").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
 $("fx").addEventListener("change",e=>{const v=parseFloat(String(e.target.value).replace(",","."));if(v>0){S.fx=v;fxUser=true;all();detail()}});
 $("per").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.per=b.dataset.v;S.rng=null;save();detail()});
 $("wl").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.sel=IT[+b.dataset.i];S.rng=null;hov=-1;detail()});
+document.addEventListener("error",e=>{if(e.target.tagName==="IMG")e.target.remove()},true);
 $("x").onclick=close;$("ov").addEventListener("click",e=>{if(e.target===$("ov"))close()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("ov").hidden)close()});
 }
