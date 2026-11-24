@@ -8,11 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* VOICE work: a skin market terminal, dense but calm
-   IDEA a marketplace like CSFloat: category bar with model menus, filter sidebar, grid of item cards, item opens in a modal with its chart
-   PICTURE the card grid itself, each card with wear bar, price, change chips and a year sparkline; the modal chart when opened
+   IDEA a market overview like Pricempire on top of a catalog like csgoskins.gg: pick a category, then a model, then a skin
+   PICTURE the price index of the current selection, beside the biggest risers and fallers
    COLOUR night slate ground, bronze accent, gold for ★ items, green up, red down; light theme mirrors it
    TYPE Space Grotesk 700 figures + Inter text
-   LAYOUT laptop: bar, models row, sidebar + grid; phone: bar and models scroll sideways, filters fold above grid */
+   LAYOUT laptop: category tiles, model tiles, index + movers, toolbar, skins; phone: tiles scroll sideways, everything stacks */
 :root{color-scheme:light dark;--bg:light-dark(#f4f1ee,#0f1115);--card:light-dark(#ffffff,#181b22);--card2:light-dark(#f8f5f2,#1f232c);--ink:light-dark(#16130f,#eef0f4);--mut:light-dark(#6f6862,#9aa1ae);--rule:light-dark(#e3ddd6,#2a2f3a);--acc:light-dark(#a8501c,#e8894a);--gold:light-dark(#9a7400,#e7b93e);--up:light-dark(#13803b,#4fcf80);--dn:light-dark(#c42a2a,#ff6b6b);--q:light-dark(#bdb5ae,#4a5160)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
@@ -20,73 +20,101 @@
 html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;overflow-x:clip}
 .wrap{max-width:1320px;margin:0 auto;padding:0 max(3vw,16px)}
-h1,h2,h3,.big,.pr,.kv b,.tab b{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.02em}
+h1,h2,h3,.big,.pr,.kv b,.tile b,.mv b{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.02em}
 h1{font-size:clamp(26px,3.4vw,40px);line-height:1.05;margin:0 0 6px;text-wrap:balance}
+h2{font-size:21px;margin:0}
 .sub{color:var(--mut);margin:0;font-size:14px}
-.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px;align-items:end;padding-top:clamp(18px,3vw,32px);padding-bottom:16px}
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px;align-items:end;padding-top:clamp(18px,3vw,32px);padding-bottom:18px}
 .money{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .seg{display:inline-flex;border:1px solid var(--rule);border-radius:9px;overflow:hidden;background:var(--card)}
-.seg button{font:500 14px Inter,sans-serif;background:none;color:var(--mut);border:0;min-height:40px;padding:0 12px;cursor:pointer}
+.seg button{font:500 14px Inter,sans-serif;background:none;color:var(--mut);border:0;min-height:40px;padding:0 12px;cursor:pointer;white-space:nowrap}
 .seg button+button{border-left:1px solid var(--rule)}
 .seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
-button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-input,select{font:16px Inter,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;min-height:42px;width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,tr:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input,select{font:16px Inter,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;min-height:42px}
 label.fx{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut);white-space:nowrap}
 #fx{width:7.5em}
-.bar{background:var(--card);border-block:1px solid var(--rule);position:sticky;top:0;z-index:5}
-.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
-.tab{flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:0;background:none;border:0;border-bottom:3px solid transparent;color:var(--mut);font:500 14px Inter,sans-serif;padding:10px 16px 8px;cursor:pointer;min-height:56px}
-.tab b{font-size:18px;color:var(--ink);font-weight:700}
-.tab small{font-size:13px;white-space:nowrap}
-.tab[aria-pressed=true]{border-bottom-color:var(--acc)}
-.models{display:flex;gap:8px;overflow-x:auto;padding:12px 0;scrollbar-width:thin}
-.chip{flex:none;font:500 14px Inter,sans-serif;border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:999px;padding:0 14px;min-height:38px;cursor:pointer;white-space:nowrap}
-.chip span{color:var(--mut);margin-left:6px}
-.glab{flex:none;align-self:center;font-size:13px;font-weight:600;color:var(--mut);padding:0 2px 0 10px;border-left:1px solid var(--rule);margin-left:4px}
-.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.chip[aria-pressed=true] span{color:inherit;opacity:.7}
-.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;padding-top:6px;padding-bottom:40px;align-items:start}
-.side{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:14px;display:grid;gap:16px;position:sticky;top:74px}
-.side h3{font-size:14px;margin:0 0 8px;font-family:Inter,sans-serif;letter-spacing:0;font-weight:600}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.wears{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
-.pill{font:500 13px Inter,sans-serif;border:1px solid var(--rule);background:var(--card2);color:var(--ink);border-radius:7px;min-height:36px;cursor:pointer;padding:0 4px}
+.sec{margin:0 0 22px}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.mtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.tile{text-align:left;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:14px 14px 10px;cursor:pointer;display:flex;flex-direction:column;gap:2px;position:relative;overflow:hidden;transition:border-color .15s,transform .15s}
+.tile:hover{border-color:var(--acc)}
+.tile[aria-pressed=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.tile b{font-size:22px;line-height:1.1}
+.mtiles .tile b{font-size:17px}
+.tile .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;color:var(--mut)}
+.tile .ch{font:700 15px "Space Grotesk",Inter,sans-serif;white-space:nowrap}
+.tile svg{width:100%;height:46px;display:block;margin-top:6px}
+.mtiles .tile svg{height:34px}
+.ov2{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+.panel{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:14px}
+.panel h3{font-size:15px;margin:0 0 2px;font-family:Inter,sans-serif;letter-spacing:0;font-weight:600}
+.fig{position:relative;min-height:240px}
+.fig.big2{min-height:320px}
+.fig.sm{min-height:110px}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y}
+#s1,#s2{cursor:crosshair}
+svg text{font:12.5px Inter,sans-serif;fill:var(--mut);paint-order:stroke;stroke:var(--card);stroke-width:4px}
+.mv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:8px 6px;border-radius:8px;cursor:pointer;border:0;background:none;font:inherit;color:var(--ink);text-align:left;width:100%}
+.mv:hover{background:var(--card2)}
+.mv span{font-size:12.5px;color:var(--mut)}
+.mv b{font-size:15px;white-space:nowrap;text-align:right}
+.mv i{font-style:normal;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:10px;position:sticky;top:8px;z-index:4;margin-bottom:14px}
+#q{flex:1 1 14em}
+.wp{display:inline-flex;gap:4px}
+.pill{font:500 13px Inter,sans-serif;border:1px solid var(--rule);background:var(--card2);color:var(--ink);border-radius:7px;min-height:40px;min-width:40px;cursor:pointer;padding:0 8px}
 .pill[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.tog{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer;min-height:32px}
+.tog{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer;min-height:40px;white-space:nowrap}
 .tog input{width:18px;height:18px;min-height:0;accent-color:var(--acc)}
-.ghdr{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 0 10px;flex-wrap:wrap}
-.ghdr:first-child{margin-top:0}
-.ghdr h2{font-size:22px;margin:0}
-.ghdr .sub b{font-weight:600}
-.link{background:none;border:0;color:var(--acc);font:600 14px Inter,sans-serif;cursor:pointer;min-height:36px;padding:0 4px}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
-.card{position:relative;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px 12px 10px;color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:6px;overflow:hidden;transition:transform .15s,border-color .15s}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.card{position:relative;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px;color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:7px;overflow:hidden;transition:transform .15s,border-color .15s}
 .card:hover{border-color:var(--acc);transform:translateY(-2px)}
 .card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--q)}
 .card.star::before{background:var(--gold)}
 .ct{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut)}
 .ct .st{color:var(--gold)}
-.sk{font:600 16px/1.2 "Space Grotesk",Inter,sans-serif;letter-spacing:-.01em;min-height:2.4em}
-.wb{display:grid;grid-template-columns:7fr 8fr 23fr 7fr 55fr;gap:2px;height:5px}
-.wb i{border-radius:2px;opacity:.22}
-.wb i.on{opacity:1}
-.pr{font-size:21px;font-weight:700;white-space:nowrap}
+.sk{font:600 17px/1.2 "Space Grotesk",Inter,sans-serif;letter-spacing:-.01em}
+.pr{font-size:19px;font-weight:700;white-space:nowrap}
+.wears{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
+.wcell{border-radius:6px;background:var(--card2);padding:3px 0 4px;text-align:center;font-size:11.5px;line-height:1.25;color:var(--mut);border-top:3px solid var(--q)}
+.wcell b{display:block;color:var(--ink);font-weight:600;font-size:12px;white-space:nowrap}
+.wcell.off{opacity:.35}
 .cs{display:flex;gap:6px;flex-wrap:wrap;font-size:13px}
 .c{font-weight:600;padding:1px 6px;border-radius:5px;white-space:nowrap;background:var(--card2);color:var(--mut)}
 .c.u{color:var(--up);background:color-mix(in srgb,var(--up) 14%,transparent)}
 .c.d{color:var(--dn);background:color-mix(in srgb,var(--dn) 14%,transparent)}
 .sp{width:100%;height:30px;display:block}
 .ft{font-size:12.5px;color:var(--mut);display:flex;justify-content:space-between}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--card);border-radius:12px;overflow:hidden}
+th,td{padding:9px 8px;border-bottom:1px solid var(--rule);white-space:nowrap;text-align:right}
+th{color:var(--mut);font-weight:500;font-size:13px}
+th:nth-child(2),td:nth-child(2){text-align:left}
+td{font-variant-numeric:tabular-nums}
+td.n{white-space:normal;min-width:13em}
+td.n small{display:block;color:var(--mut);font-size:12.5px}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--card2)}
+.tsp{width:110px;height:28px;display:block;margin-left:auto}
 .more{display:flex;justify-content:center;margin:18px 0}
 .btn{font:500 14px Inter,sans-serif;min-height:42px;padding:0 16px;border-radius:9px;border:1px solid var(--rule);background:var(--card);color:var(--ink);cursor:pointer}
 .empty{padding:40px;text-align:center;color:var(--mut);background:var(--card);border-radius:12px;border:1px dashed var(--rule)}
-.ov{position:fixed;inset:0;background:rgb(0 0 0/.55);z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow-y:auto}
-.dlg{background:var(--card);border:1px solid var(--rule);border-radius:16px;width:min(1040px,100%);padding:clamp(16px,2.4vw,28px);position:relative}
+.ovl{position:fixed;inset:0;background:rgb(0 0 0/.55);z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow-y:auto}
+.dlg{background:var(--card);border:1px solid var(--rule);border-radius:16px;width:min(1120px,100%);padding:clamp(16px,2.4vw,26px);position:relative}
 .x{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:10px;border:1px solid var(--rule);background:var(--card2);color:var(--ink);font-size:20px;cursor:pointer}
-.dh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;align-items:end;padding-right:50px}
-.dh h2{font-size:clamp(22px,3vw,32px);margin:0;line-height:1.1}
+.dh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;align-items:end;padding-right:50px;margin-bottom:14px}
+.dh h2{font-size:clamp(22px,3vw,32px);line-height:1.1}
 .big{font-size:clamp(28px,4vw,40px);font-weight:700;line-height:1;white-space:nowrap;text-align:right}
-.dctr{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 12px}
+.dcols{display:grid;grid-template-columns:240px minmax(0,1fr);gap:18px}
+.wl{display:flex;flex-direction:column;gap:6px}
+.wl button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 10px;align-items:center;text-align:left;font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--rule);border-radius:10px;padding:8px 10px;cursor:pointer;min-height:48px}
+.wl button[aria-current=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.wl .tag{grid-row:span 2;width:32px;height:32px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:700;color:#111}
+.wl small{color:var(--mut);font-size:12px}
+.wl b{text-align:right;white-space:nowrap}
+.dctr{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(8em,1fr));border:1px solid var(--rule);border-radius:12px;overflow:hidden}
 .kv{padding:10px 14px;border-right:1px solid var(--rule);margin-right:-1px}
 .kv span{display:block;font-size:13px;color:var(--mut)}
@@ -94,22 +122,14 @@ label.fx{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut)
 .kv small{font-size:12.5px;color:var(--mut);white-space:nowrap}
 .read{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:12px 0 4px;font-size:14px;min-height:42px}
 .read .btn{margin-left:auto;min-height:36px}
-.fig{position:relative;min-height:320px}
-.fig.sm{min-height:120px}
-.fig>svg{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:crosshair}
-svg text{font:12.5px Inter,sans-serif;fill:var(--mut);paint-order:stroke;stroke:var(--card);stroke-width:4px}
 .tip{position:absolute;pointer-events:none;background:var(--card2);border:1px solid var(--rule);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.45;display:none;z-index:2;white-space:nowrap;box-shadow:0 4px 14px rgb(0 0 0/.2)}
 .tip b{font-size:15px}
-.ow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:16px}
-.ow button{text-align:left;font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--rule);border-radius:10px;padding:8px 10px;cursor:pointer;min-height:44px}
-.ow button[aria-current=true]{border-color:var(--acc)}
-.ow small{display:block;color:var(--mut);font-size:12.5px}
-.note{padding:16px;border:1px dashed var(--rule);border-radius:12px;color:var(--mut);margin-top:14px}
+.note{padding:14px;border:1px dashed var(--rule);border-radius:12px;color:var(--mut);margin-bottom:12px}
 .foot{color:var(--mut);font-size:13px;padding-bottom:30px}
-.fbtn{display:none}
-@media(max-width:860px){.layout{grid-template-columns:1fr}.side{position:static}.fbtn{display:inline-flex;align-items:center}.side.closed{display:none}}
-@media(max-width:600px){.top{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:10px 10px 8px}.pr{font-size:18px}.sk{font-size:15px}.dh{grid-template-columns:1fr}.big{text-align:left}.read .btn{margin-left:0}.fig{min-height:260px}}
-@media(prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+@media(max-width:980px){.ov2{grid-template-columns:1fr 1fr}.ov2>.panel:first-child{grid-column:1/-1}}
+@media(max-width:760px){.tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}.tiles .tile{flex:0 0 72%;scroll-snap-align:start}.dcols{grid-template-columns:1fr}.wl{flex-direction:row;overflow-x:auto}.wl button{flex:0 0 150px}.bar{position:static}}
+@media(max-width:600px){.top{grid-template-columns:1fr}.ov2{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:10px}.sk{font-size:15px}.pr{font-size:17px}.dh{grid-template-columns:1fr}.big{text-align:left}.hide-s{display:none}.mtiles{grid-template-columns:repeat(2,minmax(0,1fr))}.fig.big2{min-height:260px}}
+@media(prefers-reduced-motion:reduce){.card,.tile{transition:none}.card:hover{transform:none}}
 </style>
 </head>
 <body>
@@ -120,143 +140,193 @@ svg text{font:12.5px Inter,sans-serif;fill:var(--mut);paint-order:stroke;stroke:
     <label class="fx" for="fx">US$ 1 = R$ <input id="fx" type="number" step="0.01" min="0.5" inputmode="decimal"></label>
   </div>
 </header>
-<nav class="bar"><div class="wrap tabs" id="tabs" role="group" aria-label="Categoria"></div></nav>
-<div class="wrap"><div class="models" id="models" role="group" aria-label="Modelo"></div></div>
-<div class="wrap layout">
-  <aside class="side closed" id="side" aria-label="Filtros">
-    <div><h3>Buscar</h3><input id="q" type="search" placeholder="fade, redline, vice…" aria-label="Buscar skin"></div>
-    <div><h3>Ordenar por</h3><select id="sort" aria-label="Ordenar por">
-      <option value="vol">Mais vendidas</option><option value="up30">Maior alta em 30 dias</option><option value="dn30">Maior queda em 30 dias</option><option value="up365">Maior alta em 1 ano</option><option value="dn365">Maior queda em 1 ano</option><option value="pd">Mais caras</option><option value="pa">Mais baratas</option><option value="nm">Nome</option></select></div>
-    <div><h3>Preço</h3><div class="grid2" id="price"></div></div>
-    <div><h3>Desgaste</h3><div class="wears" id="wear"><button class="pill" data-v="0">FN</button><button class="pill" data-v="1">MW</button><button class="pill" data-v="2">FT</button><button class="pill" data-v="3">WW</button><button class="pill" data-v="4">BS</button></div></div>
-    <label class="tog"><input type="checkbox" id="onlyh"> Só com histórico de preço</label>
-    <button class="btn" id="clear">Limpar filtros</button>
-  </aside>
-  <main id="main">
-    <div style="display:flex;gap:10px;margin-bottom:12px"><button class="btn fbtn" id="fbtn" aria-controls="side" aria-expanded="false">Filtros e ordem</button></div>
+<main class="wrap">
+  <section class="sec"><div class="sh"><h2>Categoria</h2><p class="sub">Índice de preço dos últimos 6 meses e variação típica em 30 dias</p></div><div class="tiles" id="cats"></div></section>
+  <section class="sec" id="msec"><div class="sh"><h2 id="mtitle">Modelos</h2><p class="sub" id="msub"></p></div><div class="mtiles" id="models"></div></section>
+  <section class="sec ov2" id="overview">
+    <div class="panel"><div class="sh" style="margin-bottom:0"><div><h3 id="ixt">Índice de preço</h3><p class="sub" id="ixs"></p></div><div class="seg" id="ixp" role="group" aria-label="Período do índice"><button data-v="13">3M</button><button data-v="26">6M</button><button data-v="52">1A</button></div></div><div class="fig" id="fi"><svg id="si" aria-label="Índice de preço da seleção"></svg></div></div>
+    <div class="panel"><h3>Maiores altas em 30 dias</h3><p class="sub">com pelo menos 10 vendas no mês</p><div id="up"></div></div>
+    <div class="panel"><h3>Maiores quedas em 30 dias</h3><p class="sub">com pelo menos 10 vendas no mês</p><div id="dn"></div></div>
+  </section>
+  <section class="sec">
+    <div class="bar">
+      <input id="q" type="search" placeholder="Buscar skin: fade, redline, vice…" aria-label="Buscar skin">
+      <div class="wp" id="wear" role="group" aria-label="Desgaste"><button class="pill" data-v="0">FN</button><button class="pill" data-v="1">MW</button><button class="pill" data-v="2">FT</button><button class="pill" data-v="3">WW</button><button class="pill" data-v="4">BS</button></div>
+      <select id="tier" aria-label="Faixa de preço"></select>
+      <div class="seg" id="sort" role="group" aria-label="Ordem"><button data-v="vol">Populares</button><button data-v="up30">Em alta</button><button data-v="dn30">Em queda</button><button data-v="pd">Mais caras</button><button data-v="pa">Mais baratas</button></div>
+      <div class="seg" id="view" role="group" aria-label="Visualização"><button data-v="cards">Cards</button><button data-v="table">Tabela</button></div>
+      <label class="tog"><input type="checkbox" id="onlyh"> Só com gráfico</label>
+    </div>
+    <p class="sub" id="count" style="margin:-4px 0 10px"></p>
     <div id="grid"></div>
-  </main>
-</div>
+  </section>
+</main>
 <p class="wrap foot" id="foot"></p>
-<div class="ov" id="ov" hidden>
+<div class="ovl" id="ov" hidden>
   <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dname">
     <button class="x" id="x" aria-label="Fechar">×</button>
     <div class="dh"><div><p class="sub" id="dmodel"></p><h2 id="dname">—</h2><p class="sub" id="dsub"></p></div><div><div class="big" id="now">—</div><p class="sub" id="nowSub" style="text-align:right"></p></div></div>
-    <div class="dctr" id="dctr"><div class="seg" id="per" role="group" aria-label="Período do gráfico"></div></div>
-    <div class="kpis" id="kpis"></div>
-    <div class="read" id="read"></div>
-    <div class="fig" id="f1"><svg id="s1" aria-label="Gráfico de preço"></svg><div class="tip" id="tip"></div></div>
-    <p class="sub" id="f2l" style="margin-top:10px">Linha laranja: mediana móvel de 7 dias. Linha cinza: média de cada dia (picos vêm de vendas raras, como skins com adesivos caros). Abaixo, a variação acumulada da mediana desde o início do período.</p>
-    <div class="fig sm" id="f2"><svg id="s2" aria-label="Gráfico de variação acumulada"></svg></div>
-    <div class="note" id="nohist" hidden>O gráfico diário vem do CSFloat, que libera o histórico de cerca de 200 skins por hora; esta entra numa das próximas coletas. <a id="csl" href="#" target="_blank" rel="noopener">Ver no CSFloat</a></div>
-    <div id="spb" hidden><h3 style="margin:20px 0 8px;font-size:16px">Vendas na Skinport</h3><div class="kpis" id="spk"></div></div>
-    <h3 style="margin:20px 0 0;font-size:16px">Outros desgastes</h3>
-    <div class="ow" id="ow"></div>
+    <div class="dcols">
+      <div class="wl" id="wl" role="group" aria-label="Desgastes"></div>
+      <div>
+        <div class="note" id="nohist" hidden>O gráfico diário vem do CSFloat, que libera o histórico de cerca de 200 skins por hora; esta entra numa das próximas coletas. <a id="csl" href="#" target="_blank" rel="noopener">Ver no CSFloat</a></div>
+        <div class="dctr" id="dctr"><div class="seg" id="per" role="group" aria-label="Período do gráfico"></div></div>
+        <div class="kpis" id="kpis"></div>
+        <div class="read" id="read"></div>
+        <div class="fig big2" id="f1"><svg id="s1" aria-label="Gráfico de preço"></svg><div class="tip" id="tip"></div></div>
+        <p class="sub" id="f2l" style="margin-top:8px">Laranja: mediana móvel de 7 dias. Cinza: média de cada dia (picos vêm de vendas raras, como skins com adesivos caros). Abaixo, a variação acumulada desde o início do período.</p>
+        <div class="fig sm" id="f2"><svg id="s2" aria-label="Variação acumulada"></svg></div>
+        <div id="spb" hidden><h3 style="margin:18px 0 8px;font-size:15px">Vendas na Skinport</h3><div class="kpis" id="spk"></div></div>
+      </div>
+    </div>
   </div>
 </div>
 <script>
 {
 const B64="__B64__";
-const DAY=864e5,$=id=>document.getElementById(id);
+const DAY=864e5,WEEK=7*DAY,$=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const WEAR=["Factory New","Minimal Wear","Field-Tested","Well-Worn","Battle-Scarred",""],WS=["FN","MW","FT","WW","BS",""];
+const WR=["0,00–0,07","0,07–0,15","0,15–0,38","0,38–0,45","0,45–1,00"];
 const WC=["#3fb950","#86c94a","#e3b341","#ef8a3c","#e5534b"];
 const CATS=[["all","Todas"],["rf","Rifles"],["kn","Facas"],["gl","Luvas"]];
-const TIERS=[[0,10],[10,50],[50,250],[250,1e9]];
+const TIERS=[[0,1e9],[0,10],[10,50],[50,250],[250,1e9]];
 const PERS=[["1M",30],["3M",91],["6M",182],["1A",365],["2A",730],["Tudo",0]];
-const S={cat:"all",wpn:"",wear:"",q:"",sort:"vol",tier:-1,onlyh:false,lim:48,cur:"BRL",per:"1A",fx:5.86492,sel:null,rng:null};
-let fxUser=false;try{const sv=JSON.parse(localStorage.getItem("cs-var4")||"{}");for(const k of["cur","per","cat","sort"])if(sv[k]!=null)S[k]=sv[k];if(sv.fxUser){S.fx=sv.fxUser;fxUser=true}}catch(e){}
-const save=()=>{try{localStorage.setItem("cs-var4",JSON.stringify({cur:S.cur,per:S.per,cat:S.cat,sort:S.sort,fxUser:fxUser?S.fx:null}))}catch(e){}};
-let H,IT=[],L=0;
+const S={cat:"all",wpn:"",wear:"",q:"",sort:"vol",tier:0,onlyh:false,view:"cards",ixw:26,lim:48,cur:"BRL",per:"1A",fx:5.86492,sel:null,rng:null};
+let fxUser=false;try{const sv=JSON.parse(localStorage.getItem("cs-var5")||"{}");for(const k of["cur","per","cat","sort","view","ixw"])if(sv[k]!=null)S[k]=sv[k];if(sv.fxUser){S.fx=sv.fxUser;fxUser=true}}catch(e){}
+const save=()=>{try{localStorage.setItem("cs-var5",JSON.stringify({cur:S.cur,per:S.per,cat:S.cat,sort:S.sort,view:S.view,ixw:S.ixw,fxUser:fxUser?S.fx:null}))}catch(e){}};
+let H,IT=[],SK=[],L=0;
 const kx=()=>S.cur==="BRL"?S.fx:1;
 const money=v=>(S.cur==="BRL"?"R$ ":"US$ ")+v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const short=v=>(S.cur==="BRL"?"R$ ":"$ ")+(v>=1e4?(v/1e3).toLocaleString("pt-BR",{maximumFractionDigits:1})+" mil":v>=100?Math.round(v).toLocaleString("pt-BR"):v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}));
-const ax=v=>(S.cur==="BRL"?"R$":"$")+(v>=1e3?(v/1e3).toLocaleString("pt-BR",{maximumFractionDigits:1})+"k":Math.round(v).toLocaleString("pt-BR"));
+const ax=v=>(S.cur==="BRL"?"R$":"$")+(v>=1e3?(v/1e3).toLocaleString("pt-BR",{maximumFractionDigits:1})+"k":v>=10?Math.round(v).toLocaleString("pt-BR"):v.toLocaleString("pt-BR",{maximumFractionDigits:2}));
 const pct=x=>x==null||!isFinite(x)?"—":(x>=0?"+":"−")+Math.abs(x*100).toLocaleString("pt-BR",{maximumFractionDigits:1,minimumFractionDigits:1})+"%";
 const col=x=>x==null?"var(--mut)":x>=0?"var(--up)":"var(--dn)";
 const cl=x=>x==null?"":x>=0?"u":"d";
 const fd=(t,o)=>new Date(t).toLocaleDateString("pt-BR",Object.assign({day:"2-digit",month:"short",year:"2-digit",timeZone:"UTC"},o||{})).replace(/\./g,"").replace(/ de /g," ");
+const md=v=>{v=v.slice().sort((x,y)=>x-y);return v.length?(v.length%2?v[v.length>>1]:(v[v.length/2-1]+v[v.length/2])/2):null};
 const decode=async()=>{
   const bin=Uint8Array.from(atob(B64),c=>c.charCodeAt(0));
   const u=new Uint8Array(await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer());
   const hl=u[0]|u[1]<<8|u[2]<<16|u[3]<<24;H=JSON.parse(new TextDecoder().decode(u.subarray(4,4+hl)));
   let p=4+hl;const rv=()=>{let x=0,s=1,b;do{b=u[p++];x+=(b&127)*s;s*=128}while(b&128);return x},zz=x=>x%2?-(x+1)/2:x/2;
   if(!fxUser&&H.fx)S.fx=H.fx;
-  IT=H.items.map(([w,pi,wr,rp,rvol,sp])=>{const n=rv(),pts=[];let day=0,code=0;for(let i=0;i<n;i++){day=i?day+rv():rv();code=i?code+zz(rv()):rv();pts.push({t:day*DAY,p:Math.exp(code/200)/100,c:rv()})}const W=H.weapons[w];return{w,cat:W[1],star:W[1]==="gl"||W[1]==="kn",wn:W[0],pn:H.paints[pi],wr,pts,rp:rp/100,rvol,sp:sp?{m7:sp[0]/100,m30:sp[1]/100,m90:sp[2]/100,v7:sp[3],v30:sp[4],v90:sp[5],min:sp[6]==null?null:sp[6]/100,qty:sp[7],m24:sp[8]==null?null:sp[8]/100,v24:sp[9]}:null}});
+  IT=H.items.map(([w,pi,wr,rp,rvol,sp])=>{const n=rv(),pts=[];let day=0,code=0;for(let i=0;i<n;i++){day=i?day+rv():rv();code=i?code+zz(rv()):rv();pts.push({t:day*DAY,p:Math.exp(code/200)/100,c:rv()})}const W=H.weapons[w];
+    return{w,cat:W[1],star:W[1]==="gl"||W[1]==="kn",wn:W[0],pn:H.paints[pi],wr,pts,rp:rp/100,rvol,sp:sp?{m7:sp[0]/100,m30:sp[1]/100,m90:sp[2]/100,v7:sp[3],v30:sp[4],v90:sp[5],min:sp[6]==null?null:sp[6]/100,qty:sp[7],m24:sp[8]==null?null:sp[8]/100,v24:sp[9]}:null}});
   IT=IT.filter(x=>x.pts.length||x.rp>0||x.sp);const ends=IT.filter(x=>x.pts.length).map(x=>x.pts[x.pts.length-1].t);L=ends.length?Math.max(...ends):Date.parse(H.asof);
   IT.forEach((it,i)=>{it.i=i;stats(it)});
+  const by=new Map();for(const it of IT){const k=it.wn+"|"+it.pn;if(!by.has(k))by.set(k,{key:k,wn:it.wn,pn:it.pn,cat:it.cat,star:it.star,items:[]});by.get(k).items.push(it)}
+  SK=[...by.values()];for(const s of SK){s.items.sort((a,b)=>a.wr-b.wr);s.lead=s.items.slice().sort((a,b)=>(b.v30??-1)-(a.v30??-1)||(b.rvol-a.rvol))[0];s.v30=s.items.reduce((t,i)=>t+(i.v30||0),0);s.h=s.items.some(i=>i.h);
+    const ps=s.items.map(i=>i.now).filter(x=>x!=null);s.lo=ps.length?Math.min(...ps):null;s.hi=ps.length?Math.max(...ps):null;s.name=s.pn==="Vanilla"?"Vanilla":s.pn;s.model=(s.star?"★ ":"")+s.wn}
 };
-const md=v=>{v=v.slice().sort((x,y)=>x-y);return v.length?(v.length%2?v[v.length>>1]:(v[v.length/2-1]+v[v.length/2])/2):null};
 const win=(a,t0,t1)=>md(a.filter(d=>d.t>t0&&d.t<=t1).map(d=>d.p));
 const near=(a,t,tol)=>{let b=null,bd=tol;for(const d of a){const dd=Math.abs(d.t-t);if(dd<=bd){bd=dd;b=d}}return b};
 const ref=(a,t)=>{const w=win(a,t-4*DAY,t+3*DAY);if(w!=null)return w;const n=near(a,t,10*DAY);return n?n.p:null};
 const stats=it=>{
   it.name=it.pn==="Vanilla"?"Vanilla":it.pn;it.model=(it.star?"★ ":"")+it.wn;
   it.full=(it.star?"★ ":"")+it.wn+(it.pn==="Vanilla"?"":" | "+it.pn)+(it.wr<5?" ("+WEAR[it.wr]+")":"");
-  it.key=it.wn+"|"+it.pn;const a=it.pts;it.h=a.length>0;
-  it.src=it.h?"cf":null;
+  it.key=it.wn+"|"+it.pn;const a=it.pts;it.h=a.length>0;it.src=it.h?"cf":null;
   if(!it.h){it.v30=null;it.lastT=null;for(const n of[7,30,90,365])it["c"+n]=null;
     const sp=it.sp;if(sp&&sp.m7&&sp.v7>=2){it.src="sp";it.now=sp.m7;it.v30=sp.v30;it.c30=sp.m30?sp.m7/sp.m30-1:null;it.c90=sp.m90?sp.m7/sp.m90-1:null}
     else it.now=it.rvol>=3?it.rp:null;return}
   it.now=win(a,L-7*DAY,L)??a[a.length-1].p;it.lastT=a[a.length-1].t;it.v30=a.filter(d=>d.t>L-30*DAY).reduce((s,d)=>s+d.c,0);
   for(const n of[7,30,90,365]){const r=ref(a,L-n*DAY);it["c"+n]=r?it.now/r-1:null}
+  it.wk=new Map();const g=new Map();for(const d of a){const k=Math.floor(d.t/WEEK);if(!g.has(k))g.set(k,[]);g.get(k).push(d.p)}for(const[k,v]of g)it.wk.set(k,md(v));
+};
+const index=(items,weeks)=>{
+  const lw=Math.floor(L/WEEK),b=lw-weeks,hs=items.filter(i=>i.h&&i.wk),out=[];let n0=0;
+  const base=new Map();for(const i of hs){const v=i.wk.get(b)??i.wk.get(b+1)??i.wk.get(b-1);if(v){base.set(i,v);n0++}}
+  if(n0<3)return{pts:[],n:n0};
+  for(let w=b;w<=lw;w++){const r=[];for(const[i,v]of base){const x=i.wk.get(w);if(x)r.push(x/v)}if(r.length>=3)out.push({t:w*WEEK,v:md(r)*100,n:r.length})}
+  return{pts:out,n:n0};
 };
 const inCat=(i,c)=>c==="all"||i.cat===c;
-const tabs=()=>{
-  $("tabs").innerHTML=CATS.map(([k,l])=>{const xs=IT.filter(i=>inCat(i,k)),hs=xs.filter(i=>i.c30!=null&&i.v30>0),m=hs.length>=10?md(hs.map(i=>i.c30)):null;
-    return `<button class="tab" data-v="${k}" aria-pressed="${S.cat===k}"><b>${l}</b><small>${xs.length.toLocaleString("pt-BR")} itens${m!=null?` · <span style="color:${col(m)}">${pct(m)}</span> em 30 dias`:""}</small></button>`}).join("");
-  const ms=[...new Set(IT.filter(i=>inCat(i,S.cat)).map(i=>i.wn))].sort((a,b)=>a.localeCompare(b));
-  if(S.wpn&&!ms.includes(S.wpn))S.wpn="";
-  const chip=m=>`<button class="chip" data-v="${esc(m)}" aria-pressed="${S.wpn===m}">${esc(m)}<span>${IT.filter(i=>i.wn===m).length}</span></button>`;
-  $("models").innerHTML=`<button class="chip" data-v="" aria-pressed="${!S.wpn}">Todos</button>`+(S.cat==="all"?CATS.slice(1).map(([k,l])=>`<span class="glab">${l}</span>`+ms.filter(m=>IT.find(i=>i.wn===m).cat===k).map(chip).join("")).join(""):ms.map(chip).join(""));
+const mini=(ix,h)=>{const p=ix.pts;if(p.length<2)return `<svg viewBox="0 0 200 ${h}" aria-hidden="true"><text x="0" y="${h-6}" style="stroke:none">sem histórico suficiente ainda</text></svg>`;
+  const vs=p.map(x=>x.v),lo=Math.min(...vs,100),hi=Math.max(...vs,100),X=k=>k/(p.length-1)*200,Y=v=>h-3-(v-lo)/((hi-lo)||1)*(h-6),last=vs[vs.length-1],c=last>=100?"var(--up)":"var(--dn)";
+  const d=p.map((x,k)=>(k?"L":"M")+X(k).toFixed(1)+","+Y(x.v).toFixed(1)).join("");
+  return `<svg viewBox="0 0 200 ${h}" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="200" y1="${Y(100)}" y2="${Y(100)}" stroke="var(--rule)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/><path d="${d}L200,${h}L0,${h}Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`};
+const m30=xs=>{const v=xs.filter(i=>i.c30!=null&&i.v30>0).map(i=>i.c30);return v.length>=5?md(v):null};
+const cats=()=>{
+  $("cats").innerHTML=CATS.map(([k,l])=>{const xs=IT.filter(i=>inCat(i,k)),m=m30(xs),ix=index(xs,26);
+    return `<button class="tile" data-v="${k}" aria-pressed="${S.cat===k&&!S.wpn}"><div class="row"><b style="color:var(--ink)">${l}</b><span class="ch" style="color:${col(m)}">${pct(m)}</span></div><div class="row"><span>${xs.length.toLocaleString("pt-BR")} itens</span><span>30 dias</span></div>${mini(ix,46)}<div class="row"><span>${ix.n?`índice de ${ix.n} skins`:"índice em coleta"}</span><span>6 meses</span></div></button>`}).join("");
 };
-const side=()=>{
-  $("price").innerHTML=TIERS.map(([a,b],i)=>`<button class="pill" data-v="${i}" aria-pressed="${S.tier===i}">${i===0?"até "+ax(b*kx()):i===3?"+ de "+ax(a*kx()):ax(a*kx())+"–"+ax(b*kx())}</button>`).join("");
-  for(const b of $("wear").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.wear);
-  $("sort").value=S.sort;$("onlyh").checked=S.onlyh;$("q").value=S.q;
+const models=()=>{
+  const cat=S.cat,ms=[...new Set(IT.filter(i=>inCat(i,cat)).map(i=>i.wn))];
+  if(cat==="all"){$("msec").hidden=true;return}
+  $("msec").hidden=false;$("mtitle").textContent="Modelos de "+CATS.find(c=>c[0]===cat)[1].toLowerCase();$("msub").textContent="Clique para ver só um modelo";
+  const rows=ms.map(m=>{const xs=IT.filter(i=>i.wn===m),ps=xs.map(i=>i.now).filter(x=>x!=null);return{m,xs,mm:m30(xs),lo:ps.length?Math.min(...ps):null,hi:ps.length?Math.max(...ps):null,v:xs.reduce((t,i)=>t+(i.v30||0),0)}}).sort((a,b)=>b.v-a.v);
+  $("models").innerHTML=`<button class="tile" data-v="" aria-pressed="${!S.wpn}"><b>Todos</b><div class="row"><span>${IT.filter(i=>inCat(i,cat)).length} itens</span></div></button>`+rows.map(r=>`<button class="tile" data-v="${esc(r.m)}" aria-pressed="${S.wpn===r.m}"><div class="row"><b style="color:var(--ink)">${esc(r.m)}</b><span class="ch" style="color:${col(r.mm)}">${pct(r.mm)}</span></div><div class="row"><span>${r.xs.length} itens</span><span>${r.lo!=null?esc(ax(r.lo*kx()))+" – "+esc(ax(r.hi*kx())):""}</span></div>${mini(index(r.xs,26),34)}</button>`).join("");
 };
-const filt=()=>{const q=S.q.toLowerCase().split(/\s+/).filter(Boolean);return IT.filter(i=>inCat(i,S.cat)&&(!S.wpn||i.wn===S.wpn)&&(S.wear===""||i.wr===+S.wear)&&(!S.onlyh||i.h)&&(S.tier<0||(i.now!=null&&i.now>=TIERS[S.tier][0]&&i.now<TIERS[S.tier][1]))&&q.every(w=>i.full.toLowerCase().includes(w)))};
-const sorter=()=>{const k=S.sort,F={vol:i=>i.v30??(i.rvol?-1/i.rvol:null),up30:i=>i.c30,dn30:i=>i.c30==null?null:-i.c30,up365:i=>i.c365,dn365:i=>i.c365==null?null:-i.c365,pd:i=>i.now,pa:i=>i.now==null?null:-i.now}[k];
-  if(k==="nm")return(a,b)=>a.full.localeCompare(b.full);
-  return(a,b)=>{const x=F(a),y=F(b);if(x==null&&y==null)return(b.now??-1)-(a.now??-1);if(x==null)return 1;if(y==null)return -1;return y-x}};
-const spark=it=>{const a=it.pts.filter(d=>d.t>L-365*DAY);if(a.length<2)return`<svg class="sp" aria-hidden="true"></svg>`;const vs=a.map(d=>Math.log(d.p)),lo=Math.min(...vs),hi=Math.max(...vs);
+const scope=()=>IT.filter(i=>inCat(i,S.cat)&&(!S.wpn||i.wn===S.wpn));
+const selName=()=>S.wpn||(S.cat==="all"?"todas as skins":CATS.find(c=>c[0]===S.cat)[1].toLowerCase());
+const overview=()=>{
+  const xs=scope();$("ixt").textContent="Índice de preço: "+selName();
+  for(const b of $("ixp").querySelectorAll("button"))b.setAttribute("aria-pressed",+b.dataset.v===S.ixw);
+  const ix=index(xs,S.ixw);drawIx(ix);
+  $("ixs").textContent=ix.pts.length?`Mediana do preço de ${ix.n} skins com histórico, base 100 ${S.ixw===13?"há 3 meses":S.ixw===26?"há 6 meses":"há 1 ano"}.`:"Ainda não há skins suficientes com histórico nesta seleção.";
+  const liq=xs.filter(i=>i.c30!=null&&(i.v30??0)>=10);
+  const row=i=>`<button class="mv" data-i="${i.i}"><i>${esc(i.model+" | "+i.name)}</i><b style="color:${col(i.c30)}">${pct(i.c30)}</b><span>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${i.src==="sp"?"Skinport":"CSFloat"}</span><b style="font-size:13px;color:var(--mut);font-weight:500">${esc(short(i.now*kx()))}</b></button>`;
+  const up=liq.slice().sort((a,b)=>b.c30-a.c30).slice(0,5),dn=liq.slice().sort((a,b)=>a.c30-b.c30).slice(0,5);
+  $("up").innerHTML=up.map(row).join("")||`<p class="sub">Sem dados suficientes.</p>`;$("dn").innerHTML=dn.map(row).join("")||`<p class="sub">Sem dados suficientes.</p>`;
+};
+const drawIx=ix=>{
+  const s=$("si"),W=s.clientWidth,H=s.clientHeight;if(!W)return;const p=ix.pts;
+  if(p.length<2){s.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle">Índice disponível quando houver histórico suficiente</text>`;return}
+  const vs=p.map(x=>x.v),lo=Math.min(...vs,100)*.97,hi=Math.max(...vs,100)*1.03,ml=6,mr=46,mt=12,mb=22;
+  const X=t=>ml+(t-p[0].t)/((p[p.length-1].t-p[0].t)||1)*(W-ml-mr),Y=v=>mt+(hi-v)/(hi-lo)*(H-mt-mb),last=vs[vs.length-1],c=last>=100?"var(--up)":"var(--dn)";
+  const d=p.map((x,k)=>(k?"L":"M")+X(x.t).toFixed(1)+","+Y(x.v).toFixed(1)).join("");
+  let g=nice(lo,hi,4).map(v=>`<line x1="${ml}" x2="${W-mr}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--rule)"/><text x="${W-mr+6}" y="${Y(v)+4}">${Math.round(v)}</text>`).join("");
+  g+=`<line x1="${ml}" x2="${W-mr}" y1="${Y(100)}" y2="${Y(100)}" stroke="var(--mut)" stroke-dasharray="3 4"/>`;
+  const nT=W<420?2:4;for(let k=0;k<=nT;k++){const t=p[0].t+(p[p.length-1].t-p[0].t)*k/nT;g+=`<text x="${X(t)}" y="${H-5}" text-anchor="${k===0?"start":k===nT?"end":"middle"}">${esc(fd(t,{year:undefined}))}</text>`}
+  g+=`<path d="${d}L${X(p[p.length-1].t)},${H-mb}L${X(p[0].t)},${H-mb}Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2.2"/><circle cx="${X(p[p.length-1].t)}" cy="${Y(last)}" r="4" fill="${c}"/><text x="${Math.max(X(p[p.length-1].t)-6,60)}" y="${Y(last)-10}" text-anchor="end" style="fill:var(--ink);font-weight:600">${pct(last/100-1)}</text>`;
+  s.innerHTML=g;
+};
+const filt=()=>{const q=S.q.toLowerCase().split(/\s+/).filter(Boolean),[a,b]=TIERS[S.tier];return scope().filter(i=>(S.wear===""||i.wr===+S.wear)&&(!S.onlyh||i.h)&&(S.tier===0||(i.now!=null&&i.now>=a&&i.now<b))&&q.every(w=>i.full.toLowerCase().includes(w)))};
+const keyf=k=>({vol:i=>i.v30??(i.rvol?-1/i.rvol:null),up30:i=>i.c30,dn30:i=>i.c30==null?null:-i.c30,pd:i=>i.now,pa:i=>i.now==null?null:-i.now})[k];
+const cmp=f=>(a,b)=>{const x=f(a),y=f(b);if(x==null&&y==null)return(b.now??-1)-(a.now??-1);if(x==null)return 1;if(y==null)return -1;return y-x};
+const spark=(it,cls)=>{const a=it.pts.filter(d=>d.t>L-365*DAY);if(a.length<2)return it.sp?steps(it,cls):`<svg class="${cls}" aria-hidden="true"></svg>`;const vs=a.map(d=>Math.log(d.p)),lo=Math.min(...vs),hi=Math.max(...vs);
   const d=a.map((x,i)=>(i?"L":"M")+((x.t-(L-365*DAY))/(365*DAY)*200).toFixed(1)+","+(28-(vs[i]-lo)/((hi-lo)||1)*26).toFixed(1)).join("");
-  return `<svg class="sp" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="${d}L200,30L0,30Z" fill="${col(it.c365)}" opacity=".12"/><path d="${d}" fill="none" stroke="${col(it.c365)}" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>`};
-const card=i=>`<button class="card${i.star?" star":""}" data-i="${i.i}"><div class="ct"><span class="${i.star?"st":""}">${esc(i.model)}</span><span>${WS[i.wr]||"—"}</span></div><div class="sk">${esc(i.name)}</div>`+
-  (i.wr<5?`<div class="wb" aria-hidden="true">${WC.map((c,k)=>`<i class="${k===i.wr?"on":""}" style="background:${c}"></i>`).join("")}</div>`:`<div class="wb" aria-hidden="true"></div>`)+
-  `<div class="pr">${i.now==null?"—":esc(short(i.now*kx()))}</div>`+
-  (i.h?`<div class="cs"><span class="c ${cl(i.c30)}">30d ${pct(i.c30)}</span><span class="c ${cl(i.c365)}">1a ${pct(i.c365)}</span></div>${spark(i)}<div class="ft"><span>${i.v30} vendas/30d</span><span>CSFloat</span></div>`
-  :i.src==="sp"?`<div class="cs"><span class="c ${cl(i.c30)}">30d ${pct(i.c30)}</span><span class="c ${cl(i.c90)}">90d ${pct(i.c90)}</span></div>${steps(i)}<div class="ft"><span>${i.v30} vendas/30d</span><span>Skinport</span></div>`
-  :`<div class="cs"><span class="c">${i.now==null?"poucas vendas":"só preço de referência"}</span></div><div class="ft"><span>${i.rvol} vendas ref.</span><span>CSFloat</span></div>`)+`</button>`;
-const steps=it=>{const sp=it.sp,pts=[[45,sp.m90],[15,sp.m30],[3.5,sp.m7],[.5,sp.m24]].filter(p=>p[1]);if(pts.length<2)return`<svg class="sp" aria-hidden="true"></svg>`;
+  return `<svg class="${cls}" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="${d}L200,30L0,30Z" fill="${col(it.c365??it.c30)}" opacity=".12"/><path d="${d}" fill="none" stroke="${col(it.c365??it.c30)}" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>`};
+const steps=(it,cls)=>{const sp=it.sp,pts=[[45,sp.m90],[15,sp.m30],[3.5,sp.m7],[.5,sp.m24]].filter(p=>p[1]);if(pts.length<2)return`<svg class="${cls}" aria-hidden="true"></svg>`;
   const vs=pts.map(p=>Math.log(p[1])),lo=Math.min(...vs),hi=Math.max(...vs),X=d=>(1-d/50)*196+2,Y=v=>28-(v-lo)/((hi-lo)||1)*24;
-  const d=pts.map((p,k)=>(k?"L":"M")+X(p[0]).toFixed(1)+","+Y(vs[k]).toFixed(1)).join("");
-  return `<svg class="sp" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="${col(it.c90)}" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/></svg>`};
+  return `<svg class="${cls}" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="${pts.map((p,k)=>(k?"L":"M")+X(p[0]).toFixed(1)+","+Y(vs[k]).toFixed(1)).join("")}" fill="none" stroke="${col(it.c90??it.c30)}" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/></svg>`};
+const card=s=>{const L0=s.lead,its=s.vis;
+  return `<button class="card${s.star?" star":""}" data-i="${L0.i}"><div class="ct"><span class="${s.star?"st":""}">${esc(s.model)}</span><span>${s.items.length>1?s.items.length+" desgastes":WS[L0.wr]||"—"}</span></div><div class="sk">${esc(s.name)}</div>`+
+  `<div class="pr">${s.lo==null?"—":s.lo===s.hi?esc(short(s.lo*kx())):esc(short(s.lo*kx()))+" – "+esc(short(s.hi*kx()))}</div>`+
+  (L0.wr<5?`<div class="wears">${[0,1,2,3,4].map(w=>{const x=s.items.find(i=>i.wr===w);return `<div class="wcell${!x||!its.includes(x)?" off":""}" style="border-top-color:${WC[w]}">${WS[w]}<b>${x&&x.now!=null?esc(ax(x.now*kx())):"—"}</b></div>`}).join("")}</div>`:"")+
+  `<div class="cs"><span class="c ${cl(L0.c30)}">${WS[L0.wr]?WS[L0.wr]+" ":""}30d ${pct(L0.c30)}</span>${L0.h?`<span class="c ${cl(L0.c365)}">1a ${pct(L0.c365)}</span>`:L0.c90!=null?`<span class="c ${cl(L0.c90)}">90d ${pct(L0.c90)}</span>`:""}</div>${spark(L0,"sp")}<div class="ft"><span>${s.v30} vendas/30d</span><span>${L0.src==="cf"?"CSFloat":L0.src==="sp"?"Skinport":"referência"}</span></div></button>`};
 const grid=()=>{
-  const r=filt().sort(sorter()),flat=S.wpn||S.q||S.wear!==""||S.tier>=0||S.onlyh;
-  if(!r.length){$("grid").innerHTML=`<div class="empty">Nenhuma skin com esses filtros.</div>`;return}
-  if(flat){
-    $("grid").innerHTML=`<div class="ghdr"><h2>${esc(S.wpn||CATS.find(c=>c[0]===S.cat)[1])}</h2><p class="sub"><b>${r.length.toLocaleString("pt-BR")}</b> itens</p></div><div class="cards">${r.slice(0,S.lim).map(card).join("")}</div>`+(r.length>S.lim?`<div class="more"><button class="btn" id="mr">Mostrar mais (${(r.length-S.lim).toLocaleString("pt-BR")} restantes)</button></div>`:"");
-    if($("mr"))$("mr").onclick=()=>{S.lim+=48;grid()};return;
+  for(const[id,k]of[["sort","sort"],["view","view"]])for(const b of $(id).querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S[k]);
+  for(const b of $("wear").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.wear);
+  $("tier").innerHTML=TIERS.map(([a,b],i)=>`<option value="${i}"${i===S.tier?" selected":""}>${i===0?"Qualquer preço":i===1?"Até "+ax(b*kx()):i===4?"Acima de "+ax(a*kx()):ax(a*kx())+" – "+ax(b*kx())}</option>`).join("");
+  $("onlyh").checked=S.onlyh;
+  const r=filt(),f=keyf(S.sort);
+  if(!r.length){$("count").textContent="";$("grid").innerHTML=`<div class="empty">Nenhuma skin com esses filtros.</div>`;return}
+  if(S.view==="table"){
+    r.sort(cmp(f));$("count").textContent=`${r.length.toLocaleString("pt-BR")} itens · ${selName()}`;
+    $("grid").innerHTML=`<div class="scroll"><table><thead><tr><th class="hide-s">#</th><th>Skin</th><th>Preço</th><th class="hide-s">7 dias</th><th>30 dias</th><th class="hide-s">90 dias</th><th class="hide-s">1 ano</th><th class="hide-s">Vendas 30d</th><th class="hide-s">Tendência</th></tr></thead><tbody>`+
+      r.slice(0,S.lim).map((i,k)=>`<tr tabindex="0" data-i="${i.i}"><td class="hide-s">${k+1}</td><td class="n">${esc(i.model)} | ${esc(i.name)}<small>${esc(i.wr<5?WEAR[i.wr]:"Sem desgaste")} · ${i.src==="cf"?"CSFloat":i.src==="sp"?"Skinport":"referência"}</small></td><td>${i.now==null?"—":esc(short(i.now*kx()))}</td>`+["c7","c30","c90","c365"].map(c=>`<td class="${c==="c30"?"":"hide-s"}" style="color:${col(i[c])}">${pct(i[c])}</td>`).join("")+`<td class="hide-s">${i.v30??"—"}</td><td class="hide-s">${spark(i,"tsp")}</td></tr>`).join("")+`</tbody></table></div>`+more(r.length);
+  }else{
+    const g=new Map();for(const i of r){if(!g.has(i.key))g.set(i.key,[]);g.get(i.key).push(i)}
+    const sk=[...g.entries()].map(([k,its])=>{const s=SK.find(x=>x.key===k);return Object.assign(Object.create(s),{vis:its,lead:its.slice().sort((a,b)=>(b.v30??-1)-(a.v30??-1)||(b.rvol-a.rvol))[0]})});
+    sk.sort((a,b)=>S.sort==="vol"?b.v30-a.v30||(b.lead.rvol-a.lead.rvol):cmp(f)(a.lead,b.lead));
+    $("count").textContent=`${sk.length.toLocaleString("pt-BR")} skins (${r.length.toLocaleString("pt-BR")} itens contando desgastes) · ${selName()}`;
+    $("grid").innerHTML=`<div class="cards">${sk.slice(0,S.lim).map(card).join("")}</div>`+more(sk.length);
   }
-  const by=S.cat==="all"?(i=>i.cat):(i=>i.wn),label=S.cat==="all"?(k=>CATS.find(c=>c[0]===k)[1]):(k=>k),n=S.cat==="all"?12:8,g=new Map();
-  for(const i of r){const k=by(i);if(!g.has(k))g.set(k,[]);g.get(k).push(i)}
-  const keys=[...g.keys()].sort((a,b)=>S.cat==="all"?CATS.findIndex(c=>c[0]===a)-CATS.findIndex(c=>c[0]===b):g.get(b).filter(i=>i.h).length-g.get(a).filter(i=>i.h).length||a.localeCompare(b));
-  $("grid").innerHTML=keys.map(k=>{const xs=g.get(k),hs=xs.filter(i=>i.c30!=null&&i.v30>0),m=hs.length>=5?md(hs.map(i=>i.c30)):null;
-    return `<div class="ghdr"><h2>${esc(label(k))}</h2><p class="sub"><b>${xs.length.toLocaleString("pt-BR")}</b> itens${m!=null?` · mediana em 30 dias <b style="color:${col(m)}">${pct(m)}</b>`:""} <button class="link" data-g="${esc(k)}">Ver todos →</button></p></div><div class="cards">${xs.slice(0,n).map(card).join("")}</div>`}).join("");
+  if($("mr"))$("mr").onclick=()=>{S.lim+=48;grid()};
 };
-const all=()=>{tabs();side();grid();for(const b of $("cur").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.cur);$("fx").value=S.fx;save()};
+const more=n=>n>S.lim?`<div class="more"><button class="btn" id="mr">Mostrar mais (${(n-S.lim).toLocaleString("pt-BR")} restantes)</button></div>`:"";
+const all=()=>{cats();models();overview();grid();for(const b of $("cur").querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===S.cur);$("fx").value=S.fx;save()};
 let view=[],X1,Y1,hov=-1,lastFocus=null;
 const V=d=>d.s*kx(),VR=d=>d.p*kx();
 const smooth=it=>{if(it.sm)return;const a=it.pts;let j=0;for(let i=0;i<a.length;i++){while(a[j].t<=a[i].t-7*DAY)j++;a[i].s=md(a.slice(j,i+1).map(d=>d.p))}it.sm=1};
 const detail=()=>{
   const it=S.sel;if(!it)return;const a=it.pts,days=PERS.find(p=>p[0]===S.per)[1];
   $("per").innerHTML=PERS.map(([l])=>`<button data-v="${l}" aria-pressed="${l===S.per}">${l}</button>`).join("");
-  $("dmodel").textContent=it.model;$("dname").textContent=it.name;
-  $("dsub").textContent=it.wr<5?WEAR[it.wr]:"Sem desgaste";
+  $("dmodel").textContent=it.model;$("dname").textContent=it.name;$("dsub").textContent=it.wr<5?WEAR[it.wr]+" · float "+WR[it.wr]:"Sem desgaste";
   $("now").textContent=it.now==null?"—":money(it.now*kx());
   const sibs=IT.filter(x=>x.key===it.key).sort((x,y)=>x.wr-y.wr);
-  $("ow").innerHTML=sibs.map(x=>`<button data-i="${x.i}" aria-current="${x===it}"><b>${esc(x.wr<5?WEAR[x.wr]:"Vanilla")}</b><small>${x.now==null?"—":esc(short(x.now*kx()))}${x.c30!=null?` · <span style="color:${col(x.c30)}">${pct(x.c30)}</span> 30d`:""}</small></button>`).join("");
+  $("wl").innerHTML=sibs.map(x=>`<button data-i="${x.i}" aria-current="${x===it}"><span class="tag" style="background:${x.wr<5?WC[x.wr]:"var(--gold)"}">${WS[x.wr]||"★"}</span><span>${esc(x.wr<5?WEAR[x.wr]:"Vanilla")}</span><b>${x.now==null?"—":esc(short(x.now*kx()))}</b><small>${x.wr<5?WR[x.wr]:""}</small><small style="text-align:right;color:${col(x.c30)}">${x.c30!=null?pct(x.c30)+" 30d":""}</small></button>`).join("");
   for(const id of["dctr","kpis","read","f1","f2","f2l"])$(id).hidden=!it.h;$("nohist").hidden=it.h;
   const sp=it.sp;$("spb").hidden=!sp;
   if(sp){const W=[["24 horas",sp.m24,sp.v24],["7 dias",sp.m7,sp.v7],["30 dias",sp.m30,sp.v30],["90 dias",sp.m90,sp.v90]];
@@ -322,28 +392,32 @@ const open=it=>{lastFocus=document.activeElement;S.sel=it;S.rng=null;hov=-1;$("o
 const close=()=>{$("ov").hidden=true;document.body.style.overflow="";S.sel=null;if(lastFocus)lastFocus.focus()};
 (async()=>{
   try{await decode()}catch(e){$("lede").textContent="Seu navegador não conseguiu abrir os dados desta página. Tente no Chrome, Edge, Firefox ou Safari atualizados.";return}
-  const m30=k=>{const v=IT.filter(i=>i.cat===k&&i.c30!=null&&i.v30>0).map(i=>i.c30);return v.length>=10?md(v):null},cs=[["facas","kn"],["luvas","gl"],["rifles","rf"]].map(([l,k])=>[l,m30(k)]).filter(x=>x[1]!=null);
+  const cs=[["facas","kn"],["luvas","gl"],["rifles","rf"]].map(([l,k])=>[l,m30(IT.filter(i=>i.cat===k))]).filter(x=>x[1]!=null);
   const hs=IT.filter(i=>i.h).length,ss=IT.filter(i=>i.sp).length;
   $("title").textContent=cs.length?"Em 30 dias: "+cs.map(([l,m])=>`${l} ${pct(m)}`).join(", "):"Variação de preço das skins";
-  $("lede").textContent=`Mediana da variação por categoria. ${IT.length.toLocaleString("pt-BR")} skins de AK-47, M4A1-S, facas e luvas: ${hs.toLocaleString("pt-BR")} com gráfico diário do CSFloat e ${ss.toLocaleString("pt-BR")} com estatísticas de venda da Skinport. Clique numa skin para ver os detalhes.`;
-  $("foot").textContent=`Dados de ${fd(Date.parse(H.asof))}. Com gráfico (CSFloat): preço = mediana dos preços médios diários dos últimos 7 dias; cada variação compara com a mediana da semana em torno da data. Sem gráfico (Skinport): preço = mediana das vendas em 7 dias; "30d" e "90d" comparam com a mediana das vendas desses períodos, então são uma estimativa. Sem nenhum dos dois: preço de referência do CSFloat, omitido com menos de 3 vendas. Sem StatTrak e Souvenir. Câmbio padrão: ${H.fx?"implícito nos preços da Skinport":"fixo"}. Atualizado automaticamente pelo repositório cs-skin-prices.`;
+  $("lede").textContent=`Mediana da variação por categoria. ${SK.length.toLocaleString("pt-BR")} skins (${IT.length.toLocaleString("pt-BR")} itens contando desgastes) de AK-47, M4A1-S, facas e luvas: ${hs.toLocaleString("pt-BR")} itens com gráfico diário do CSFloat e ${ss.toLocaleString("pt-BR")} com estatísticas de venda da Skinport.`;
+  $("foot").textContent=`Dados de ${fd(Date.parse(H.asof))}. Índice: mediana, entre as skins com histórico do CSFloat, do preço semanal dividido pelo da semana-base. Com gráfico (CSFloat): preço = mediana dos preços médios diários dos últimos 7 dias; cada variação compara com a mediana da semana em torno da data. Sem gráfico (Skinport): preço = mediana das vendas em 7 dias; "30d" e "90d" comparam com a mediana desses períodos, então são estimativas. Sem nenhum dos dois: preço de referência do CSFloat, omitido com menos de 3 vendas. Sem StatTrak e Souvenir. Câmbio padrão: ${H.fx?"implícito nos preços da Skinport":"fixo"}. Atualizado pelo repositório cs-skin-prices.`;
   all();hook($("s1"));hook($("s2"));
   const ro=new ResizeObserver(()=>{if(S.sel){draw1();draw2()}});ro.observe($("f1"));ro.observe($("f2"));
+  const rx=new ResizeObserver(()=>drawIx(index(scope(),S.ixw)));rx.observe($("fi"));
 })();
-$("tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(!b)return;S.cat=b.dataset.v;S.wpn="";S.lim=48;all()});
-$("models").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;S.wpn=b.dataset.v;S.lim=48;tabs();grid();b.blur()});
-$("grid").addEventListener("click",e=>{const g=e.target.closest("[data-g]");if(g){if(S.cat==="all"){S.cat=g.dataset.g}else S.wpn=g.dataset.g;S.lim=48;all();window.scrollTo({top:$("models").offsetTop-70,behavior:"smooth"});return}const c=e.target.closest(".card");if(c)open(IT[+c.dataset.i])});
-$("price").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.tier=S.tier===+b.dataset.v?-1:+b.dataset.v;S.lim=48;side();grid()});
-$("wear").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.wear=S.wear===b.dataset.v?"":b.dataset.v;S.lim=48;side();grid()});
-$("sort").addEventListener("change",e=>{S.sort=e.target.value;S.lim=48;save();grid()});
-$("onlyh").addEventListener("change",e=>{S.onlyh=e.target.checked;S.lim=48;grid()});
-$("q").addEventListener("input",e=>{S.q=e.target.value;S.lim=48;grid()});
-$("clear").onclick=()=>{Object.assign(S,{wear:"",q:"",tier:-1,onlyh:false,lim:48});side();grid()};
-$("fbtn").onclick=()=>{const c=$("side").classList.toggle("closed");$("fbtn").setAttribute("aria-expanded",!c)};
+const reset=()=>{S.lim=48};
+$("cats").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b)return;S.cat=b.dataset.v;S.wpn="";reset();all()});
+$("models").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b)return;S.wpn=b.dataset.v;reset();cats();models();overview();grid()});
+$("ixp").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.ixw=+b.dataset.v;save();overview()});
+for(const id of["up","dn"])$(id).addEventListener("click",e=>{const b=e.target.closest(".mv");if(b)open(IT[+b.dataset.i])});
+$("grid").addEventListener("click",e=>{const c=e.target.closest("[data-i]");if(c)open(IT[+c.dataset.i])});
+$("grid").addEventListener("keydown",e=>{if(e.key==="Enter"){const c=e.target.closest("tr[data-i]");if(c)open(IT[+c.dataset.i])}});
+$("wear").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.wear=S.wear===b.dataset.v?"":b.dataset.v;reset();grid()});
+$("tier").addEventListener("change",e=>{S.tier=+e.target.value;reset();grid()});
+$("sort").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.sort=b.dataset.v;reset();save();grid()});
+$("view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.view=b.dataset.v;reset();save();grid()});
+$("onlyh").addEventListener("change",e=>{S.onlyh=e.target.checked;reset();grid()});
+$("q").addEventListener("input",e=>{S.q=e.target.value;reset();grid()});
 $("cur").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.cur=b.dataset.v;all();detail()});
 $("fx").addEventListener("change",e=>{const v=parseFloat(String(e.target.value).replace(",","."));if(v>0){S.fx=v;fxUser=true;all();detail()}});
 $("per").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.per=b.dataset.v;S.rng=null;save();detail()});
-$("ow").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.sel=IT[+b.dataset.i];S.rng=null;hov=-1;detail()});
+$("wl").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.sel=IT[+b.dataset.i];S.rng=null;hov=-1;detail()});
 $("x").onclick=close;$("ov").addEventListener("click",e=>{if(e.target===$("ov"))close()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("ov").hidden)close()});
 }
